@@ -202,4 +202,12 @@ contract Attendify {
 
         lectureInstance[_lectureId].status = true;
     }
+
+    function closeAttendance(uint _lectureId) external onlyMentorOnDuty {
+        if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if(lectureInstance[_lectureId].mentorOnDuty != msg.sender) revert not_on_duty();
+        if(lectureInstance[_lectureId].status == false) revert('Attendance already closed');
+
+        lectureInstance[_lectureId].status = false;
+    }
 }
