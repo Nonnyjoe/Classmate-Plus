@@ -57,6 +57,9 @@ contract Attendify {
         string _name;
     }
 
+    // EVENTS
+    event Handover(address newMentor, string mentorName);
+
     // MODIFIERS
     modifier onlyModerator() {
         require(msg.sender == moderator, "NOT MODERATOR");
@@ -154,6 +157,8 @@ contract Attendify {
         lectureInstance[_lectureId].uri = _uri;
         lectureInstance[_lectureId].topic = _topic;
         lectureInstance[_lectureId].mentorOnDuty = msg.sender;
+        mentorOnDuty = msg.sender;
+
 
         // NONSO GENESIS
         IERC1155(NftContract).setDayUri(_lectureId, _uri);
@@ -184,5 +189,8 @@ contract Attendify {
     function mentorHandover(uint _lectureId) external  onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         lectureInstance[_lectureId].mentorOnDuty = msg.sender;
+        mentorOnDuty = msg.sender;
+
+        emit Handover(msg.sender, mentorsData[msg.sender]._name);
     }
 }
