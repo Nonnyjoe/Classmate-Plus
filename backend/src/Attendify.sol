@@ -47,7 +47,7 @@ contract Attendify {
      * ============================================================ *
      */
     address moderator;
-    address mentorOnDuty;
+    address mentorOnDuty; // why do we need this again?
     address[] mentors;
     mapping(address => uint) indexInMentorsArray;
     mapping(address => bool) isStaff;
@@ -181,7 +181,8 @@ contract Attendify {
     }
 
 // @dev Function for mentors to hand over to the next mentor to take the class
-    function handover(uint _lectureId) external  onlyMentorOnDuty returns(bool) {
-
+    function mentorHandover(uint _lectureId) external  onlyMentorOnDuty {
+        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        lectureInstance[_lectureId].mentorOnDuty = msg.sender;
     }
 }
