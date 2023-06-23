@@ -84,7 +84,8 @@ contract Attendify {
 
     // ERRORS
     error lecture_id_already_used();
-    error not_Autorized_Caller();
+    error not_on_duty();
+    error not_Authorized_Caller();
     error Invalid_Lecture_Id();
     error Lecture_id_closed();
     error Already_Signed_Attendance_For_Id();
@@ -192,5 +193,13 @@ contract Attendify {
         mentorOnDuty = msg.sender;
 
         emit Handover(msg.sender, mentorsData[msg.sender]._name);
+    }
+
+    function openAttendance(uint _lectureId) external onlyMentorOnDuty {
+        if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if(lectureInstance[_lectureId].mentorOnDuty != msg.sender) revert not_on_duty();
+        if(lectureInstance[_lectureId].status == true) revert('Attendance already open');
+
+        lectureInstance[_lectureId].status = true;
     }
 }
