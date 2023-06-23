@@ -10,11 +10,23 @@ contract Attendify {
     string organization;
     string cohort;
     address AttendifyContract;
-    uint[] LectureIdCollection;
+    address NftContract;
 
+    /**
+     * ============================================================ *
+     * --------------------- ATTENDANCE RECORD------------------- *
+     * ============================================================ *
+     */
+    uint[] LectureIdCollection;
+    mapping(uint => lectureData) lectureInstance;
+    mapping(uint => bool) lectureIdUsed;
     struct lectureData {
+        address mentorOnDuty;
         string topic;
-        uint lectureId;
+        bytes uri;
+        uint attendanceStartTime;
+        uint studentsPresent;
+        bool status;
     }
 
     /**
@@ -25,6 +37,9 @@ contract Attendify {
     address[] students;
     mapping(address => individual) studentsData;
     mapping(address => uint) indexInStudentsArray;
+    mapping(address => uint) studentsTotalAttendance;
+    mapping(address => bool) isStudent;
+    mapping(address => mapping(uint => bool)) IndividualAttendanceRecord;
 
     /**
      * ============================================================ *
@@ -51,6 +66,10 @@ contract Attendify {
         require(msg.sender == mentorOnDuty, "NOT MODERATOR ON DUTY");
         _;
     }
+    modifier onlyStudents() {
+        require(isStudent[msg.sender] == true, "NOT A VALID STUDENT");
+        _;
+    }
 
     modifier onlyStaff() {
         require(
@@ -60,13 +79,30 @@ contract Attendify {
         _;
     }
 
+    // ERRORS
+    error lecture_id_already_used();
+    error not_Autorized_Caller();
+    error Invalid_Lecture_Id();
+    error Lecture_id_closed();
+    error Already_Signed_Attendance_For_Id();
+
     // @dev: constructor initialization
     // @params: _organization: Name of company,
     // @params: _cohort: Name of specific Cohort/ Program,
-    constructor(string memory _organization, string memory _cohort) {
+    constructor(
+        string memory _organization,
+        string memory _cohort,
+        address _AttendifyContract
+    ) {
         moderator = msg.sender;
         organization = _organization;
         cohort = _cohort;
+        AttendifyContract = _AttendifyContract;
+    }
+
+    function initialize(address _NftContract) external {
+        if (msg.sender != AttendifyContract) revert not_Autorized_Caller();
+        NftContract = _NftContract;
     }
 
     // @dev: Function to register staffs to be called only by the moderator
@@ -97,6 +133,7 @@ contract Attendify {
             studentsData[_studentList[i]._address] = _studentList[i];
             indexInStudentsArray[_studentList[i]._address] = students.length;
             students.push(_studentList[i]._address);
+            isStudent[_studentList[i]._address] = true;
         }
         // UCHE
         IAttendify(AttendifyContract).register(_studentList);
@@ -106,14 +143,45 @@ contract Attendify {
     // @params:  _lectureId: Lecture Id of choice, selected by mentor on duty.
     // @params:  _uri: Uri for the particular Nft issued to students that attended class for that day.
     // @params:  _topic: Topic covered for that particular day, its recorded so as to be displayed on students dashboard.
-    function createId(
+    function createAttendance(
         uint _lectureId,
         bytes _uri,
         string _topic
-    ) external onlyMentorOnDuty {}
+    ) external onlyMentorOnDuty {
+        if (lectureIdUsed[_lectureId] == true) revert lecture_id_already_used();
+        lectureIdUsed[_lectureId] = true;
+        LectureIdCollection.push(_lectureId);
+        lectureInstance[_lectureId].uri = _uri;
+        lectureInstance[_lectureId].topic = _topic;
+        lectureInstance[_lectureId].mentorOnDuty = msg.sender;
 
-    /// @dev Function for mentor to sign off and handover to the next mentor 
-    function mentorHandOver() external {
-        
+        // NONSO GENESIS
+        IERC1155(NftContract).setDayUri(_lectureId, _uri);
+    }
+
+    function signAttendance(uint _lectureId) external onlyStudents {
+        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if (lectureInstance[_lectureId].status == false)
+            revert Lecture_id_closed();
+        if (IndividualAttendanceRecord[msg.sender][_lectureId] = true)
+            revert Already_Signed_Attendance_For_Id();
+        if (lectureInstance[_lectureId].attendanceStartTime == 0) {
+            lectureInstance[_lectureId].attendanceStartTime = block.timestamp;
+        }
+        IndividualAttendanceRecord[msg.sender][_lectureId] = true;
+        studentsTotalAttendance[msg.sender] =
+            studentsTotalAttendance[msg.sender] +
+            1;
+        lectureInstance[_lectureId].studentsPresent =
+            lectureInstance[_lectureId].studentsPresent +
+            1;
+
+        // NONSO GENESIS
+        IERC1155(NftContract).mint(msg.sender, _lectureId, 1);
+    }
+
+// @dev Function for mentors to hand over to the next mentor to take the class
+    function handover(uint _lectureId) external  onlyMentorOnDuty returns(bool) {
+
     }
 }
