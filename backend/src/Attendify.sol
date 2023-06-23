@@ -47,7 +47,7 @@ contract Attendify {
      * ============================================================ *
      */
     address moderator;
-    address mentorOnDuty; // why do we need this again?
+    address mentorOnDuty; 
     address[] mentors;
     mapping(address => uint) indexInMentorsArray;
     mapping(address => bool) isStaff;
@@ -58,7 +58,7 @@ contract Attendify {
     }
 
     // EVENTS
-    event Handover(address newMentor, string mentorName);
+    event Handover(address newMentor, uint handoverTime);
 
     // MODIFIERS
     modifier onlyModerator() {
@@ -189,17 +189,13 @@ contract Attendify {
 // @dev Function for mentors to hand over to the next mentor to take the class
     function mentorHandover(uint _lectureId, string calldata name_) external  onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
-        lectureInstance[_lectureId].mentorOnDuty = msg.sender;
-        mentorsData[msg.sender]._name = name_;
-        mentorsData[msg.sender]._address = msg.sender;
         mentorOnDuty = msg.sender;
 
-        emit Handover(msg.sender, mentorsData[msg.sender]._name);
+        emit Handover(msg.sender, block.timestamp);
     }
 
     function openAttendance(uint _lectureId) external onlyMentorOnDuty {
         if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
-        if(lectureInstance[_lectureId].mentorOnDuty != msg.sender) revert not_on_duty();
         if(lectureInstance[_lectureId].status == true) revert('Attendance already open');
 
         lectureInstance[_lectureId].status = true;
@@ -207,7 +203,6 @@ contract Attendify {
 
     function closeAttendance(uint _lectureId) external onlyMentorOnDuty {
         if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
-        if(lectureInstance[_lectureId].mentorOnDuty != msg.sender) revert not_on_duty();
         if(lectureInstance[_lectureId].status == false) revert('Attendance already closed');
 
         lectureInstance[_lectureId].status = false;
