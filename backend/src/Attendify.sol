@@ -84,6 +84,7 @@ contract Attendify {
     error not_Autorized_Caller();
     error Invalid_Lecture_Id();
     error Lecture_id_closed();
+    error Attendance_compilation_started();
     error Already_Signed_Attendance_For_Id();
 
     // @dev: constructor initialization
@@ -157,6 +158,15 @@ contract Attendify {
 
         // NONSO GENESIS
         IERC1155(NftContract).setDayUri(_lectureId, _uri);
+    }
+
+    function editTopic(uint _lectureId, string _topic) external {
+        if (msg.sender != lectureInstance[_lectureId].mentorOnDuty)
+            revert not_Autorized_Caller();
+        if (lectureInstance[_lectureId].attendanceStartTime != 0)
+            revert Attendance_compilation_started();
+
+        lectureInstance[_lectureId].topic = _topic;
     }
 
     function signAttendance(uint _lectureId) external onlyStudents {
