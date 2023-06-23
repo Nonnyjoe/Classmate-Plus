@@ -47,7 +47,7 @@ contract Attendify {
      * ============================================================ *
      */
     address moderator;
-    address mentorOnDuty;
+    address mentorOnDuty; 
     address[] mentors;
     mapping(address => uint) indexInMentorsArray;
     mapping(address => bool) isStaff;
@@ -56,6 +56,9 @@ contract Attendify {
         address _address;
         string _name;
     }
+
+    // EVENTS
+    event Handover(address newMentor, uint handoverTime);
 
     // MODIFIERS
     modifier onlyModerator() {
@@ -81,7 +84,7 @@ contract Attendify {
 
     // ERRORS
     error lecture_id_already_used();
-    error not_Autorized_Caller();
+    error not_Authorized_Caller();
     error Invalid_Lecture_Id();
     error Lecture_id_closed();
     error Attendance_compilation_started();
@@ -141,7 +144,7 @@ contract Attendify {
     }
 
     // @dev: Function to Create Id for a particular Lecture Day, this Id is to serve as Nft Id. Only callable by mentor on duty.
-    // @params:  _lectureId: Lecture Id of chaice, selected by mentor on duty.
+    // @params:  _lectureId: Lecture Id of choice, selected by mentor on duty.
     // @params:  _uri: Uri for the particular Nft issued to students that attended class for that day.
     // @params:  _topic: Topic covered for that particular day, its recorded so as to be displayed on students dashboard.
     function createAttendance(
@@ -155,6 +158,8 @@ contract Attendify {
         lectureInstance[_lectureId].uri = _uri;
         lectureInstance[_lectureId].topic = _topic;
         lectureInstance[_lectureId].mentorOnDuty = msg.sender;
+        mentorOnDuty = msg.sender;
+
 
         // NONSO GENESIS
         IERC1155(NftContract).setDayUri(_lectureId, _uri);
@@ -189,4 +194,28 @@ contract Attendify {
         // NONSO GENESIS
         IERC1155(NftContract).mint(msg.sender, _lectureId, 1);
     }
+
+// @dev Function for mentors to hand over to the next mentor to take the class
+    function mentorHandover(uint _lectureId, string calldata name_) external  onlyMentorOnDuty {
+        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        mentorOnDuty = msg.sender;
+
+        emit Handover(msg.sender, block.timestamp);
+    }
+
+    function openAttendance(uint _lectureId) external onlyMentorOnDuty {
+        if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if(lectureInstance[_lectureId].status == true) revert('Attendance already open');
+
+        lectureInstance[_lectureId].status = true;
+    }
+
+    function closeAttendance(uint _lectureId) external onlyMentorOnDuty {
+        if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if(lectureInstance[_lectureId].status == false) revert('Attendance already closed');
+
+        lectureInstance[_lectureId].status = false;
+    }
+
+
 }
