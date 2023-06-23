@@ -103,7 +103,7 @@ contract Attendify {
     }
 
     // @dev: Function to Create Id for a particular Lecture Day, this Id is to serve as Nft Id. Only callable by mentor on duty.
-    // @params:  _lectureId: Lecture Id of chaice, selected by mentor on duty.
+    // @params:  _lectureId: Lecture Id of choice, selected by mentor on duty.
     // @params:  _uri: Uri for the particular Nft issued to students that attended class for that day.
     // @params:  _topic: Topic covered for that particular day, its recorded so as to be displayed on students dashboard.
     function createId(
@@ -111,4 +111,9 @@ contract Attendify {
         bytes _uri,
         string _topic
     ) external onlyMentorOnDuty {}
+
+    /// @dev Function for mentor to sign off and handover to the next mentor 
+    function mentorHandOver() external {
+        
+    }
 }
