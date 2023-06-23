@@ -84,7 +84,6 @@ contract Attendify {
 
     // ERRORS
     error lecture_id_already_used();
-    error not_on_duty();
     error not_Authorized_Caller();
     error Invalid_Lecture_Id();
     error Lecture_id_closed();
