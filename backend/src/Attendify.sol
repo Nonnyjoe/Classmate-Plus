@@ -187,9 +187,11 @@ contract Attendify {
     }
 
 // @dev Function for mentors to hand over to the next mentor to take the class
-    function mentorHandover(uint _lectureId) external  onlyMentorOnDuty {
+    function mentorHandover(uint _lectureId, string calldata name_) external  onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         lectureInstance[_lectureId].mentorOnDuty = msg.sender;
+        mentorsData[msg.sender]._name = name_;
+        mentorsData[msg.sender]._address = msg.sender;
         mentorOnDuty = msg.sender;
 
         emit Handover(msg.sender, mentorsData[msg.sender]._name);
@@ -210,4 +212,6 @@ contract Attendify {
 
         lectureInstance[_lectureId].status = false;
     }
+
+
 }
