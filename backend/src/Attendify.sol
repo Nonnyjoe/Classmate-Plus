@@ -58,7 +58,7 @@ contract Attendify {
     }
 
     // EVENTS
-    event Handover(address newMentor, uint handoverTime);
+    event Handover(address newMentor, uint lectureId, uint handoverTime);
 
     // MODIFIERS
     modifier onlyModerator() {
@@ -157,7 +157,6 @@ contract Attendify {
         lectureInstance[_lectureId].uri = _uri;
         lectureInstance[_lectureId].topic = _topic;
         lectureInstance[_lectureId].mentorOnDuty = msg.sender;
-        mentorOnDuty = msg.sender;
 
 
         // NONSO GENESIS
@@ -186,11 +185,11 @@ contract Attendify {
     }
 
 // @dev Function for mentors to hand over to the next mentor to take the class
-    function mentorHandover(uint _lectureId, string calldata name_) external  onlyMentorOnDuty {
+    function mentorHandover(uint _lectureId) external  onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         mentorOnDuty = msg.sender;
 
-        emit Handover(msg.sender, block.timestamp);
+        emit Handover(msg.sender, _lectureId, block.timestamp);
     }
 
     function openAttendance(uint _lectureId) external onlyMentorOnDuty {
