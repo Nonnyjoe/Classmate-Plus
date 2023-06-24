@@ -47,7 +47,7 @@ contract Attendify {
      * ============================================================ *
      */
     address moderator;
-    address mentorOnDuty; 
+    address mentorOnDuty;
     address[] mentors;
     mapping(address => uint) indexInMentorsArray;
     mapping(address => bool) isStaff;
@@ -160,7 +160,6 @@ contract Attendify {
         lectureInstance[_lectureId].mentorOnDuty = msg.sender;
         mentorOnDuty = msg.sender;
 
-
         // NONSO GENESIS
         IERC1155(NftContract).setDayUri(_lectureId, _uri);
     }
@@ -195,8 +194,11 @@ contract Attendify {
         IERC1155(NftContract).mint(msg.sender, _lectureId, 1);
     }
 
-// @dev Function for mentors to hand over to the next mentor to take the class
-    function mentorHandover(uint _lectureId, string calldata name_) external  onlyMentorOnDuty {
+    // @dev Function for mentors to hand over to the next mentor to take the class
+    function mentorHandover(
+        uint _lectureId,
+        string calldata name_
+    ) external onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         mentorOnDuty = msg.sender;
 
@@ -204,18 +206,18 @@ contract Attendify {
     }
 
     function openAttendance(uint _lectureId) external onlyMentorOnDuty {
-        if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
-        if(lectureInstance[_lectureId].status == true) revert('Attendance already open');
+        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if (lectureInstance[_lectureId].status == true)
+            revert("Attendance already open");
 
         lectureInstance[_lectureId].status = true;
     }
 
     function closeAttendance(uint _lectureId) external onlyMentorOnDuty {
-        if(lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
-        if(lectureInstance[_lectureId].status == false) revert('Attendance already closed');
+        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        if (lectureInstance[_lectureId].status == false)
+            revert("Attendance already closed");
 
         lectureInstance[_lectureId].status = false;
     }
-
-
 }
