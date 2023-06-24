@@ -239,6 +239,7 @@ contract Attendify {
     }
 
     // @dev Function for mentors to hand over to the next mentor to take the class
+
     function mentorHandover(address newMentor) external {
         if (msg.sender != mentorOnDuty) revert not_Autorized_Caller();
         mentorOnDuty = newMentor;
