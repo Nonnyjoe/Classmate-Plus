@@ -2,38 +2,49 @@
 // pragma solidity ^0.8.13;
 
 // import "forge-std/Test.sol";
-// import "../src/Contracts/Attendify.sol";
+// import "../src/Contracts/organisation.sol";
 
-// contract AttendifyTest is Test {
-//     Attendify attendify;
+// contract organisationTest is Test {
+//     organisation _organisation;
 
-//     address moderator = makeAddr(moderator);
-//     address mentor1 = makeAddr(mentor1);
-//     address mentor2 = makeAddr(mentor2);
-//     address student = makeAddr(student);
-//     address[] studentlist = [];
-//     address[] staffList = [];
+//     address moderator = makeAddr("moderator");
+//     address mentor1 = makeAddr("mentor1");
+//     address mentor2 = makeAddr("mentor2");
+//     address student = makeAddr("student");
+
+//     individual student1;
+//     individual[] studentlist;
+//     individual mentor;
+//     individual[] staffList;
 
 //     function setUp() public {
-//         attendify = new Attendify();
+//         _organisation = new organisation("WEB3BRIDGE", "COHORT 9", moderator);
+
+//         student1._address = address(student);
+//         student1._name = "JOHN DOE";
+//         studentlist.push(student1);
+
+//         mentor._address = address(mentor1);
+//         mentor._name = "MR. ABIMS";
+//         staffList.push(mentor);
 //     }
 
 //     function test_createSchool() public {
-//         vm.prank(moderator);
+//         console.log("test");
 //     }
 
 //     function test_registerStaff() public {
 //         test_createSchool();
 
 //         vm.prank(moderator);
-//         attendify.registerStaffs(staffList);
+//         _organisation.registerStaffs(staffList);
 //     }
 
 //     function test_registerStudents() public {
 //         test_createSchool();
 
 //         vm.prank(moderator);
-//         attendify.registerStudents(studentlist);
+//         _organisation.registerStudents(studentlist);
 //     }
 
 //     function test_createAttendance() public {
@@ -41,10 +52,10 @@
 //         test_registerStaff();
 
 //         uint _lectureId = 55;
-//         bytes memory _uri;
+//         string memory _uri;
 //         string memory _topic = "";
 //         vm.prank(mentor1);
-//         attendify.createAttendance(_lectureId, _uri, _topic);
+//         _organisation.createAttendance(_lectureId, _uri, _topic);
 //     }
 
 //     function test_OpenAttendance() public {
@@ -53,7 +64,7 @@
 //         test_createAttendance();
 
 //         vm.prank(mentor1);
-//         attendify.openAttendance(55);
+//         _organisation.openAttendance(55);
 //     }
 
 //     function test_signAttendance() public {
@@ -63,7 +74,7 @@
 //         test_OpenAttendance();
 
 //         vm.prank(student);
-//         attendify.signAttendance(55);
+//         _organisation.signAttendance(55);
 //     }
 
 //     function test_handoverMentor() public {
@@ -71,6 +82,6 @@
 //         test_registerStaff();
 
 //         vm.prank(mentor1);
-//         attendify.mentorHandover(55);
+//         _organisation.mentorHandover(mentor2);
 //     }
 // }

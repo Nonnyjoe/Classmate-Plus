@@ -5,10 +5,10 @@ import "forge-std/Test.sol";
 import "../src/Interfaces/Ichild.sol";
 import "../src/Interfaces/IFactory.sol";
 import "../src/Contracts/SchoolsNFT.sol";
-import "../src/Contracts/AttendifyDeployer.sol";
+import "../src/Contracts/organisationFactory.sol";
 
 contract EcosystemTest is Test {
-    AttendifyDeployer _AttendifyDeployer;
+    organisationFactory _organisationFactory;
     individual student1;
     individual[] students;
     individual mentor;
@@ -20,9 +20,9 @@ contract EcosystemTest is Test {
 
     function setUp() public {
         vm.prank(director);
-        _AttendifyDeployer = new AttendifyDeployer();
+        _organisationFactory = new organisationFactory();
         student1._address = address(studentAdd);
-        student1._name = "IDOGWU CHINONSO";
+        student1._name = "JOHN DOE";
         students.push(student1);
 
         mentor._address = address(mentorAdd);
@@ -32,10 +32,10 @@ contract EcosystemTest is Test {
 
     function testCohortCreation() public {
         vm.startPrank(director);
-        (address Organisation, address OrganisationNft) = _AttendifyDeployer
-            .createAttendify("WEB3BRIDGE", "COHORT 9", "http://test.org");
+        (address Organisation, address OrganisationNft) = _organisationFactory
+            .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org");
 
-        address[] memory creatorsOrganizations = _AttendifyDeployer
+        address[] memory creatorsOrganizations = _organisationFactory
             .getUserOrganisatons(director);
         console.log(creatorsOrganizations[0]);
         assertEq(Organisation, creatorsOrganizations[0]);
@@ -45,7 +45,7 @@ contract EcosystemTest is Test {
     function testStudentRegister() public {
         testCohortCreation();
         vm.startPrank(director);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).registerStudents(students);
         address[] memory studentsList = ICHILD(child).liststudents();
@@ -53,7 +53,7 @@ contract EcosystemTest is Test {
         string memory studentName = ICHILD(child).getStudentName(studentAdd);
         assertEq(1, studentsList.length);
         assertEq(true, studentStatus);
-        assertEq("IDOGWU CHINONSO", studentName);
+        assertEq("JOHN DOE", studentName);
         vm.stopPrank();
     }
 
@@ -61,7 +61,7 @@ contract EcosystemTest is Test {
         testStudentRegister();
         vm.startPrank(director);
 
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).registerStaffs(mentors);
         address[] memory studentsList = ICHILD(child).listMentors();
@@ -77,7 +77,7 @@ contract EcosystemTest is Test {
     function testFail_MentorIsNotOnDuty() public {
         testMentorRegister();
         vm.startPrank(mentorAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).createAttendance(
             10202,
@@ -92,7 +92,7 @@ contract EcosystemTest is Test {
         testStudentRegister();
         vm.startPrank(director);
 
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
         address mentorOnDuty1 = ICHILD(child).getMentorOnDuty();
         ICHILD(child).mentorHandover(mentorAdd);
         address mentorOnDuty = ICHILD(child).getMentorOnDuty();
@@ -104,7 +104,7 @@ contract EcosystemTest is Test {
     function testCreateAttendance() public {
         testMentorHandOver();
         vm.startPrank(mentorAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).createAttendance(
             10202,
@@ -118,7 +118,7 @@ contract EcosystemTest is Test {
     function testFail_TakeAttendaceBeforeClass() public {
         testCreateAttendance();
         vm.startPrank(studentAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).signAttendance(10202);
         vm.stopPrank();
@@ -127,7 +127,7 @@ contract EcosystemTest is Test {
     function testFail_StudentOpenAttendace() public {
         testCreateAttendance();
         vm.startPrank(studentAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
         ICHILD(child).openAttendance(10202);
         vm.stopPrank();
     }
@@ -135,7 +135,7 @@ contract EcosystemTest is Test {
     function testFail_StudentSignWrongAttendance() public {
         testCreateAttendance();
         vm.startPrank(mentorAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
         ICHILD(child).openAttendance(10202);
         vm.stopPrank();
         vm.startPrank(studentAdd);
@@ -145,7 +145,7 @@ contract EcosystemTest is Test {
     function testSignAttendance() public {
         testCreateAttendance();
         vm.startPrank(mentorAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
         ICHILD(child).openAttendance(10202);
         vm.stopPrank();
 
@@ -157,7 +157,7 @@ contract EcosystemTest is Test {
     function testStudentsAttendanceData() public {
         testSignAttendance();
         vm.startPrank(mentorAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
         (uint attendace, uint totalClasses) = ICHILD(child)
             .getStudentAttendanceRatio(studentAdd);
 
@@ -181,11 +181,11 @@ contract EcosystemTest is Test {
         testSignAttendance();
         vm.startPrank(director);
         studentsToEvict.push(studentAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
         ICHILD(child).EvictStudents(studentsToEvict);
 
         address[] memory studentsList = ICHILD(child).liststudents();
-        address[] memory studentOrganizations = _AttendifyDeployer
+        address[] memory studentOrganizations = _organisationFactory
             .getUserOrganisatons(studentAdd);
         bool studentStatus = ICHILD(child).VerifyStudent(studentAdd);
         assertEq(0, studentOrganizations.length);
@@ -196,7 +196,7 @@ contract EcosystemTest is Test {
     function testFail_EvictedStudentSignAttendance() public {
         testZEvictStudent();
         vm.startPrank(mentorAdd);
-        address child = _AttendifyDeployer.getUserOrganisatons(director)[0];
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).createAttendance(
             10204,
