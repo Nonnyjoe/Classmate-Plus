@@ -36,8 +36,6 @@ contract AttendifyTest is Test {
         attendify.registerStudents(studentlist);
     }
 
-
-
     function test_createAttendance() public {
         test_createSchool();
         test_registerStaff();
@@ -75,11 +73,6 @@ contract AttendifyTest is Test {
         vm.prank(mentor1);
         attendify.mentorHandover(55);
     }
-
-
-
-
-
 
 
 }
