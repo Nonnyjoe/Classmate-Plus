@@ -238,12 +238,12 @@ contract Attendify {
         IERC1155(NftContract).mint(msg.sender, _lectureId, 1);
     }
 
-    // @dev Function for mentors to hand over to the next mentor to take the class
+// @dev Function for mentors to hand over to the next mentor to take the class
+    function mentorHandover(uint _lectureId) external  onlyMentorOnDuty {
+        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
+        mentorOnDuty = msg.sender;
 
-    function mentorHandover(address newMentor) external {
-        if (msg.sender != mentorOnDuty) revert not_Autorized_Caller();
-        mentorOnDuty = newMentor;
-        emit Handover(msg.sender, newMentor);
+        emit Handover(msg.sender, _lectureId, block.timestamp);
     }
 
     function openAttendance(uint _lectureId) external onlyMentorOnDuty {
