@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/SchoolsNFT.sol";
+import "../src/Contracts/SchoolsNFT.sol";
 
 contract SchoolsNFTTest is Test {
     SchoolsNFT _schoolsNFT;
@@ -12,17 +12,17 @@ contract SchoolsNFTTest is Test {
     address _admin = address(123);
 
     function setUp() public {
-        _schoolsNFT = new SchoolsNFT('Test', 'TST', 'http://test.org', _admin);
+        _schoolsNFT = new SchoolsNFT("Test", "TST", "http://test.org", _admin);
     }
 
     function testName() public {
         string memory _name = _schoolsNFT.name();
-        assertEq(_name, 'Test');
+        assertEq(_name, "Test");
     }
 
     function testUri() public {
         string memory _uri = _schoolsNFT.uri(1);
-        assertEq(_uri, 'http://test.org');
+        assertEq(_uri, "http://test.org");
     }
 
     function testAdmin() public {
@@ -47,8 +47,8 @@ contract SchoolsNFTTest is Test {
     function testSetDayUri() public {
         testMint();
         vm.prank(address(_admin));
-        _schoolsNFT.setDayUri(2, 'http://test.org/1');
+        _schoolsNFT.setDayUri(2, "http://test.org/1");
         string memory _uri = _schoolsNFT.getDayUri(2);
-        assertEq(_uri, 'http://test.org/1');
+        assertEq(_uri, "http://test.org/1");
     }
 }

@@ -9,22 +9,44 @@ const Students = () => {
         <Navbar />
       </div>
       
-      <div className="flex flex-row mt-20 flex-wrap justify-center gap-16 items-center">
-        <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+      <div className="flex flex-row mt-16 text-blue-800 flex-wrap justify-center gap-16 items-center">
+        
+        <div>
+          <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+          </div>
+            <div className="mt-[-20%]"><span >Institute</span> <span className="mx-10">Attendance</span> </div>
+        </div>
+          
+        <div>
+          <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+          </div>
+            <div className="mt-[-20%]"><span >Institute</span> <span className="mx-10">Attendance</span> </div>
+        </div>
 
+        <div>
+          <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+          </div>
+            <div className="mt-[-20%]"><span >Institute</span> <span className="mx-10">Attendance</span> </div>
         </div>
-        <div className="w-[20rem] h-60 rounded-lg bg-slate-200 cursor-pointer">
-            <span>Institute</span> <br /> <span>Attendance rate</span>
-        </div>
-        <div className="w-[20rem] h-60 rounded-lg cursor-pointer bg-slate-200">
 
+        <div>
+          <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+          </div>
+            <div className="mt-[-20%]"><span >Institute</span> <span className="mx-10">Attendance</span> </div>
         </div>
-        <div className="w-[20rem] rounded-lg cursor-pointer h-60 bg-slate-200">
 
+        <div>
+          <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+          </div>
+            <div className="mt-[-20%]"><span >Institute</span> <span className="mx-10">Attendance</span> </div>
         </div>
-        <div className="w-[20rem] rounded-lg cursor-pointer h-60 bg-slate-200">
 
+        <div>
+          <div className="w-[20rem] h-60 cursor-pointer rounded-lg my-20 bg-slate-200">
+          </div>
+            <div className="mt-[-20%]"><span >Institute</span> <span className="mx-10">Attendance</span> </div>
         </div>
+
       </div>
       <div>
         < Footer />

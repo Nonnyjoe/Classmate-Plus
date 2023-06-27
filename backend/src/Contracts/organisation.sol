@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-contract Attendify {
+import "../Interfaces/INFT.sol";
+import "../Interfaces/IFactory.sol";
+
+contract organisation {
     /**
      * ============================================================ *
      * --------------------- ORGANIZATION RECORD------------------- *
@@ -9,13 +12,9 @@ contract Attendify {
      */
     string organization;
     string cohort;
-    address AttendifyContract;
+    address organisationFactory;
     address NftContract;
     mapping(address => bool) requestNameCorrection;
-    struct individual {
-        address _address;
-        string _name;
-    }
 
     /**
      * ============================================================ *
@@ -28,7 +27,7 @@ contract Attendify {
     struct lectureData {
         address mentorOnDuty;
         string topic;
-        bytes uri;
+        string uri;
         uint attendanceStartTime;
         uint studentsPresent;
         bool status;
@@ -108,18 +107,22 @@ contract Attendify {
         moderator = _moderator;
         organization = _organization;
         cohort = _cohort;
-        AttendifyContract = msg.sender;
+        organisationFactory = msg.sender;
+        mentorOnDuty = _moderator;
+        indexInMentorsArray[_moderator] = mentors.length;
+        mentors.push(_moderator);
+        isStaff[_moderator] = true;
     }
 
     function initialize(address _NftContract) external {
-        if (msg.sender != AttendifyContract) revert not_Autorized_Caller();
+        if (msg.sender != organisationFactory) revert not_Autorized_Caller();
         NftContract = _NftContract;
     }
 
     // @dev: Function to register staffs to be called only by the moderator
     // @params: staffList: An array of structs(individuals) consisting of name and wallet address of staffs.
     function registerStaffs(
-        individual[] memory staffList
+        individual[] calldata staffList
     ) external onlyModerator {
         uint staffLength = staffList.length;
         for (uint i; i < staffLength; i++) {
@@ -131,7 +134,7 @@ contract Attendify {
             }
         }
         // UCHE
-        IAttendify(AttendifyContract).register(staffList);
+        IFACTORY(organisationFactory).register(staffList);
     }
 
     function StaffRequestNameCorrection() external onlyStaff {
@@ -145,9 +148,9 @@ contract Attendify {
     ) external onlyModerator {
         uint staffLength = _staffList.length;
         for (uint i; i < staffLength; i++) {
-            if (requestNameCorrection[_staffList[i]] == true) {
+            if (requestNameCorrection[_staffList[i]._address] == true) {
                 mentorsData[_staffList[i]._address] = _staffList[i];
-                requestNameCorrection[_staffList[i]] = false;
+                requestNameCorrection[_staffList[i]._address] = false;
             }
         }
     }
@@ -155,7 +158,7 @@ contract Attendify {
     // @dev: Function to register students to be called only by the moderator
     // @params: _studentList: An array of structs(individuals) consisting of name and wallet address of students.
     function registerStudents(
-        individual[] memory _studentList
+        individual[] calldata _studentList
     ) external onlyModerator {
         uint studentLength = _studentList.length;
         for (uint i; i < studentLength; i++) {
@@ -165,7 +168,7 @@ contract Attendify {
             isStudent[_studentList[i]._address] = true;
         }
         // UCHE
-        IAttendify(AttendifyContract).register(_studentList);
+        IFACTORY(organisationFactory).register(_studentList);
     }
 
     function StudentsRequestNameCorrection() external onlyStudents {
@@ -179,9 +182,9 @@ contract Attendify {
     ) external onlyModerator {
         uint studentLength = _studentList.length;
         for (uint i; i < studentLength; i++) {
-            if (requestNameCorrection[_studentList[i]] == true) {
+            if (requestNameCorrection[_studentList[i]._address] == true) {
                 studentsData[_studentList[i]._address] = _studentList[i];
-                requestNameCorrection[_studentList[i]] = false;
+                requestNameCorrection[_studentList[i]._address] = false;
             }
         }
     }
@@ -192,8 +195,8 @@ contract Attendify {
     // @params:  _topic: Topic covered for that particular day, its recorded so as to be displayed on students dashboard.
     function createAttendance(
         uint _lectureId,
-        bytes _uri,
-        string _topic
+        string calldata _uri,
+        string calldata _topic
     ) external onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == true) revert lecture_id_already_used();
         lectureIdUsed[_lectureId] = true;
@@ -204,10 +207,10 @@ contract Attendify {
         moderatorsTopic[msg.sender].push(_lectureId);
 
         // NONSO GENESIS
-        IERC1155(NftContract).setDayUri(_lectureId, _uri);
+        INFT(NftContract).setDayUri(_lectureId, _uri);
     }
 
-    function editTopic(uint _lectureId, string _topic) external {
+    function editTopic(uint _lectureId, string calldata _topic) external {
         if (msg.sender != lectureInstance[_lectureId].mentorOnDuty)
             revert not_Autorized_Caller();
         if (lectureInstance[_lectureId].attendanceStartTime != 0)
@@ -220,7 +223,7 @@ contract Attendify {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         if (lectureInstance[_lectureId].status == false)
             revert Lecture_id_closed();
-        if (IndividualAttendanceRecord[msg.sender][_lectureId] = true)
+        if (IndividualAttendanceRecord[msg.sender][_lectureId] == true)
             revert Already_Signed_Attendance_For_Id();
         if (lectureInstance[_lectureId].attendanceStartTime == 0) {
             lectureInstance[_lectureId].attendanceStartTime = block.timestamp;
@@ -235,15 +238,15 @@ contract Attendify {
         classesAttended[msg.sender].push(_lectureId);
 
         // NONSO GENESIS
-        IERC1155(NftContract).mint(msg.sender, _lectureId, 1);
+        INFT(NftContract).mint(msg.sender, _lectureId, 1);
     }
 
-// @dev Function for mentors to hand over to the next mentor to take the class
-    function mentorHandover(uint _lectureId) external  onlyMentorOnDuty {
-        if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
-        mentorOnDuty = msg.sender;
+    // @dev Function for mentors to hand over to the next mentor to take the class
 
-        emit Handover(msg.sender, _lectureId, block.timestamp);
+    function mentorHandover(address newMentor) external {
+        if (msg.sender != mentorOnDuty) revert not_Autorized_Caller();
+        mentorOnDuty = newMentor;
+        emit Handover(msg.sender, newMentor);
     }
 
     function openAttendance(uint _lectureId) external onlyMentorOnDuty {
@@ -276,16 +279,16 @@ contract Attendify {
             students[indexInStudentsArray[studentsToRevoke[i]]] = students[
                 students.length - 1
             ];
-            students.pop;
+            students.pop();
             isStudent[studentsToRevoke[i]] = false;
         }
 
         // UCHE
-        IAttendify(AttendifyContract).revoke(studentsToRevoke);
+        IFACTORY(organisationFactory).revoke(studentsToRevoke);
     }
 
     //VIEW FUNCTION
-    function liststudents() external view returns (address[]) {
+    function liststudents() external view returns (address[] memory) {
         return students;
     }
 
@@ -295,7 +298,7 @@ contract Attendify {
 
     function getStudentName(
         address _student
-    ) external view returns (string name) {
+    ) external view returns (string memory name) {
         if (isStudent[_student] == false) revert not_valid_student();
         return studentsData[_student]._name;
     }
@@ -310,41 +313,57 @@ contract Attendify {
 
     function listClassesAttended(
         address _student
-    ) external view returns (uint[]) {
+    ) external view returns (uint[] memory) {
         if (isStudent[_student] == false) revert not_valid_student();
         return classesAttended[_student];
     }
 
-    function getLectureIds() external view returns (uint[]) {
+    function getLectureIds() external view returns (uint[] memory) {
         return LectureIdCollection;
     }
 
     function getLectureData(
         uint _lectureId
-    ) external view returns (lectureData) {
+    ) external view returns (lectureData memory) {
         if (lectureIdUsed[_lectureId] == false) revert not_valid_lecture_id();
         return lectureInstance[_lectureId];
     }
 
-    function listModerators() external view returns (address[]) {
-        return moderator;
+    function listMentors() external view returns (address[] memory) {
+        return mentors;
     }
 
-    function VerifyModerator(address _moderator) external view returns (bool) {
-        return isStaff[_moderator];
+    function VerifyMentor(address _mentor) external view returns (bool) {
+        return isStaff[_mentor];
     }
 
-    function getModeratorName(
-        address _moderator
-    ) external view returns (string name) {
-        if (isStaff[_moderator] == false) revert not_valid_Moderator();
-        return mentorsData[_moderator]._name;
+    function getMentorsName(
+        address _Mentor
+    ) external view returns (string memory name) {
+        if (isStaff[_Mentor] == false) revert not_valid_Moderator();
+        return mentorsData[_Mentor]._name;
     }
 
     function getClassesTaugth(
-        address _moderator
-    ) external view returns (uint[]) {
-        if (isStaff[_moderator] == false) revert not_valid_Moderator();
-        return moderatorsTopic[_moderator];
+        address _Mentor
+    ) external view returns (uint[] memory) {
+        if (isStaff[_Mentor] == false) revert not_valid_Moderator();
+        return moderatorsTopic[_Mentor];
+    }
+
+    function getMentorOnDuty() external view returns (address) {
+        return mentorOnDuty;
+    }
+
+    function getModerator() external view returns (address) {
+        return moderator;
+    }
+
+    function getOrganizationName() external view returns (string memory) {
+        return organization;
+    }
+
+    function getCohortName() external view returns (string memory) {
+        return cohort;
     }
 }
