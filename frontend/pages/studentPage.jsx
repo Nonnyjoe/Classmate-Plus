@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const Students = () => {
+const StudentPage = () => {
   return (
     <div>
       <div>
@@ -55,4 +55,4 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default StudentPage;
