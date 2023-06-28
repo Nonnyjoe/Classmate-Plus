@@ -6,12 +6,52 @@ import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
 import { toast } from "react-toastify";
+import main from '../components/upload.mjs';
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import ChildABI from '../../../utils/childABI.json';
+import FactoryABI from '../../../utils/factoryABI.json';
+import contractAddress from '../../../utils/contractAddress.js';
 
 const Attendance = () => {
   const [modal, setModal] = useState(false);
   const [image, setImage] = useState();
   const [id, setId] = useState();
-  const [enftName, setEnftName] = useState();
+  const [ uri, setUri ] = useState();
+  const [topic, setTopic] = useState();
+
+  const { config: config1 } = usePrepareContractWrite({
+    address: contractAddress,
+    abi: FactoryABI,
+    functionName: 'createAttendance',
+    args: [
+      id,
+      uri,
+      topic
+    ],
+  })
+
+  const {
+    data: createAttendanceData,
+    isLoading: createAttendanceIsLoading,
+    write: create,
+  } = useContractWrite(config1);
+
+  const {
+    data: createwaitData,
+    isLoading: createwaitIsLoading,
+    isError,
+    isSuccess,
+  } = useWaitForTransaction({
+    hash: createAttendanceData?.hash,
+
+    onSuccess: () => {
+      toast.success('Attendance created successfully');
+    },
+
+    onError(error) {
+      toast.error('Create attendance error: ', error);
+    },
+  });
 
   const handleClose = () => {
     //alert('closing');
@@ -22,10 +62,34 @@ const Attendance = () => {
     setModal(false);
   };
 
-  const handleSubmit = () => {
-    toast.success("Submitted");
-    handleClose();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const result = await main(
+      image,
+      id,
+      topic
+    );
+
+    console.log(result);
+    setId(result.data.id);
+    setUri(result.ipnft);
+    setTopic(result.data.topic);
+
+    if (result) {
+      toast.success("Submitted on-chain");
+      handleClose();
+    }
+
+    if(create && typeof create === 'function') {
+      try {
+        await create();
+      } catch (error) {
+        console.error('Create function error ', error);
+        toast.error('Failed to create attendance');
+      }
+    }
   };
+  
 
   return (
     <div>
@@ -82,7 +146,7 @@ const Attendance = () => {
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
                 type="text"
                 placeholder="Enter topic taught today"
-                onChange={(e) => setEnftName(e.target.value)}
+                onChange={(e) => setTopic(e.target.value)}
               />
             </label>
           </form>
