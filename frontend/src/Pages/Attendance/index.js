@@ -16,7 +16,27 @@ const Attendance = () => {
   const [modal, setModal] = useState(false);
   const [image, setImage] = useState();
   const [id, setId] = useState();
-  const [enftName, setEnftName] = useState();
+  const [ uri, setUri ] = useState();
+  const [topic, setTopic] = useState();
+
+  const { config: config1 } = usePrepareContractWrite({
+    address: contractAddress,
+    abi: FactoryABI,
+    functionName: 'createAttendance',
+    args: [
+      id,
+      uri,
+      topic
+    ],
+  })
+
+  const {
+    data: createAttendanceData,
+    isLoading: createAttendanceIsLoading,
+    write: create,
+  } = useContractWrite(config1);
+
+  
 
   const handleClose = () => {
     //alert('closing');
