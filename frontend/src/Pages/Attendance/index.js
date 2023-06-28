@@ -36,7 +36,22 @@ const Attendance = () => {
     write: create,
   } = useContractWrite(config1);
 
-  
+  const {
+    data: createwaitData,
+    isLoading: createwaitIsLoading,
+    isError,
+    isSuccess,
+  } = useWaitForTransaction({
+    hash: createAttendanceData?.hash,
+
+    onSuccess: () => {
+      toast.success('Attendance created successfully');
+    },
+
+    onError(error) {
+      toast.error('Create attendance error: ', error);
+    },
+  });
 
   const handleClose = () => {
     //alert('closing');
@@ -47,10 +62,34 @@ const Attendance = () => {
     setModal(false);
   };
 
-  const handleSubmit = () => {
-    toast.success("Submitted");
-    handleClose();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const result = await main(
+      image,
+      id,
+      topic
+    );
+
+    console.log(result);
+    setId(result.data.id);
+    setUri(result.ipnft);
+    setTopic(result.data.topic);
+
+    if (result) {
+      toast.success("Submitted on-chain");
+      handleClose();
+    }
+
+    if(create && typeof create === 'function') {
+      try {
+        await create();
+      } catch (error) {
+        console.error('Create function error ', error);
+        toast.error('Failed to create attendance');
+      }
+    }
   };
+  
 
   return (
     <div>
@@ -107,7 +146,7 @@ const Attendance = () => {
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
                 type="text"
                 placeholder="Enter topic taught today"
-                onChange={(e) => setEnftName(e.target.value)}
+                onChange={(e) => setTopic(e.target.value)}
               />
             </label>
           </form>
