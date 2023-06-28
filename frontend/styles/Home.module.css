@@ -2,6 +2,57 @@
   padding: 0 2rem;
 }
 
+.icontainer {
+  max-width: 1366px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hcontainer {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+.hitem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.htitle {
+  font-size: 72px;
+  background: linear-gradient(to bottom, #172554, #bbb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.himg {
+  width: 100%;
+  height: 500px;
+  object-fit: contain;
+  /* animation: move 3s infinite ease alternate; */
+}
+
+@keyframes hmove {
+  from {
+    transform: translateY(-10px);
+  }
+  to {
+    transform: translateY(10px);
+  }
+}
+
+.hdesc {
+  font-size: 24px;
+  font-weight: 300;
+}
+
 .main {
   min-height: 100vh;
   padding: 4rem 0;

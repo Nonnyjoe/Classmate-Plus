@@ -1,0 +1,25 @@
+.content{
+    width: calc(100% - 300px);
+    position: relative;
+    left: 300px;
+  }
+  
+  .card-container{
+    width: 400px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .date-placeholder{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .card-container{
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }
