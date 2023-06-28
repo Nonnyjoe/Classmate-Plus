@@ -6,6 +6,11 @@ import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
 import { toast } from "react-toastify";
+import main from '../components/upload.mjs';
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import ChildABI from '../../../utils/childABI.json';
+import FactoryABI from '../../../utils/factoryABI.json';
+import contractAddress from '../../../utils/contractAddress.js';
 
 const Attendance = () => {
   const [modal, setModal] = useState(false);
