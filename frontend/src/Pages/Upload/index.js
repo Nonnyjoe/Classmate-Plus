@@ -1,20 +1,36 @@
 import { useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
-//import ipfsClient from "ipfs-http-client";
-
-import * as fs from "fs";
-import * as path from "path";
-import { parse } from 'csv-parse';
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import FactoryABI from '../../../utils/factoryABI.json';
+import contractAddress from '../../../utils/contractAddress.js';
 
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  // const ipfs = ipfsClient({
-  //   host: "ipfs.infura.io",
-  //   port: "5001",
-  //   protocol: "https",
-  // });
+  const [dataArray, setDataArray] = useState(null);
+
+  const {config: UploadStudentsConfig} = usePrepareContractWrite({
+    address: contractAddress,
+    abi: FactoryABI,
+    functionName: "registerStudents",
+    args: [dataArray]
+  })
+
+  const {data: UploadStudentsData, write: UploadStudents} = useContractWrite(UploadStudentsConfig);
+
+
+
+  const {config: UploadMentorsConfig} = usePrepareContractWrite({
+    address: contractAddress,
+    abi: FactoryABI,
+    functionName: 'registerStaffs',
+    args: [dataArray],
+  })
+
+  const {data: UploadMentorsData, write: UploadMentors} = useContractWrite(UploadMentorsConfig);
+
+
   
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -24,46 +40,48 @@ const UploadForm = () => {
     reader.onload = (e) => {
       let content = e.target.result;
       const lines = content.replace(/[\r\n]+/g, '\n').split('\n');
-      lines.forEach(line => {
-        let token = line.split(', ');
-        console.log(token[0]);
-      });
+      let students_array = [];
+
+      for (let i = 0; i < lines.length - 1; i++) {
+        const line = lines[i];
+        let tokens = line.split(', ');
+
+        let student_instance = {
+          _name: tokens[0],
+          _address: tokens[1]
+        }
+        students_array.push(student_instance);
+      }
+
+      setDataArray(students_array)
+      console.log(students_array);
     }
-
-    reader.readAsText(file);
-
-      
-
-
 
   };
 
-  const handleFileUpload = async () => {
+
+
+  const handleFileUpload = async (studentUpload) => {
     if (!selectedFile) return;
 
     try {
-      const added = await ipfs.add(selectedFile);
-      const hash = added.cid.toString();
 
       // Do something with the uploaded file hash (e.g., store it in a database)
-    
-
-
-
-
-
-
-
-
-
-
+      if (studentUpload) {
+        console.log(dataArray);
+        UploadStudents?.();
+        console.log("Student List updated");
+      } else {
+        console.log(dataArray);
+        UploadMentors?.()
+        console.log("Mentors List updated");
+      }
 
       // Reset the selected file
       setSelectedFile(null);
 
-      console.log("File uploaded successfully. IPFS hash:", hash);
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error uploading file");
     }
   };
 
@@ -113,13 +131,13 @@ const UploadForm = () => {
           </label>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={handleFileUpload}
+            onClick={() => handleFileUpload(true)}
           >
             Upload Student List
           </button>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={handleFileUpload}
+            onClick={() => handleFileUpload(false)}
           >
             Upload Mentors List
           </button>
