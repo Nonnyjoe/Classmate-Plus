@@ -60,7 +60,23 @@ contract organisation {
     mapping(address => individual) mentorsData;
 
     // EVENTS
+    event staffsRegistered(uint noOfStaffs);
+    event nameChangeRequested(address changer);
+    event StaffNamesChanged(uint noOfStaffs);
+    event studentsRegistered(uint noOfStudents);
+    event studentNamesChanged(uint noOfStudents);
+    event attendanceCreated(
+        uint indexed lectureId,
+        string indexed uri,
+        string topic,
+        address indexed staff
+    );
+    event topicEditted(uint Id, string oldTopic, string newTopic);
+    event AttendanceSigned(uint Id, address signer);
     event Handover(address oldMentor, address newMentor);
+    event attendanceOpened(uint Id, address mentor);
+    event attendanceClosed(uint Id, address mentor);
+    event studentsEvicted(uint noOfStudents);
 
     // MODIFIERS
     modifier onlyModerator() {
@@ -135,12 +151,14 @@ contract organisation {
         }
         // UCHE
         IFACTORY(organisationFactory).register(staffList);
+        emit staffsRegistered(staffList.length);
     }
 
     function StaffRequestNameCorrection() external onlyStaff {
         if (requestNameCorrection[msg.sender] == true)
             revert already_requested();
         requestNameCorrection[msg.sender] == true;
+        emit nameChangeRequested(msg.sender);
     }
 
     function StaffNameCorrection(
@@ -153,6 +171,7 @@ contract organisation {
                 requestNameCorrection[_staffList[i]._address] = false;
             }
         }
+        emit StaffNamesChanged(_staffList.length);
     }
 
     // @dev: Function to register students to be called only by the moderator
@@ -169,12 +188,14 @@ contract organisation {
         }
         // UCHE
         IFACTORY(organisationFactory).register(_studentList);
+        emit studentsRegistered(_studentList.length);
     }
 
     function StudentsRequestNameCorrection() external onlyStudents {
         if (requestNameCorrection[msg.sender] == true)
             revert already_requested();
         requestNameCorrection[msg.sender] == true;
+        emit nameChangeRequested(msg.sender);
     }
 
     function editStudentName(
@@ -187,6 +208,7 @@ contract organisation {
                 requestNameCorrection[_studentList[i]._address] = false;
             }
         }
+        emit studentNamesChanged(_studentList.length);
     }
 
     // @dev: Function to Create Id for a particular Lecture Day, this Id is to serve as Nft Id. Only callable by mentor on duty.
@@ -208,6 +230,7 @@ contract organisation {
 
         // NONSO GENESIS
         INFT(NftContract).setDayUri(_lectureId, _uri);
+        emit attendanceCreated(_lectureId, _uri, _topic, msg.sender);
     }
 
     function editTopic(uint _lectureId, string calldata _topic) external {
@@ -215,8 +238,9 @@ contract organisation {
             revert not_Autorized_Caller();
         if (lectureInstance[_lectureId].attendanceStartTime != 0)
             revert Attendance_compilation_started();
-
+        string memory oldTopic = lectureInstance[_lectureId].topic;
         lectureInstance[_lectureId].topic = _topic;
+        emit topicEditted(_lectureId, oldTopic, _topic);
     }
 
     function signAttendance(uint _lectureId) external onlyStudents {
@@ -239,6 +263,7 @@ contract organisation {
 
         // NONSO GENESIS
         INFT(NftContract).mint(msg.sender, _lectureId, 1);
+        emit AttendanceSigned(_lectureId, msg.sender);
     }
 
     // @dev Function for mentors to hand over to the next mentor to take the class
@@ -257,6 +282,7 @@ contract organisation {
             revert not_Autorized_Caller();
 
         lectureInstance[_lectureId].status = true;
+        emit attendanceOpened(_lectureId, msg.sender);
     }
 
     function closeAttendance(uint _lectureId) external onlyMentorOnDuty {
@@ -267,6 +293,7 @@ contract organisation {
             revert not_Autorized_Caller();
 
         lectureInstance[_lectureId].status = false;
+        emit attendanceClosed(_lectureId, msg.sender);
     }
 
     function EvictStudents(
@@ -285,6 +312,7 @@ contract organisation {
 
         // UCHE
         IFACTORY(organisationFactory).revoke(studentsToRevoke);
+        emit studentsEvicted(studentsToRevoke.length);
     }
 
     //VIEW FUNCTION
