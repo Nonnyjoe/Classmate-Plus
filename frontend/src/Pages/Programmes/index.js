@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 
 const Programmes = () => {
   const [modal, setModal] = useState(false);
+  const [schoolName, setSchoolName] = useState();
+  const [programName, setProgramName] = useState();
 
   const handleClose = () => {
     //alert('closing');
@@ -61,7 +63,7 @@ const Programmes = () => {
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
                 type="text"
                 placeholder="Institution Name"
-                onChange={(e) => setId(e.target.value)}
+                onChange={(e) => setSchoolName(e.target.value)}
               />
             </label>
             <label>
@@ -71,7 +73,7 @@ const Programmes = () => {
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
                 type="text"
                 placeholder="Programme Name"
-                onChange={(e) => setEnftName(e.target.value)}
+                onChange={(e) => setProgramName(e.target.value)}
               />
             </label>
           </form>
