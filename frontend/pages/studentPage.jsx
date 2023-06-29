@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ChildABI from '../utils/childABI.json';
-// import FactoryABI from '../utils/factoryABI.json';
 import contractAddress from '../utils/contractAddr';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 
 
 const StudentPage = () => {
+  const [ id, setId ] = useState(0);
 
 
   return (

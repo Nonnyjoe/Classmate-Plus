@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
 import CardReport from "../../ui-components/CardReport";
@@ -6,7 +6,7 @@ import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
 import { toast } from "react-toastify";
-import main from '../components/upload.mjs';
+import main from '../../../components/upload.mjs';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import ChildABI from '../../../utils/childABI.json';
 import FactoryABI from '../../../utils/factoryABI.json';
@@ -14,10 +14,11 @@ import contractAddress from '../../../utils/contractAddress.js';
 
 const Attendance = () => {
   const [modal, setModal] = useState(false);
-  const [image, setImage] = useState();
-  const [id, setId] = useState();
-  const [ uri, setUri ] = useState();
-  const [topic, setTopic] = useState();
+  const [image, setImage] = useState("");
+  const [id, setId] = useState(0);
+  const [ uri, setUri ] = useState("");
+  const [topic, setTopic] = useState("");
+  const [ desc, setDesc ] = useState("");
 
   const { config: config1 } = usePrepareContractWrite({
     address: contractAddress,
@@ -67,13 +68,15 @@ const Attendance = () => {
     const result = await main(
       image,
       id,
-      topic
+      topic,
+      desc
     );
 
     console.log(result);
     setId(result.data.id);
     setUri(result.ipnft);
-    setTopic(result.data.topic);
+    setTopic(result.data.name);
+    setDesc(result.data.description);
 
     if (result) {
       toast.success("Submitted on-chain");
@@ -89,7 +92,17 @@ const Attendance = () => {
       }
     }
   };
-  
+
+  // useEffect(() => {
+  //   if(isError) {
+  //     toast.error('Tx error');
+  //   }
+
+  //   if(isSuccess) {
+  //     setId[0];
+
+  //   }
+  // })
 
   return (
     <div>
