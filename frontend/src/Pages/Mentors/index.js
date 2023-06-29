@@ -16,7 +16,9 @@ import {
 } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ChildAddr } from "../../../utils/contractAddress";
+import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
+import FACABI from "../../../utils/factoryABI.json";
 import { MdDelete } from "react-icons/md";
 
 const Mentors = () => {
@@ -25,6 +27,9 @@ const Mentors = () => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [schoolName, setSchoolName] = useState();
+  const [programName, setProgramName] = useState();
+  const [programAddress, setprogramAddress] = useState();
 
   /// FETCH THE LIST OF ALL STAFFS
   useContractRead({
