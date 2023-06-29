@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+// import Navbar from "../components/Navbar";
+// import Footer from "../components/Footer";
 import ChildABI from '../utils/childABI.json';
 import contractAddress from '../utils/contractAddr';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
