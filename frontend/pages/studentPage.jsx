@@ -4,10 +4,43 @@ import Footer from "../components/Footer";
 import ChildABI from '../utils/childABI.json';
 import contractAddress from '../utils/contractAddr';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { toast } from "react-toastify";
 
 
 const StudentPage = () => {
   const [ id, setId ] = useState(0);
+
+  const { config: config1 } = usePrepareContractWrite({
+    address: contractAddress,
+    abi: ChildABI,
+    functionName: 'signAttendance',
+    args: [
+      id
+    ],
+  });
+
+  const {
+    data: signAttendanceData,
+    isLoading: signAttendanceIsLoading,
+    write: sign,
+  } = useContractWrite(config1);
+
+  const {
+    data: signAttendanceWaitData,
+    isLoading: signAttendanceWaitDataIsLoading,
+    isError,
+    isSuccess,
+  } = useWaitForTransaction({
+    hash: signAttendanceData?.hash,
+
+    onSuccess: () => {
+      toast.success('Attendance signed successfully');
+    },
+
+    onError(error) {
+      toast.error('Sign attendance error: ', error);
+    },
+  })
 
 
   return (
