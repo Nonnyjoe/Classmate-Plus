@@ -3,6 +3,11 @@ import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
 //import ipfsClient from "ipfs-http-client";
 
+import * as fs from "fs";
+import * as path from "path";
+import { parse } from 'csv-parse';
+
+
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   // const ipfs = ipfsClient({
@@ -10,10 +15,27 @@ const UploadForm = () => {
   //   port: "5001",
   //   protocol: "https",
   // });
-
+  
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      let content = e.target.result;
+      const lines = content.replace(/[\r\n]+/g, '\n').split('\n');
+      lines.forEach(line => {
+        let token = line.split(', ');
+        console.log(token[0]);
+      });
+    }
+
+    reader.readAsText(file);
+
+      
+
+
+
   };
 
   const handleFileUpload = async () => {
@@ -24,6 +46,17 @@ const UploadForm = () => {
       const hash = added.cid.toString();
 
       // Do something with the uploaded file hash (e.g., store it in a database)
+    
+
+
+
+
+
+
+
+
+
+
 
       // Reset the selected file
       setSelectedFile(null);
@@ -82,7 +115,13 @@ const UploadForm = () => {
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
             onClick={handleFileUpload}
           >
-            Upload
+            Upload Student List
+          </button>
+          <button
+            className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
+            onClick={handleFileUpload}
+          >
+            Upload Mentors List
           </button>
         </div>
       </Section>
