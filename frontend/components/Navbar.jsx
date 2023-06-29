@@ -7,7 +7,7 @@ const Navbar = () => (
       <div>
         <a href="/">
           <span className="font-bold text-xl text-[#fff] tracking-tight">
-            <span className="text-5xl">.</span>AttendPlus+
+            Classmate+
           </span>
         </a>
       </div>
