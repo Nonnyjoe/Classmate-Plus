@@ -30,7 +30,7 @@ const Home: NextPage = () => {
         <p className={styles.hdesc}>
         Unlock the Power of Seamless Student Management and Attendance: Simplify Administrative Tasks, Boost Productivity, and Foster Academic Success
         </p>
-        <Button url="/role" text="Launch App"/>
+        <Button url="/programmes" text="Launch App"/>
       </div>
       <div className={styles.hitem}>
         <Image src={Hero} alt="" className={styles.himg} />
