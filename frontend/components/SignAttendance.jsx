@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import Navbar from "../components/Navbar";
 // import Footer from "../components/Footer";
 import ChildABI from '../utils/childABI.json';
-import contractAddress from '../utils/contractAddr';
+import contractAddress from '../utils/contractAddress';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { toast } from "react-toastify";
 
@@ -44,7 +44,7 @@ const SignAttendance = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    sign();
+    sign?.();
   }
 
   return (

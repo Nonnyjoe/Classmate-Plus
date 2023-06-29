@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import main from '../../../components/upload.mjs';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import ChildABI from '../../../utils/childABI.json';
-import FactoryABI from '../../../utils/factoryABI.json';
+import childABI from '../../../utils/childABI.json';
 import contractAddress from '../../../utils/contractAddress.js';
 
 const Attendance = () => {
@@ -22,7 +22,7 @@ const Attendance = () => {
 
   const { config: config1 } = usePrepareContractWrite({
     address: contractAddress,
-    abi: FactoryABI,
+    abi: childABI,
     functionName: 'createAttendance',
     args: [
       id,
@@ -79,7 +79,7 @@ const Attendance = () => {
     setDesc(result.data.description);
 
     if (result) {
-      toast.success("Submitted on-chain");
+      toast.success("Lecture details uploaded successfully");
       handleClose();
     }
 

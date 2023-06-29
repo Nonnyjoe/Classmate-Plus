@@ -10,11 +10,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mainnet,
+    sepolia,
     polygon,
     goerli,
-    sepolia,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
+    mainnet,
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
   ],
   [publicProvider()]
 );
