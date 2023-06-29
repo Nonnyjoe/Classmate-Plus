@@ -7,12 +7,34 @@ import { TiDocumentDelete } from "react-icons/ti";
 import { BiSearchAlt } from "react-icons/bi";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
+import {
+  useConnect,
+  useContractRead,
+  useContractReads,
+  useAccount,
+  useContractWrite,
+  useWaitForTransaction,
+  wagmi,
+} from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { ChildAddr } from "../../../utils/contractAddress";
+import CHILDABI from "../../../utils/childABI.json";
 
 const Students = () => {
   const [query, setQuery] = useState("");
   const [posts, setPosts] = useState([]);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
+
+  /// FETCH THE LIST OF ALL STAFFS
+  useContractRead({
+    address: ChildAddr(),
+    abi: CHILDABI,
+    functionName: "listMentors",
+    onSuccess(data) {
+      console.log(data);
+    },
+  });
 
   useEffect(() => {
     const getPosts = async () => {
