@@ -38,7 +38,7 @@ const Navbar = () => {
             {link.title}
           </Link>
         ))}
-        <Button url="/role" text="Launch App" />
+        <Button url="/programmes" text="Launch App" />
       </div>
     </div>
   );
