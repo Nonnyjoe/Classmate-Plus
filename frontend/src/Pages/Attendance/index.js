@@ -6,6 +6,8 @@ import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
 import { toast } from "react-toastify";
+import FACABI from "../../../utils/factoryABI.json";
+
 import main from "../../../components/upload.mjs";
 import {
   useContractWrite,
