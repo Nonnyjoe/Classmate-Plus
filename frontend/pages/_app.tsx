@@ -6,6 +6,7 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { goerli, mainnet,sepolia, polygon } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { ToastContainer } from 'react-toastify';
+import { RecoilRoot } from 'recoil';
 import 'react-toastify/dist/ReactToastify.css';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -34,6 +35,7 @@ const wagmiConfig = createConfig({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
+    <RecoilRoot>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains} modalSize='compact'>
             <Component {...pageProps} />
@@ -51,6 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             />
           </RainbowKitProvider>
         </WagmiConfig>
+        </RecoilRoot>
       
   );
 }
