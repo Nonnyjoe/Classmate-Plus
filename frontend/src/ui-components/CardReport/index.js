@@ -7,12 +7,13 @@ import Modal from "../Modal";
 import Toggle from "../Toggle";
 import { toast } from "react-toastify";
 import { useAccount, useContractRead, useContractReads } from "wagmi";
-import contractAddress from "../../../utils/contractAddress.js";
+import { FacoryAddr } from "../../../utils/contractAddress.js";
 import FactoryABI from "../../../utils/factoryABI.json";
 
 const CardReport = ({ image }) => {
   const [modal, setModal] = useState(false);
   const [classesTaught, setClassesTaught] = useState([]);
+  const [lectureId, setLectureId] = useState([]);
 
   const handleClose = () => {
     //alert('closing');
@@ -33,7 +34,7 @@ const CardReport = ({ image }) => {
 
 
   const {data: classesTaughtData} = useContractRead({
-    address: contractAddress,
+    address: FacoryAddr(),
     abi: FactoryABI,
     functionName: "getClassesTaugth",
     args: [address]
@@ -41,10 +42,10 @@ const CardReport = ({ image }) => {
 
 
   const {data: lectureData} = useContractRead({
-    address: contractAddress,
+    address: FacoryAddr(),
     abi: FactoryABI,
     functionName: "getLectureData",
-    args: [lectureId]
+    args: [lectureId ?? 0]
   })
 
 
@@ -59,7 +60,7 @@ const CardReport = ({ image }) => {
     <div>
 
       {
-        classesTaught.map((class_taught) => {
+        classesTaught && classesTaught?.map((class_taught) => {
           <Card
             heading="Topic: Topic taught"
             subHeading="Description: description of what was taught"

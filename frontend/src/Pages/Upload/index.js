@@ -2,18 +2,19 @@ import { useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
-import FactoryABI from '../../../utils/factoryABI.json';
-import contractAddress from '../../../utils/contractAddress.js';
+import ChildABI from '../../../utils/childABI.json';
+import {FacoryAddr} from '../../../utils/contractAddress';
 
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataArray, setDataArray] = useState([]);
+  const [studentUpload, setStudentUpload] = useState(false);
 
 
   const {config: UploadStudentsConfig} = usePrepareContractWrite({
-    address: contractAddress,
-    abi: FactoryABI,
+    address: FacoryAddr(),
+    abi: ChildABI,
     functionName: "registerStudents",
     args: [dataArray]
   })
@@ -23,8 +24,8 @@ const UploadForm = () => {
 
 
   const {config: UploadMentorsConfig} = usePrepareContractWrite({
-    address: contractAddress,
-    abi: FactoryABI,
+    address: FacoryAddr(),
+    abi: ChildABI,
     functionName: 'registerStaffs',
     args: [dataArray],
   })
@@ -33,11 +34,9 @@ const UploadForm = () => {
 
 
   
-  const handleFileInputChange = (event) => {
-    event.preventDefault();
-    const file = event.target.files[0];
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
     setSelectedFile(file);
-    
     const reader = new FileReader();
     reader.onload = (event) => {
       let content = event.target.result;
@@ -59,25 +58,27 @@ const UploadForm = () => {
       console.log(students_array);
     }
 
+    reader.readAsText(file);
+    console.log(dataArray);
+
   };
 
 
 
-  const handleFileUpload = async (event, studentUpload) => {
-    event.preventDefault();
 
-    if (!selectedFile) return;
+  const handleFileUpload = () => {
 
+    if (selectedFile == null) return;
+    
     try {
 
-      // Do something with the uploaded file hash (e.g., store it in a database)
       if (studentUpload) {
         console.log(dataArray);
-        UploadStudents?.();
+        // UploadStudents?.();
         console.log("Student List updated");
       } else {
         console.log(dataArray);
-        UploadMentors?.()
+        // UploadMentors?.()
         console.log("Mentors List updated");
       }
 
@@ -130,21 +131,36 @@ const UploadForm = () => {
               id="dropzone-file"
               type="file"
               className="hidden"
-              onChange={(e) => handleFileInputChange(e)}
+              onChange={handleFileInputChange}
             />
           </label>
+          <div className="relative flex flex-col items-center justify-center overflow-hidden">
+            <div className="flex">
+              <span className="ml-2 text-sm font-medium text-gray-900">Mentors Upload</span>
+              <label className="inline-flex relative items-center mr-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={studentUpload}
+                  readOnly
+                />
+                <div
+                  onClick={() => {
+                    setStudentUpload(!studentUpload);
+                  }}
+                  className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-blue-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                ></div>
+                <span className="ml-2 text-sm font-medium text-gray-900">Student Upload</span>
+              </label>
+            </div>
+          </div>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={(e) => handleFileUpload(e, true)}
+            onClick={(e) => handleFileUpload(e)}
           >
-            Upload Student List
+            Upload List
           </button>
-          <button
-            className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={(e) => handleFileUpload(e, false)}
-          >
-            Upload Mentors List
-          </button>
+
         </div>
       </Section>
     </div>
