@@ -8,7 +8,8 @@ import contractAddress from '../../../utils/contractAddress.js';
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [dataArray, setDataArray] = useState(null);
+  const [dataArray, setDataArray] = useState([]);
+
 
   const {config: UploadStudentsConfig} = usePrepareContractWrite({
     address: contractAddress,
@@ -33,12 +34,13 @@ const UploadForm = () => {
 
   
   const handleFileInputChange = (event) => {
+    event.preventDefault();
     const file = event.target.files[0];
     setSelectedFile(file);
-
+    
     const reader = new FileReader();
-    reader.onload = (e) => {
-      let content = e.target.result;
+    reader.onload = (event) => {
+      let content = event.target.result;
       const lines = content.replace(/[\r\n]+/g, '\n').split('\n');
       let students_array = [];
 
@@ -61,7 +63,9 @@ const UploadForm = () => {
 
 
 
-  const handleFileUpload = async (studentUpload) => {
+  const handleFileUpload = async (event, studentUpload) => {
+    event.preventDefault();
+
     if (!selectedFile) return;
 
     try {
@@ -126,18 +130,18 @@ const UploadForm = () => {
               id="dropzone-file"
               type="file"
               className="hidden"
-              onChange={handleFileInputChange}
+              onChange={(e) => handleFileInputChange(e)}
             />
           </label>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={() => handleFileUpload(true)}
+            onClick={(e) => handleFileUpload(e, true)}
           >
             Upload Student List
           </button>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={() => handleFileUpload(false)}
+            onClick={(e) => handleFileUpload(e, false)}
           >
             Upload Mentors List
           </button>
