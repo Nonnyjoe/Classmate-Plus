@@ -4,16 +4,19 @@ import Section from "../../ui-components/Section";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import ChildABI from '../../../utils/childABI.json';
 import {FacoryAddr} from '../../../utils/contractAddress';
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
 
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataArray, setDataArray] = useState([]);
   const [studentUpload, setStudentUpload] = useState(false);
+  const programmeAddress = useRecoilValue(addressState);
 
 
   const {config: UploadStudentsConfig} = usePrepareContractWrite({
-    address: FacoryAddr(),
+    address: programmeAddress,
     abi: ChildABI,
     functionName: "registerStudents",
     args: [dataArray]
@@ -24,7 +27,7 @@ const UploadForm = () => {
 
 
   const {config: UploadMentorsConfig} = usePrepareContractWrite({
-    address: FacoryAddr(),
+    address: programmeAddress,
     abi: ChildABI,
     functionName: 'registerStaffs',
     args: [dataArray],
@@ -74,11 +77,11 @@ const UploadForm = () => {
 
       if (studentUpload) {
         console.log(dataArray);
-        // UploadStudents?.();
+        UploadStudents?.();
         console.log("Student List updated");
       } else {
         console.log(dataArray);
-        // UploadMentors?.()
+        UploadMentors?.()
         console.log("Mentors List updated");
       }
 
@@ -160,6 +163,7 @@ const UploadForm = () => {
           >
             Upload List
           </button>
+          <div>This is the program address: {programmeAddress ?? 0}</div>
 
         </div>
       </Section>
