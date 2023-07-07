@@ -6,7 +6,7 @@ import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
 import { toast } from "react-toastify";
-import FACABI from "../../../utils/factoryABI.json";
+// import FACABI from "../../../utils/factoryABI.json";
 
 import main from "../../../components/upload.mjs";
 import {
@@ -18,6 +18,7 @@ import ChildABI from "../../../utils/childABI.json";
 import FactoryABI from "../../../utils/factoryABI.json";
 import { useRecoilValue } from "recoil";
 import { addressState } from "../../../atoms/addressAtom";
+import { FacoryAddr } from "../../../utils/contractAddress";
 
 const Attendance = () => {
   const [modal, setModal] = useState(false);
@@ -28,8 +29,8 @@ const Attendance = () => {
   const [desc, setDesc] = useState("");
 
   const { config: config1 } = usePrepareContractWrite({
-    address: contractAddress,
-    abi: FactoryABI,
+    address: FacoryAddr(),
+    abi: ChildABI,
     functionName: "createAttendance",
     args: [id, uri, topic],
   });

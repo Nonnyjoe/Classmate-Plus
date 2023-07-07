@@ -1,36 +1,95 @@
 import { useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
-//import ipfsClient from "ipfs-http-client";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import ChildABI from '../../../utils/childABI.json';
+import {FacoryAddr} from '../../../utils/contractAddress';
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
+
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  // const ipfs = ipfsClient({
-  //   host: "ipfs.infura.io",
-  //   port: "5001",
-  //   protocol: "https",
-  // });
+  const [dataArray, setDataArray] = useState([]);
+  const [studentUpload, setStudentUpload] = useState(false);
+  const programmeAddress = useRecoilValue(addressState);
 
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
+
+  const {config: UploadStudentsConfig} = usePrepareContractWrite({
+    address: programmeAddress,
+    abi: ChildABI,
+    functionName: "registerStudents",
+    args: [dataArray]
+  })
+
+  const {data: UploadStudentsData, write: UploadStudents} = useContractWrite(UploadStudentsConfig);
+
+
+
+  const {config: UploadMentorsConfig} = usePrepareContractWrite({
+    address: programmeAddress,
+    abi: ChildABI,
+    functionName: 'registerStaffs',
+    args: [dataArray],
+  })
+
+  const {data: UploadMentorsData, write: UploadMentors} = useContractWrite(UploadMentorsConfig);
+
+
+  
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
     setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      let content = event.target.result;
+      const lines = content.replace(/[\r\n]+/g, '\n').split('\n');
+      let students_array = [];
+
+      for (let i = 0; i < lines.length - 1; i++) {
+        const line = lines[i];
+        let tokens = line.split(', ');
+
+        let student_instance = {
+          _name: tokens[0],
+          _address: tokens[1]
+        }
+        students_array.push(student_instance);
+      }
+
+      setDataArray(students_array)
+      console.log(students_array);
+    }
+
+    reader.readAsText(file);
+    console.log(dataArray);
+
   };
 
-  const handleFileUpload = async () => {
-    if (!selectedFile) return;
 
+
+
+  const handleFileUpload = () => {
+
+    if (selectedFile == null) return;
+    
     try {
-      const added = await ipfs.add(selectedFile);
-      const hash = added.cid.toString();
 
-      // Do something with the uploaded file hash (e.g., store it in a database)
+      if (studentUpload) {
+        console.log(dataArray);
+        UploadStudents?.();
+        console.log("Student List updated");
+      } else {
+        console.log(dataArray);
+        UploadMentors?.()
+        console.log("Mentors List updated");
+      }
 
       // Reset the selected file
       setSelectedFile(null);
 
-      console.log("File uploaded successfully. IPFS hash:", hash);
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error uploading file");
     }
   };
 
@@ -78,12 +137,34 @@ const UploadForm = () => {
               onChange={handleFileInputChange}
             />
           </label>
+          <div className="relative flex flex-col items-center justify-center overflow-hidden">
+            <div className="flex">
+              <span className="ml-2 text-sm font-medium text-gray-900">Mentors Upload</span>
+              <label className="inline-flex relative items-center mr-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={studentUpload}
+                  readOnly
+                />
+                <div
+                  onClick={() => {
+                    setStudentUpload(!studentUpload);
+                  }}
+                  className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-blue-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                ></div>
+                <span className="ml-2 text-sm font-medium text-gray-900">Student Upload</span>
+              </label>
+            </div>
+          </div>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={handleFileUpload}
+            onClick={(e) => handleFileUpload(e)}
           >
-            Upload
+            Upload List
           </button>
+          <div>This is the program address: {programmeAddress ?? 0}</div>
+
         </div>
       </Section>
     </div>

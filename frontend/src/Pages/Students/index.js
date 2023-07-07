@@ -5,23 +5,62 @@ import Pagination from "../../components/Pagination";
 import { paginate } from "../../../utils/paginate";
 import HeaderSection from "../../ui-components/HeaderSection";
 import { MdDelete } from "react-icons/md";
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
+import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+import ChildAbi from "../../../utils/childABI.json";
 
 const Students = () => {
   const [query, setQuery] = useState("");
-  const [posts, setPosts] = useState([]);
+  const [students, setStudents] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [programAddress, setProgramAddress] = useState("") ;
+  
+  const PROGRAM_ADDR = useRecoilValue(addressState);
+
+  const { data: listStudentsData, isLoading: listStudentIsLoading } = useContractRead({
+    address: programAddress ?? '0x00',
+    abi: ChildAbi,
+    functionName: "liststudents",
+  })
+
+  const { config: deleteStudentsConfig } = usePrepareContractWrite({
+    address: programAddress ?? '0x00',
+    abi: ChildAbi,
+    functionName: "EvictStudents",
+    args: [selectedStudents]
+  })
+
+
+  const {data: deleteStudentsData, isLoading: deleteStudentsIsLoading, write: deleteStudentsWrite} = useContractWrite(deleteStudentsConfig)
+
+
+
+
+  // Fetches the name of the address passed
+  // const get_name = (addr) => {
+  //   const { data } = useContractRead({
+  //     address: programAddress,
+  //     abi: ChildAbi,
+  //     functionName: "getStudentName",
+  //     args: [addr ?? '0x00']
+  //   })
+
+  //   const contract = 
+  //   return data
+  // }
+
 
   useEffect(() => {
-    const getPosts = async () => {
-      const { data: res } = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
-      setPosts(res);
-    };
-    getPosts();
-  }, []);
+
+    setProgramAddress(PROGRAM_ADDR ?? '0x00')
+    setStudents(listStudentsData);
+    console.log(students);
+
+  }, [students, listStudentsData, programAddress]);
+  
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -31,20 +70,22 @@ const Students = () => {
   //   setPosts(posts.filter((p) => p.id !== post.id));
   // };
 
-  const handleCheckboxChange = (event, post) => {
+  const handleCheckboxChange = (event, student) => {
     const { checked } = event.target;
     if (checked) {
-      setSelectedStudents([...selectedStudents, post]);
+      setSelectedStudents([...selectedStudents, student]);
     } else {
-      setSelectedStudents(selectedStudents.filter((s) => s.id !== post.id));
+      setSelectedStudents(selectedStudents.filter((s) => s !== student));
     }
   };
 
   const handleDeleteSelected = () => {
-    const remainingStudents = posts.filter(
-      (post) => !selectedStudents.some((s) => s.id === post.id)
-    );
-    setPosts(remainingStudents);
+    // const remainingStudents = students.filter(
+    //   (student) => !selectedStudents.some((s) => s === student)
+    // );
+    // setStudents(remainingStudents);
+    deleteStudentsWrite?.();
+    setStudents(listStudentsData);
     setSelectedStudents([]);
   };
 
@@ -58,7 +99,7 @@ const Students = () => {
     e.target.reset();
   };
 
-  const paginatePosts = paginate(posts, currentPage, pageSize);
+  const paginateStudents = paginate(students, currentPage, pageSize);
 
   return (
     <div>
@@ -72,7 +113,7 @@ const Students = () => {
             fontSize={20}
             color="#1E429F"
             onClick={handleDeleteSelected}
-            disabled={selectedStudents.length === 0}
+            disabled={selectedStudents?.length === 0}
           />
           <form onSubmit={handleSubmit}>
             <label
@@ -122,10 +163,13 @@ const Students = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Address
+                S/N
               </th>
               <th scope="col" className="px-6 py-3">
                 Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Address
               </th>
               <th scope="col" className="px-6 py-3">
                 Delete
@@ -133,19 +177,20 @@ const Students = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatePosts
-              .filter((post) => {
+            {paginateStudents && (paginateStudents
+              .filter((student) => {
                 return query.toLowerCase() === ""
-                  ? post
-                  : post.title.toLowerCase().includes(query);
+                  ? student
+                  : student.toLowerCase().includes(query);
               })
-              .map((post) => (
+              .map((student, ind) => (
                 <tr
                   className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
-                  key={post.id}
+                  key={student}
                 >
-                  <td className="px-6 py-4"> {post.id} </td>
-                  <td className="px-6 py-4"> {post.title} </td>
+                  <td className="px-6 py-4"> {ind + 1} </td>
+                  <td className="px-6 py-4"> {"User name"} </td>
+                  <td className="px-6 py-4"> {student} </td>
                   <td className="px-6 py-4">
                     <button
                     //onClick={() => handleDelete(post)}
@@ -158,20 +203,20 @@ const Students = () => {
                           type="checkbox"
                           value=""
                           checked={selectedStudents.some(
-                            (s) => s.id === post.id
+                            (s) => s === student
                           )}
                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          onChange={(e) => handleCheckboxChange(e, post)}
+                          onChange={(e) => handleCheckboxChange(e, student)}
                         />
                       </div>{" "}
                     </button>
                   </td>
                 </tr>
-              ))}
+              )))}
           </tbody>
         </table>
         <Pagination
-          items={posts.length}
+          items={students?.length}
           pageSize={pageSize}
           currentPage={currentPage}
           onPageChange={handlePageChange}

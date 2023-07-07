@@ -13,6 +13,7 @@ import {
   useContractWrite,
   useWaitForTransaction,
   wagmi,
+  usePrepareContractWrite,
 } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ChildAddr } from "../../../utils/contractAddress";
@@ -20,20 +21,25 @@ import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
 import { MdDelete } from "react-icons/md";
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
+import TableRow from "../../ui-components/TableRow";
+
 
 const Mentors = () => {
   const [query, setQuery] = useState("");
-  const [posts, setPosts] = useState([]);
-  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [mentorsList, setMentorsList] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState([]);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolName, setSchoolName] = useState();
   const [programName, setProgramName] = useState();
-  const [programAddress, setprogramAddress] = useState();
+  const programAddress = useRecoilValue(addressState);
+
 
   /// FETCH THE LIST OF ALL STAFFS
-  useContractRead({
-    address: ChildAddr(),
+  const { data: mentorsListData, isLoading: mentorsListIsLLoading } = useContractRead({
+    address: programAddress,
     abi: CHILDABI,
     functionName: "listMentors",
     onSuccess(data) {
@@ -41,15 +47,20 @@ const Mentors = () => {
     },
   });
 
+
+  // const {config: deleteMentorsConfig } = usePrepareContractWrite({
+  //   address: programAddress,
+  //   abi: CHILDABI,
+  //   functionName: "",
+  //   args: [selectedMentors]
+  // })
+
   useEffect(() => {
-    const getPosts = async () => {
-      const { data: res } = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
-      setPosts(res);
-    };
-    getPosts();
-  }, []);
+
+    setMentorsList(mentorsListData);
+    console.log(mentorsList);
+
+  }, [mentorsList, mentorsListData]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -59,21 +70,22 @@ const Mentors = () => {
   //   setPosts(posts.filter((p) => p.id !== post.id));
   // };
 
-  const handleCheckboxChange = (event, post) => {
+  const handleCheckboxChange = (event, mentor) => {
     const { checked } = event.target;
     if (checked) {
-      setSelectedStudents([...selectedStudents, post]);
+      setSelectedMentors([...selectedMentors, mentor]);
     } else {
-      setSelectedStudents(selectedStudents.filter((s) => s.id !== post.id));
+      setSelectedMentors(selectedMentors.filter((s) => s !== mentor));
     }
   };
 
   const handleDeleteSelected = () => {
-    const remainingStudents = posts.filter(
-      (post) => !selectedStudents.some((s) => s.id === post.id)
-    );
-    setPosts(remainingStudents);
-    setSelectedStudents([]);
+    // const remainingMentors = mentorsList.filter(
+    //   (mentor) => !selectedMentors.some((s) => s === mentor)
+    // );
+    // deleteMentorsWrite?.();
+    setMentorsList(mentorsListData);
+    setSelectedMentors([]);
   };
 
   const handleSubmit = (e) => {
@@ -86,7 +98,7 @@ const Mentors = () => {
     e.target.reset();
   };
 
-  const paginatePosts = paginate(posts, currentPage, pageSize);
+  const paginateMentors = paginate(mentorsList, currentPage, pageSize);
 
   return (
     <div>
@@ -100,7 +112,7 @@ const Mentors = () => {
             fontSize={20}
             color="#1E429F"
             onClick={handleDeleteSelected}
-            disabled={selectedStudents.length === 0}
+            disabled={selectedMentors.length === 0}
           />
           <form onSubmit={handleSubmit}>
             <label
@@ -150,10 +162,13 @@ const Mentors = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Address
+                S/N
               </th>
               <th scope="col" className="px-6 py-3">
                 Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Address
               </th>
               <th scope="col" className="px-6 py-3">
                 Delete
@@ -161,19 +176,22 @@ const Mentors = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatePosts
-              .filter((post) => {
+            {
+              paginateMentors && (paginateMentors
+              // mentorsList
+              ?.filter((mentor) => {
                 return query.toLowerCase() === ""
-                  ? post
-                  : post.title.toLowerCase().includes(query);
+                  ? mentor
+                  : mentor.toLowerCase().includes(query);
               })
-              .map((post) => (
+              ?.map((mentor, ind) => (
                 <tr
                   className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
-                  key={post.id}
+                  key={mentor}
                 >
-                  <td className="px-6 py-4"> {post.id} </td>
-                  <td className="px-6 py-4"> {post.title} </td>
+                  <td className="px-6 py-4"> {ind + 1} </td>
+                  <td className="px-6 py-4"> {"User name"} </td>
+                  <td className="px-6 py-4"> {mentor} </td>
                   <td className="px-6 py-4">
                     <button
                     //onClick={() => handleDelete(post)}
@@ -185,21 +203,23 @@ const Mentors = () => {
                           id="default-checkbox"
                           type="checkbox"
                           value=""
-                          checked={selectedStudents.some(
-                            (s) => s.id === post.id
+                          checked={selectedMentors.some(
+                            (s) => s === mentor
                           )}
                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          onChange={(e) => handleCheckboxChange(e, post)}
+                          onChange={(e) => handleCheckboxChange(e, mentor)}
                         />
                       </div>{" "}
                     </button>
                   </td>
                 </tr>
-              ))}
+
+              )))
+            }
           </tbody>
         </table>
         <Pagination
-          items={posts.length}
+          items={mentorsList?.length}
           pageSize={pageSize}
           currentPage={currentPage}
           onPageChange={handlePageChange}
