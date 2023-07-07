@@ -29,38 +29,31 @@ const CardReport = ({ image }) => {
     handleClose();
   };
 
+  const { address } = useAccount();
 
-  const {address} = useAccount();
-
-
-  const {data: classesTaughtData} = useContractRead({
+  const { data: classesTaughtData } = useContractRead({
     address: FacoryAddr(),
     abi: FactoryABI,
     functionName: "getClassesTaugth",
-    args: [address]
-  })
+    args: [address],
+  });
 
-
-  const {data: lectureData} = useContractRead({
+  const { data: lectureData } = useContractRead({
     address: FacoryAddr(),
     abi: FactoryABI,
     functionName: "getLectureData",
-    args: [lectureId ?? 0]
-  })
-
+    args: [lectureId ?? 0],
+  });
 
   useEffect(() => {
     setClassesTaught(classesTaughtData);
     console.log(classesTaughtData);
-
   }, [classesTaughtData]);
-
 
   return (
     <div>
-
-      {
-        classesTaught && classesTaught?.map((class_taught) => {
+      {classesTaught &&
+        classesTaught?.map((class_taught) => {
           <Card
             heading="Topic: Topic taught"
             subHeading="Description: description of what was taught"
@@ -103,9 +96,8 @@ const CardReport = ({ image }) => {
                 </div>
               </div>
             </div>
-          </Card>
-        })
-      }
+          </Card>;
+        })}
 
       <Modal
         isOpen={modal}

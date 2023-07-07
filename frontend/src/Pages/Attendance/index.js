@@ -27,13 +27,16 @@ const Attendance = () => {
   const [uri, setUri] = useState("");
   const [topic, setTopic] = useState("");
   const [desc, setDesc] = useState("");
+  const programAddress = useRecoilValue(addressState);
 
   const { config: config1 } = usePrepareContractWrite({
-    address: FacoryAddr(),
+    address: programAddress,
     abi: ChildABI,
     functionName: "createAttendance",
     args: [id, uri, topic],
   });
+
+  console.log(programAddress);
 
   const {
     data: createAttendanceData,
