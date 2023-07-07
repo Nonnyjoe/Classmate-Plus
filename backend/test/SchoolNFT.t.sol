@@ -32,23 +32,28 @@ contract SchoolsNFTTest is Test {
 
     function testMint() public {
         vm.prank(address(_admin));
-        _schoolsNFT.mint(address(1), 2, 1);
-        uint256 userBalance = _schoolsNFT.balanceOf(address(1), 2);
+        _schoolsNFT.createClass(abi.encodePacked("test_class_id"), "http://test.org/1");
+        _schoolsNFT.getTokenIdForClass(abi.encodePacked("test_class_id"));
+        vm.prank(address(_admin));
+        _schoolsNFT.mint(address(1), abi.encodePacked("test_class_id"), 1);
+        uint256 userBalance = _schoolsNFT.balanceOf(address(1), 1);
         assertEq(userBalance, 1);
     }
 
-    function testBatchMintDaysTokens() public {
+    function testBatchMintNFTForClass() public {
         vm.prank(address(_admin));
-        _schoolsNFT.batchMintForDay(2, _students, _amounts);
-        uint256 _bal = _schoolsNFT.balanceOf(address(3), 2);
+        _schoolsNFT.createClass(abi.encodePacked("test_class_id"), "http://test.org/1");
+        vm.prank(address(_admin));
+        _schoolsNFT.batchMintNFTForClass(abi.encodePacked("test_class_id"), _students, _amounts);
+        uint256 _bal = _schoolsNFT.balanceOf(address(3), 1);
         assertEq(_bal, 1);
     }
 
-    function testSetDayUri() public {
+    function testChangeClassUri() public {
         testMint();
         vm.prank(address(_admin));
-        _schoolsNFT.setDayUri(2, "http://test.org/1");
-        string memory _uri = _schoolsNFT.getDayUri(2);
+        _schoolsNFT.changeClassUri(abi.encodePacked("test_class_id"), "http://test.org/1");
+        string memory _uri = _schoolsNFT.getClassUri(abi.encodePacked("test_class_id"));
         assertEq(_uri, "http://test.org/1");
     }
 }
