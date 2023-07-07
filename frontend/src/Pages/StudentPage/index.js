@@ -7,9 +7,12 @@ import Card from "../../ui-components/Card";
 import Modal from "../../ui-components/Modal";
 import { SlCalender } from "react-icons/sl";
 import styles from "./styles.module.css";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
 
 const StudentPage = () => {
   const [id, setId] = useState();
+  const [proAddress, setProAddress] = useRecoilState(addressState);
 
   const [modal, setModal] = useState(false);
 
@@ -26,6 +29,11 @@ const StudentPage = () => {
     toast.success("Submitted");
     handleClose();
   };
+
+  const addressValue = useRecoilValue(addressState);
+  console.log(addressValue);
+  console.log(proAddress);
+  console.log("addressValue");
 
   return (
     <div>

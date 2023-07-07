@@ -22,6 +22,7 @@ import { addressState } from "../../../atoms/addressAtom";
 export default function Dashboard() {
   const [modal, setModal] = useState(false);
   const proAddress = useRecoilValue(addressState);
+  console.log(proAddress);
 
   const handleClose = () => {
     //alert('closing');
