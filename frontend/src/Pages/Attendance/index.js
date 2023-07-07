@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
 import CardReport from "../../ui-components/CardReport";
@@ -6,29 +6,33 @@ import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
 import { toast } from "react-toastify";
-import main from '../components/upload.mjs';
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
-import ChildABI from '../../../utils/childABI.json';
-import FactoryABI from '../../../utils/factoryABI.json';
-import contractAddress from '../../../utils/contractAddress.js';
+import FACABI from "../../../utils/factoryABI.json";
+
+import main from "../../../components/upload.mjs";
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
+import ChildABI from "../../../utils/childABI.json";
+import FactoryABI from "../../../utils/factoryABI.json";
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
 
 const Attendance = () => {
   const [modal, setModal] = useState(false);
-  const [image, setImage] = useState();
-  const [id, setId] = useState();
-  const [ uri, setUri ] = useState();
-  const [topic, setTopic] = useState();
+  const [image, setImage] = useState("");
+  const [id, setId] = useState(0);
+  const [uri, setUri] = useState("");
+  const [topic, setTopic] = useState("");
+  const [desc, setDesc] = useState("");
 
   const { config: config1 } = usePrepareContractWrite({
     address: contractAddress,
     abi: FactoryABI,
-    functionName: 'createAttendance',
-    args: [
-      id,
-      uri,
-      topic
-    ],
-  })
+    functionName: "createAttendance",
+    args: [id, uri, topic],
+  });
 
   const {
     data: createAttendanceData,
@@ -45,13 +49,15 @@ const Attendance = () => {
     hash: createAttendanceData?.hash,
 
     onSuccess: () => {
-      toast.success('Attendance created successfully');
+      toast.success("Attendance created successfully");
     },
 
     onError(error) {
-      toast.error('Create attendance error: ', error);
+      toast.error("Create attendance error: ", error);
     },
   });
+
+  const proAddress = useRecoilValue(addressState);
 
   const handleClose = () => {
     //alert('closing');
@@ -64,32 +70,40 @@ const Attendance = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await main(
-      image,
-      id,
-      topic
-    );
+    const result = await main(image, id, topic, desc);
 
     console.log(result);
     setId(result.data.id);
     setUri(result.ipnft);
-    setTopic(result.data.topic);
+    setTopic(result.data.name);
+    setDesc(result.data.description);
 
     if (result) {
       toast.success("Submitted on-chain");
       handleClose();
     }
 
-    if(create && typeof create === 'function') {
+    if (create && typeof create === "function") {
       try {
         await create();
       } catch (error) {
-        console.error('Create function error ', error);
-        toast.error('Failed to create attendance');
+        console.error("Create function error ", error);
+        toast.error("Failed to create attendance");
       }
     }
+    console.log("address-", proAddress);
   };
-  
+
+  // useEffect(() => {
+  //   if(isError) {
+  //     toast.error('Tx error');
+  //   }
+
+  //   if(isSuccess) {
+  //     setId[0];
+
+  //   }
+  // })
 
   return (
     <div>

@@ -16,9 +16,12 @@ import Paragraph from "../../components/Paragraph";
 import BarChartExample from "../../components/BarChartExample";
 import CardReport from "../../ui-components/CardReport";
 import { toast } from "react-toastify";
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
 
 export default function Dashboard() {
   const [modal, setModal] = useState(false);
+  const proAddress = useRecoilValue(addressState);
 
   const handleClose = () => {
     //alert('closing');
