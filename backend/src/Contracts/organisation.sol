@@ -21,9 +21,9 @@ contract organisation {
      * --------------------- ATTENDANCE RECORD--------------------- *
      * ============================================================ *
      */
-    uint[] LectureIdCollection;
-    mapping(uint => lectureData) lectureInstance;
-    mapping(uint => bool) lectureIdUsed;
+    bytes[] LectureIdCollection;
+    mapping(bytes => lectureData) lectureInstance;
+    mapping(bytes => bool) lectureIdUsed;
     struct lectureData {
         address mentorOnDuty;
         string topic;
@@ -43,8 +43,8 @@ contract organisation {
     mapping(address => uint) indexInStudentsArray;
     mapping(address => uint) studentsTotalAttendance;
     mapping(address => bool) isStudent;
-    mapping(address => uint[]) classesAttended;
-    mapping(address => mapping(uint => bool)) IndividualAttendanceRecord;
+    mapping(address => bytes[]) classesAttended;
+    mapping(address => mapping(bytes => bool)) IndividualAttendanceRecord;
 
     /**
      * ============================================================ *
@@ -55,7 +55,7 @@ contract organisation {
     address mentorOnDuty;
     address[] mentors;
     mapping(address => uint) indexInMentorsArray;
-    mapping(address => uint[]) moderatorsTopic;
+    mapping(address => bytes[]) moderatorsTopic;
     mapping(address => bool) isStaff;
     mapping(address => individual) mentorsData;
 
@@ -66,16 +66,16 @@ contract organisation {
     event studentsRegistered(uint noOfStudents);
     event studentNamesChanged(uint noOfStudents);
     event attendanceCreated(
-        uint indexed lectureId,
+        bytes indexed lectureId,
         string indexed uri,
         string topic,
         address indexed staff
     );
-    event topicEditted(uint Id, string oldTopic, string newTopic);
-    event AttendanceSigned(uint Id, address signer);
+    event topicEditted(bytes Id, string oldTopic, string newTopic);
+    event AttendanceSigned(bytes Id, address signer);
     event Handover(address oldMentor, address newMentor);
-    event attendanceOpened(uint Id, address mentor);
-    event attendanceClosed(uint Id, address mentor);
+    event attendanceOpened(bytes Id, address mentor);
+    event attendanceClosed(bytes Id, address mentor);
     event studentsEvicted(uint noOfStudents);
 
     // MODIFIERS
@@ -216,7 +216,7 @@ contract organisation {
     // @params:  _uri: Uri for the particular Nft issued to students that attended class for that day.
     // @params:  _topic: Topic covered for that particular day, its recorded so as to be displayed on students dashboard.
     function createAttendance(
-        uint _lectureId,
+        bytes calldata _lectureId,
         string calldata _uri,
         string calldata _topic
     ) external onlyMentorOnDuty {
@@ -233,7 +233,10 @@ contract organisation {
         emit attendanceCreated(_lectureId, _uri, _topic, msg.sender);
     }
 
-    function editTopic(uint _lectureId, string calldata _topic) external {
+    function editTopic(
+        bytes memory _lectureId,
+        string calldata _topic
+    ) external {
         if (msg.sender != lectureInstance[_lectureId].mentorOnDuty)
             revert not_Autorized_Caller();
         if (lectureInstance[_lectureId].attendanceStartTime != 0)
@@ -243,7 +246,7 @@ contract organisation {
         emit topicEditted(_lectureId, oldTopic, _topic);
     }
 
-    function signAttendance(uint _lectureId) external onlyStudents {
+    function signAttendance(bytes memory _lectureId) external onlyStudents {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         if (lectureInstance[_lectureId].status == false)
             revert Lecture_id_closed();
@@ -274,7 +277,9 @@ contract organisation {
         emit Handover(msg.sender, newMentor);
     }
 
-    function openAttendance(uint _lectureId) external onlyMentorOnDuty {
+    function openAttendance(
+        bytes calldata _lectureId
+    ) external onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         if (lectureInstance[_lectureId].status == true)
             revert("Attendance already open");
@@ -285,7 +290,9 @@ contract organisation {
         emit attendanceOpened(_lectureId, msg.sender);
     }
 
-    function closeAttendance(uint _lectureId) external onlyMentorOnDuty {
+    function closeAttendance(
+        bytes calldata _lectureId
+    ) external onlyMentorOnDuty {
         if (lectureIdUsed[_lectureId] == false) revert Invalid_Lecture_Id();
         if (lectureInstance[_lectureId].status == false)
             revert("Attendance already closed");
@@ -341,17 +348,17 @@ contract organisation {
 
     function listClassesAttended(
         address _student
-    ) external view returns (uint[] memory) {
+    ) external view returns (bytes[] memory) {
         if (isStudent[_student] == false) revert not_valid_student();
         return classesAttended[_student];
     }
 
-    function getLectureIds() external view returns (uint[] memory) {
+    function getLectureIds() external view returns (bytes[] memory) {
         return LectureIdCollection;
     }
 
     function getLectureData(
-        uint _lectureId
+        bytes calldata _lectureId
     ) external view returns (lectureData memory) {
         if (lectureIdUsed[_lectureId] == false) revert not_valid_lecture_id();
         return lectureInstance[_lectureId];
@@ -374,7 +381,7 @@ contract organisation {
 
     function getClassesTaugth(
         address _Mentor
-    ) external view returns (uint[] memory) {
+    ) external view returns (bytes[] memory) {
         if (isStaff[_Mentor] == false) revert not_valid_Moderator();
         return moderatorsTopic[_Mentor];
     }
