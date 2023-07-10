@@ -10,18 +10,60 @@ import { SlCalender } from "react-icons/sl";
 import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Section from "../../ui-components/Section";
-
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+  useContractRead,
+} from "wagmi";
 import BillingHistory from "../../components/BillingHistory";
 import Paragraph from "../../components/Paragraph";
 import BarChartExample from "../../components/BarChartExample";
 import CardReport from "../../ui-components/CardReport";
 import { toast } from "react-toastify";
 import { useRecoilValue } from "recoil";
+
 import { addressState } from "../../../atoms/addressAtom";
+import ChildABI from "../../../utils/childABI.json";
 
 export default function Dashboard() {
   const [modal, setModal] = useState(false);
-  const proAddress = useRecoilValue(addressState);
+  const [classes, setClasses] = useState();
+  const [mentors, setMentors] = useState();
+  const [students, setStudents] = useState();
+  const programAddress = useRecoilValue(addressState);
+  console.log(programAddress);
+
+  useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "getLectureIds",
+    watch: true,
+    args: [],
+    onSuccess(data) {
+      setClasses(data);
+    },
+  });
+  useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "listMentors",
+    watch: true,
+    args: [],
+    onSuccess(data) {
+      setMentors(data);
+    },
+  });
+  useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "liststudents",
+    watch: true,
+    args: [],
+    onSuccess(data) {
+      setStudents(data);
+    },
+  });
 
   const handleClose = () => {
     //alert('closing');
@@ -46,20 +88,17 @@ export default function Dashboard() {
 
       <Section>
         <DataCard
-          label={"Total Revenue"}
-          value={"23,34,450"}
-          percentageValue={56.4}
+          label={"Total Classes"}
+          value={classes ? classes.length : `00`}
           inverse={true}
         />
         <DataCard
-          label={"Total Customer"}
-          value={"45,09,333"}
-          percentageValue={3.45}
+          label={"Total Students"}
+          value={students ? students.length : `00`}
         />
         <DataCard
-          label={"Total Profit"}
-          value={"43,54,111"}
-          percentageValue={10.89}
+          label={"Total Mentors"}
+          value={mentors ? mentors.length : `00`}
         />
       </Section>
 

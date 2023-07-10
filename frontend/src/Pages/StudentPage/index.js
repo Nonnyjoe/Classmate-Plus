@@ -11,9 +11,12 @@ import ABI from '../../../utils/childABI.json';
 import contractAddress from "../../../utils/contractAddress";
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { toast } from "react-toastify";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { addressState } from "../../../atoms/addressAtom";
 
 const StudentPage = () => {
   const [id, setId] = useState();
+  const [proAddress, setProAddress] = useRecoilState(addressState);
 
   const [modal, setModal] = useState(false);
 
@@ -63,6 +66,11 @@ const StudentPage = () => {
     sign?.();
     handleClose();
   };
+
+  const addressValue = useRecoilValue(addressState);
+  console.log(addressValue);
+  console.log(proAddress);
+  console.log("addressValue");
 
   return (
     <div>
