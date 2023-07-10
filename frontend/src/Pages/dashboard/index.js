@@ -32,7 +32,7 @@ export default function Dashboard() {
   const [mentors, setMentors] = useState();
   const [students, setStudents] = useState();
   const programAddress = useRecoilValue(addressState);
-  console.log(programAddress);
+  console.log("Program address", programAddress);
 
   useContractRead({
     address: programAddress,

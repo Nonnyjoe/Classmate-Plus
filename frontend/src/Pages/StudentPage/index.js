@@ -9,7 +9,7 @@ import { SlCalender } from "react-icons/sl";
 import styles from "./styles.module.css";
 import ABI from '../../../utils/childABI.json';
 import contractAddress from "../../../utils/contractAddress";
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction, useContractRead } from "wagmi";
 import { toast } from "react-toastify";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { addressState } from "../../../atoms/addressAtom";
@@ -68,9 +68,9 @@ const StudentPage = () => {
   };
 
   const addressValue = useRecoilValue(addressState);
-  console.log(addressValue);
+  // console.log(addressValue);
   console.log(proAddress);
-  console.log("addressValue");
+  console.log("addressValue", addressValue);
 
   return (
     <div>
