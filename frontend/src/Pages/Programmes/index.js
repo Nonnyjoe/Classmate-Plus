@@ -29,6 +29,7 @@ const Programmes = () => {
   const [OrganisationName, setOrganisationName] = useState();
   const [programName, setProgramName] = useState();
   const [programAddress, setprogramAddress] = useState(["0x00"]);
+  const [programImage, setProgramImage] = useState("");
 
   const handleClose = () => {
     //alert('closing');
@@ -144,6 +145,15 @@ const Programmes = () => {
                 placeholder="Programme Name"
                 required
                 onChange={(e) => setProgramName(e.target.value)}
+              />
+            </label>
+            <label>
+              Programme NFT Image:
+              <br />
+              <input
+                type="file"
+                className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
+                onChange={(e) => setProgramImage(e.target.files[0])}
               />
             </label>
           </form>
