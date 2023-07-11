@@ -156,6 +156,13 @@ const Programmes = () => {
                 onChange={(e) => setProgramImage(e.target.files[0])}
               />
             </label>
+            <label>
+              NFT ID:
+              <input
+                type="number"
+                className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
+              />
+            </label>
           </form>
         </div>
       </Modal>

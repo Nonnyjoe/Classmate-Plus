@@ -2,10 +2,10 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div className="flex justify-between bg-blue-950 h-20 w-full mt-20 absolute ">
+    <div className="flex justify-between bg-black h-20 w-full mt-20 absolute ">
       <div>
         <span className="font-bold ml-4 text-xl text-[#fff] tracking-tight">
-          <span className="text-5xl">.</span>AttendPlus+
+          <span className="text-5xl">.</span>Classmate+
         </span>
       </div>
 

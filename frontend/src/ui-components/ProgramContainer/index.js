@@ -71,8 +71,8 @@ const ProgramContainer = ({ image, programAddress }) => {
 
   return (
     <div onClick={route}>
-      <div className="items-start justify-start w-[400px] m-auto gap-3 text-left text-3xl">
-        <div className="flex-1 rounded-xl text-white bg-[#000] min-h-[300x] flex flex-col items-center justify-start cursor-pointer">
+      <div className="items-start justify-start w-[375px] m-auto gap-3 text-left text-3xl">
+        <div className="flex-1 rounded-xl text-white bg-[#000] min-h-[200px] flex flex-col items-center justify-start cursor-pointer">
           <div className="self-stretch rounded-t-xl rounded-b-none flex flex-col items-start justify-start">
             <img
               className="self-stretch relative rounded-t-xl rounded-b-none max-w-full overflow-hidden h-[295px] shrink-0 object-cover"
