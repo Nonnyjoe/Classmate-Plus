@@ -103,10 +103,10 @@ export default function Dashboard() {
       </Section>
 
       <Section>
-        <Card heading="Bar Chart Example" subHeading="Data of students">
+        <Card heading="Class Summary Bar Chart" subHeading="Data of students">
           <BarChartExample />
         </Card>
-        <Card heading="Doughnut Chart Example" subHeading="Data of students">
+        <Card heading="Class Summary Doughnut" subHeading="Data of students">
           <div
             style={{
               display: "flex",

@@ -9,6 +9,7 @@ import { SlCalender } from "react-icons/sl";
 import styles from "./styles.module.css";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { addressState } from "../../../atoms/addressAtom";
+import { toast } from "react-toastify";
 
 const StudentPage = () => {
   const [id, setId] = useState();
