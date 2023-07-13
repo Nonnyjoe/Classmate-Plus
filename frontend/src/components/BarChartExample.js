@@ -1,43 +1,94 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Chart from "chart.js/auto";
+import { useRecoilValue } from "recoil";
+import { addressState } from "../../atoms/addressAtom";
+import ChildABI from "../../utils/childABI.json";
+import { useContractRead } from "wagmi";
+
 
 const BarChartExample = (props) => {
+  const [classIds, setClassIds] = useState();
+  const [classData, setClassData] = useState();
+  const programAddress = useRecoilValue(addressState);
   const chartRef = useRef();
   const chartObj = useRef();
 
-  const createBarChart = (el) => {
-    const data = [
-      { year: 2010, count: 10 },
-      { year: 2011, count: 20 },
-      { year: 2012, count: 15 },
-      { year: 2013, count: 25 },
-      { year: 2014, count: 22 },
-      { year: 2015, count: 30 },
-      { year: 2016, count: 28 },
-    ];
+
+  useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "getLectureIds",
+    watch: true,
+    args: [],
+    onSuccess(data) {
+      setClassIds(data);
+    },
+  });
+
+
+  const createBarChart = (el, data) => {
+    // const data = [
+    //   { classID: 2010, studentCount: 10 },
+    //   { classID: 2011, studentCount: 20 },
+    //   { classID: 2012, studentCount: 15 },
+    //   { classID: 2013, studentCount: 25 },
+    //   { classID: 2014, studentCount: 22 },
+    //   { classID: 2015, studentCount: 30 },
+    //   { classID: 2016, studentCount: 28 },
+    // ];
+
 
     chartObj.current = new Chart(el, {
       type: "bar",
       data: {
-        labels: data.map((row) => row.year),
+        labels: data.map((row) => row.classID),
         datasets: [
           {
-            label: "Acquisitions by year",
-            data: data.map((row) => row.count),
+            label: "Students Attendance by ClassId",
+            data: data.map((row) => row.studentCount),
           },
         ],
       },
     });
   };
 
+
+  useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "getLectureData",
+    watch: true,
+    args: [1],
+    onSuccess(data) {
+      setClassData(data);
+    },
+  });
+
+
   useEffect(() => {
+
+
+    const data = [];
+
+    for (let i = 0; i < classIds?.length; i++) {
+      let classInfo = {
+        classID: classIds?.[i],
+        studentCount: i + 5
+        // classID: classIds[i],
+        // studentCount: classIds[i],
+      }
+      data?.push(classInfo);
+    }
+
+
+
     const el = chartRef.current;
     //const el = document.getElementById("chart");
     if (chartObj.current) chartObj.current.destroy();
-    createBarChart(el);
+    createBarChart(el, data);
 
     return () => chartObj.current.destroy();
-  }, []);
+  }, [classIds]);
 
   return <canvas ref={chartRef}></canvas>;
 };
