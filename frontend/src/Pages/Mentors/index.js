@@ -26,6 +26,7 @@ import { addressState } from "../../../atoms/addressAtom";
 import TableRow from "../../ui-components/TableRow";
 
 
+
 const Mentors = () => {
   const [query, setQuery] = useState("");
   const [mentorsList, setMentorsList] = useState([]);
@@ -178,42 +179,13 @@ const Mentors = () => {
           <tbody>
             {
               paginateMentors && (paginateMentors
-              // mentorsList
               ?.filter((mentor) => {
                 return query.toLowerCase() === ""
                   ? mentor
                   : mentor.toLowerCase().includes(query);
               })
               ?.map((mentor, ind) => (
-                <tr
-                  className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
-                  key={mentor}
-                >
-                  <td className="px-6 py-4"> {ind + 1} </td>
-                  <td className="px-6 py-4"> {"User name"} </td>
-                  <td className="px-6 py-4"> {mentor} </td>
-                  <td className="px-6 py-4">
-                    <button
-                    //onClick={() => handleDelete(post)}
-                    //className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      {" "}
-                      <div className="flex items-center">
-                        <input
-                          id="default-checkbox"
-                          type="checkbox"
-                          value=""
-                          checked={selectedMentors.some(
-                            (s) => s === mentor
-                          )}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          onChange={(e) => handleCheckboxChange(e, mentor)}
-                        />
-                      </div>{" "}
-                    </button>
-                  </td>
-                </tr>
-
+                <TableRow address={mentor} ind={ind} selectedAddresses={selectedMentors} setSelectedAddresses={setSelectedMentors} mentor={true}/>
               )))
             }
           </tbody>
