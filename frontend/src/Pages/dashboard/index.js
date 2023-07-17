@@ -25,6 +25,7 @@ import { useRecoilValue } from "recoil";
 
 import { addressState } from "../../../atoms/addressAtom";
 import ChildABI from "../../../utils/childABI.json";
+import BarChart from "../../components/BarChart";
 
 export default function Dashboard() {
   const [modal, setModal] = useState(false);
@@ -105,6 +106,7 @@ export default function Dashboard() {
       <Section>
         <Card heading="Class Summary Bar Chart" subHeading="Data of students">
           <BarChartExample />
+          {/*<BarChart />*/}
         </Card>
         <Card heading="Class Summary Doughnut" subHeading="Data of students">
           <div

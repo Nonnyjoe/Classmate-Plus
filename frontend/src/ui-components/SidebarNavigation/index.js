@@ -3,7 +3,6 @@ import styles from "./SidebarNavigation.module.css";
 import Link from "next/link";
 import routes from "../../routes";
 import { useRouter } from "next/router";
-import { TbLogout } from "react-icons/tb";
 import { BiChevronLeft } from "react-icons/bi";
 
 const SidebarNavigation = ({ sidebarMenuActive, toggleSidebarMenu }) => {
