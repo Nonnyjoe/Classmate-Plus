@@ -14,8 +14,9 @@ import { addressState } from "../../../atoms/addressAtom";
 import ChildAbi from "../../../utils/childABI.json";
 import DateMint from "../DateMint";
 import axios from "axios";
+import { toast } from "react-toastify";
 
-const CardDetailsId = ({ classId, image }) => {
+const CardDetailsId = ({ classId }) => {
   const [heading, setHeading] = useState("");
   const [subHeading, setSubHeading] = useState("");
   const [mentorName, setMentorName] = useState("");
@@ -96,6 +97,8 @@ const CardDetailsId = ({ classId, image }) => {
   }, [lectureData, userName, showUri, detail]);
 
   console.log("detail", detail);
+  console.log("status", trueStatus);
+  console.log("students", students);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 
@@ -164,21 +167,27 @@ const CardDetailsId = ({ classId, image }) => {
             />
           </div>
           <div className="flex items-center justify-between w-full h-full text-black font-semibold text-center">
-            <div>
-              <div className="flex items-center justify-center my-1 py-1 text-lg ">
+            <div className="flex flex-col text-start justify-center">
+              <div className="flex items-center -ml-24 justify-center my-1 py-1 text-lg ">
                 <SlCalender />
                 <p className="ml-3">
                   <DateMint cardDate={cardDate} />
                 </p>
               </div>
-              <p className=" my-1 py-1 text-lg ">{heading}</p>
-              <p className="my-1 py-1 text-lg ">{showId.toString()}</p>
+              <p className=" my-1 py-1 text-lg ">Topic: {heading}</p>
+              <p className="my-1 py-1 text-lg ">
+                Class ID: {showId.toString()}
+              </p>
             </div>
-            <div>
-              <p className="my-1 py-1 text-lg ">{students}</p>
-              <p className="my-1 py-1 text-lg ">{trueStatus}</p>
-              <div>
-                <Toggle />
+            <div className="flex flex-col text-start justify-center">
+              <p className="my-1 py-1 text-lg ">
+                Attendedance: {students.toString()}
+              </p>
+              <p className="my-1 py-1 text-lg ">
+                Status: {trueStatus ? "On" : "Off"}
+              </p>
+              <div className=" -ml-14">
+                <Toggle classId={classId} />
               </div>
             </div>
           </div>

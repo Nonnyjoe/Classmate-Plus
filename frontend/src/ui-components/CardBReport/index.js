@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import { addressState } from "../../../atoms/addressAtom";
 import CardDetailsId from "../CardDetailsId";
 
-const CardBReport = ({ image }) => {
+const CardBReport = () => {
   const [modal, setModal] = useState(false);
   const [classIds, setClassIds] = useState([]);
   const programAddress = useRecoilValue(addressState);
@@ -25,7 +25,7 @@ const CardBReport = ({ image }) => {
     <div>
       {classIds &&
         classIds.map((class_taught) => {
-          return <CardDetailsId classId={class_taught} image={image} />;
+          return <CardDetailsId classId={class_taught} />;
         })}
     </div>
   );
