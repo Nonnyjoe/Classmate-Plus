@@ -21,8 +21,8 @@ import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
 import { MdDelete } from "react-icons/md";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import TableRow from "../../ui-components/TableRow";
 
 
@@ -35,7 +35,8 @@ const Mentors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolName, setSchoolName] = useState();
   const [programName, setProgramName] = useState();
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
 
   /// FETCH THE LIST OF ALL STAFFS
@@ -57,6 +58,11 @@ const Mentors = () => {
   // })
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
 
     setMentorsList(mentorsListData);
     console.log(mentorsList);

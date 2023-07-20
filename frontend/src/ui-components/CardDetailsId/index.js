@@ -9,8 +9,8 @@ import Toggle from "../Toggle";
 
 import { useEffect, useState } from "react";
 import { useAccount, useContractRead } from "wagmi";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ChildAbi from "../../../utils/childABI.json";
 import DateMint from "../DateMint";
 import axios from "axios";
@@ -31,7 +31,8 @@ const CardDetailsId = ({ classId }) => {
   const [width, setWidth] = useState(null);
   const [modal, setModal] = useState(false);
   const [classid, setClassId] = useState();
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
   const handleClose = () => {
     //alert('closing');
@@ -81,6 +82,11 @@ const CardDetailsId = ({ classId }) => {
         },
       };
       await axios.get(data, config).then((res) => setDetail(res.data));
+    }
+
+    if (typeof window !== 'undefined') {
+      let res = localStorage.getItem('programAddress');
+      setProgramAddress(res);
     }
 
     setHeading(lectureData?.topic);

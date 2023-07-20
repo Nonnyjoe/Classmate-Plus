@@ -16,8 +16,8 @@ import {
 } from "wagmi";
 import ChildABI from "../../../utils/childABI.json";
 import FactoryABI from "../../../utils/factoryABI.json";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import { FacoryAddr } from "../../../utils/contractAddress";
 import CardBReport from "../../ui-components/CardBReport";
 
@@ -28,7 +28,8 @@ const Attendance = () => {
   const [uri, setUri] = useState("");
   const [topic, setTopic] = useState("");
   const [desc, setDesc] = useState("");
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
   const { config: config1 } = usePrepareContractWrite({
     address: programAddress,
@@ -62,7 +63,6 @@ const Attendance = () => {
     },
   });
 
-  const proAddress = useRecoilValue(addressState);
 
   const handleClose = () => {
     //alert('closing');
@@ -96,19 +96,16 @@ const Attendance = () => {
         toast.error("Failed to create attendance");
       }
     }
-    console.log("address-", proAddress);
   };
 
-  // useEffect(() => {
-  //   if(isError) {
-  //     toast.error('Tx error');
-  //   }
+  useEffect(() => {
 
-  //   if(isSuccess) {
-  //     setId[0];
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
 
-  //   }
-  // })
+  }, [programAddress])
 
   return (
     <div>

@@ -9,20 +9,20 @@ import {
   useWaitForTransaction,
   wagmi,
 } from "wagmi";
-import { useRecoilState } from "recoil";
+// import { useRecoilState } from "recoil";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ChildAddr } from "../../../utils/contractAddress";
 import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
-import { addressState } from "../../../atoms/addressAtom";
+// import { addressState } from "../../../atoms/addressAtom";
 
 const ProgramContainer = ({ image, programAddress }) => {
   const router = useRouter();
   const [cohortName, setCohortName] = useState();
   const [OrganisationName, setOrganisationName] = useState();
   const [adminStatus, setAdminStatus] = useState();
-  const [proAddress, setProAddress] = useRecoilState(addressState);
+  const [proAddress, setProAddress] = useState();
   const { address } = useAccount();
 
   /// FETCH THE CONPANY NAME
@@ -60,7 +60,12 @@ const ProgramContainer = ({ image, programAddress }) => {
   });
 
   const route = () => {
-    setProAddress(programAddress);
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('programAddress', programAddress);
+      setProAddress(programAddress);
+    }
+
     adminStatus ? router.push("/dashboard") : router.push("/student-page");
   };
   // const onNFTCardContainerClick = useCallback(() => {

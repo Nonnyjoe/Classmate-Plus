@@ -1,22 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import ChildABI from '../../../utils/childABI.json';
 import {FacoryAddr} from '../../../utils/contractAddress';
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataArray, setDataArray] = useState([]);
   const [studentUpload, setStudentUpload] = useState(false);
-  const programmeAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programmeAddress = useRecoilValue(addressState);
 
 
   const {config: UploadStudentsConfig} = usePrepareContractWrite({
-    address: programmeAddress,
+    address: programAddress,
     abi: ChildABI,
     functionName: "registerStudents",
     args: [dataArray]
@@ -27,7 +28,7 @@ const UploadForm = () => {
 
 
   const {config: UploadMentorsConfig} = usePrepareContractWrite({
-    address: programmeAddress,
+    address: programAddress,
     abi: ChildABI,
     functionName: 'registerStaffs',
     args: [dataArray],
@@ -92,6 +93,15 @@ const UploadForm = () => {
       console.error("Error uploading file");
     }
   };
+
+  useEffect(() => {
+    
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
+  }, [programAddress])
 
   return (
     <div>
@@ -163,7 +173,6 @@ const UploadForm = () => {
           >
             Upload List
           </button>
-          <div>This is the program address: {programmeAddress ?? 0}</div>
 
         </div>
       </Section>

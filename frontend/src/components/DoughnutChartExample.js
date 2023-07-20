@@ -1,17 +1,43 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
+import { useContractRead } from "wagmi";
+import { useRecoilValue } from "recoil";
+// import { addressState } from "../../atoms/addressAtom";
+import ChildABI from "../../utils/childABI.json";
+
 
 const DoughnutChartExample = (props) => {
+  const [classIds, setClassIds] = useState([]);
   const chartRef = useRef();
   const chartObjRef = useRef();
+  // const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+
+
+  const {data: class_ids} = useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "getLectureIds",
+    watch: true,
+    args: [],
+    // onSuccess(data) {
+    //   setClassIds(data);
+    //   console.log(data)
+    // },
+  });
+
+  let info = [];
+  classIds?.map((id) => info.push(id.toString()));
 
   const createDoughnutChart = (el) => {
     const data = {
-      labels: ["Red", "Blue", "Yellow"],
+      // labels: ["Red", "Blue", "Yellow"],
+      labels: classIds,
       datasets: [
         {
-          label: "My First Dataset",
-          data: [300, 50, 100],
+          label: "Student Count",
+          // data: [300, 50, 100],
+          data: info,
           backgroundColor: [
             "rgb(255, 99, 132)",
             "rgb(54, 162, 235)",
@@ -30,12 +56,22 @@ const DoughnutChartExample = (props) => {
   };
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+      let res = localStorage.getItem('programAddress');
+      setProgramAddress(res);
+    }
+
+    setClassIds(class_ids);
+    console.log(classIds);
+
+
     const el = chartRef.current;
     if (chartObjRef.current) chartObjRef.current.destroy();
     createDoughnutChart(el);
 
     return () => chartObjRef.current.destroy();
-  }, []);
+  }, [programAddress]);
 
   return (
     <div

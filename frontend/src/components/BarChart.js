@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 
 import { useRecoilValue } from "recoil";
-import { addressState } from "../../atoms/addressAtom";
+// import { addressState } from "../../atoms/addressAtom";
 import ChildABI from "../../utils/childABI.json";
 import { useContractRead } from "wagmi";
 import BarYaxis from "../ui-components/BarYaxis";
@@ -11,8 +11,9 @@ const BarChart = () => {
   const [classIds, setClassIds] = useState([]);
   const [classData, setClassData] = useState([]);
   const [classes, setClasses] = useState();
+  const [programAddress, setProgramAddress] = useState();
 
-  const programAddress = useRecoilValue(addressState);
+  // const programAddress = useRecoilValue(addressState);
 
   useContractRead({
     address: programAddress,
@@ -40,6 +41,11 @@ const BarChart = () => {
         },
       });
     });
+
+    if (typeof window !== 'undefined') {
+      let res = localStorage.getItem('programAddress');
+      setProgramAddress(res);
+    }
 
     console.log("classData", classData);
   }, []);

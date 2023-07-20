@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsFillDropletFill } from "react-icons/bs";
 import HeaderSection from "../../ui-components/HeaderSection";
 import ActionButton from "../../ui-components/ActionButton";
@@ -7,13 +7,13 @@ import Card from "../../ui-components/Card";
 import Modal from "../../ui-components/Modal";
 import { SlCalender } from "react-icons/sl";
 import styles from "./styles.module.css";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilState, useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import { toast } from "react-toastify";
 
 const StudentPage = () => {
   const [id, setId] = useState();
-  const [proAddress, setProAddress] = useRecoilState(addressState);
+  const [programAddress, setProgramAddress] = useState();
 
   const [modal, setModal] = useState(false);
 
@@ -31,10 +31,14 @@ const StudentPage = () => {
     handleClose();
   };
 
-  const addressValue = useRecoilValue(addressState);
-  console.log(addressValue);
-  console.log(proAddress);
-  console.log("addressValue");
+  useEffect(() => {
+    
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
+  }, [])
 
   return (
     <div>
