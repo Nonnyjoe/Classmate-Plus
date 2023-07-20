@@ -5,8 +5,8 @@ import Pagination from "../../components/Pagination";
 import { paginate } from "../../../utils/paginate";
 import HeaderSection from "../../ui-components/HeaderSection";
 import { MdDelete } from "react-icons/md";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 import ChildAbi from "../../../utils/childABI.json";
 import TableRow from "../../ui-components/TableRow";
@@ -20,7 +20,6 @@ const Students = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [programAddress, setProgramAddress] = useState("") ;
   
-  const PROGRAM_ADDR = useRecoilValue(addressState);
 
   const { data: listStudentsData, isLoading: listStudentIsLoading } = useContractRead({
     address: programAddress ?? '0x00',
@@ -41,7 +40,11 @@ const Students = () => {
 
   useEffect(() => {
 
-    setProgramAddress(PROGRAM_ADDR ?? '0x00')
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
     setStudents(listStudentsData);
     console.log(students);
 

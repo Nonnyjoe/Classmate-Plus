@@ -32,8 +32,8 @@ export default [
     Icon: SiGoogleclassroom,
   },
   {
-    to: "/upload-students",
-    name: "Upload Students",
+    to: "/upload-file",
+    name: "Upload File",
     Icon: BsCloudUploadFill,
   },
   {

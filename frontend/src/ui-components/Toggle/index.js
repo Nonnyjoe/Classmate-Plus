@@ -6,14 +6,15 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import ChildABI from "../../../utils/childABI.json";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import { toast } from "react-toastify";
 
 export default function Toggle({ classId }) {
   const [enabled, setEnabled] = useState(false);
   const [currentStatus, setCurrentStatus] = useState();
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
   //read getLectureData
   const { data: lectureData } = useContractRead({
@@ -79,6 +80,15 @@ export default function Toggle({ classId }) {
     setCurrentStatus(lectureData?.status);
     currentStatus === false ? open() : close?.();
   };
+
+  useEffect(() => {
+    
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
+  }, [programAddress])
 
   return (
     <div className="relative flex flex-col items-center justify-center overflow-hidden">

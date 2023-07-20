@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAccount, useContractRead } from "wagmi";
 import ChildABI from "../../../utils/childABI.json";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import CardDetailsId from "../CardDetailsId";
 
 const CardBReport = () => {
   const [modal, setModal] = useState(false);
   const [classIds, setClassIds] = useState([]);
   const [visible, setVisible] = useState(6);
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
   const { data: classIdsData } = useContractRead({
     address: programAddress,
@@ -19,6 +20,11 @@ const CardBReport = () => {
   });
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
+    }
+
     setClassIds(classIdsData);
   }, [classIdsData]);
 

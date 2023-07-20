@@ -1,8 +1,8 @@
 import { useContractRead } from "wagmi";
 import styles from "./TableRow.module.css";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ChildAbi from "../../../utils/childABI.json";
 
 const TableRow = ({
@@ -14,14 +14,13 @@ const TableRow = ({
 }) => {
 
   const [userName, setUserName] = useState("");
-  const [programAddr, setProgramAddr] = useState("");
   const [funcName, setFuncName] = useState("");
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
 
 
   // Fetches the name of the address passed
   const { data: userNameData } = useContractRead({
-    address: programAddr,
+    address: programAddress,
     abi: ChildAbi,
     functionName: funcName,
     args: [address ?? '0x00']
@@ -37,10 +36,15 @@ const TableRow = ({
   };
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
     setUserName(userNameData);
-    setProgramAddr(programAddress);
     mentor ? setFuncName("getMentorsName") : setFuncName("getStudentName") ;
-  }, [userNameData])
+  }, [userNameData, programAddress])
 
 
   return (

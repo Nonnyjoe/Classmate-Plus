@@ -21,9 +21,8 @@ import Paragraph from "../../components/Paragraph";
 import BarChartExample from "../../components/BarChartExample";
 import CardReport from "../../ui-components/CardReport";
 import { toast } from "react-toastify";
-import { useRecoilValue } from "recoil";
-
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ChildABI from "../../../utils/childABI.json";
 import BarChart from "../../components/BarChart";
 
@@ -32,8 +31,9 @@ export default function Dashboard() {
   const [classes, setClasses] = useState();
   const [mentors, setMentors] = useState();
   const [students, setStudents] = useState();
-  const programAddress = useRecoilValue(addressState);
-  console.log(programAddress);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
+
 
   useContractRead({
     address: programAddress,
@@ -79,6 +79,15 @@ export default function Dashboard() {
     toast.success("Submitted");
     handleClose();
   };
+
+  useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
+  }, [programAddress])
 
   return (
     <>
