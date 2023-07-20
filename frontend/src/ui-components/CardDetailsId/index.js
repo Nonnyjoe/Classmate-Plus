@@ -176,12 +176,12 @@ const CardDetailsId = ({ classId }) => {
               </div>
               <p className=" my-1 py-1 text-lg ">Topic: {heading}</p>
               <p className="my-1 py-1 text-lg ">
-                Class ID: {showId.toString()}
+                Class ID: {showId?.toString()}
               </p>
             </div>
             <div className="flex flex-col text-start justify-center">
               <p className="my-1 py-1 text-lg ">
-                Attendedance: {students.toString()}
+                Attendedance: {students?.toString()}
               </p>
               <p className="my-1 py-1 text-lg ">
                 Status: {trueStatus ? "On" : "Off"}
