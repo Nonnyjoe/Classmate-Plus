@@ -104,12 +104,14 @@ const Programmes = () => {
       <div className="flex justify-start items-center flex-wrap">
         {programAddress.map((pro, i) => {
           return (
-            <Section>
-              <ProgramContainer
-                image="https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=620&quality=85&dpr=1&s=none"
-                programAddress={pro}
-              />
-            </Section>
+            <div key={i}>
+              <Section>
+                <ProgramContainer
+                  image="https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=620&quality=85&dpr=1&s=none"
+                  programAddress={pro}
+                />
+              </Section>
+            </div>
           );
         })}
       </div>

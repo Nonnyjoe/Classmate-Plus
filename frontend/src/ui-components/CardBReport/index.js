@@ -9,6 +9,7 @@ import CardDetailsId from "../CardDetailsId";
 const CardBReport = () => {
   const [modal, setModal] = useState(false);
   const [classIds, setClassIds] = useState([]);
+  const [visible, setVisible] = useState(6);
   const programAddress = useRecoilValue(addressState);
 
   const { data: classIdsData } = useContractRead({
@@ -21,12 +22,35 @@ const CardBReport = () => {
     setClassIds(classIdsData);
   }, [classIdsData]);
 
+  const showMoreItems = () => {
+    setVisible((prevValue) => prevValue + 6);
+  };
+
   return (
     <div>
-      {classIds &&
-        classIds.map((class_taught) => {
-          return <CardDetailsId classId={class_taught} />;
-        })}
+      <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8 ml-12">
+        {classIds &&
+          classIds
+            .reverse()
+            .slice(0, visible)
+            .map((class_taught, i) => {
+              return (
+                <div key={i}>
+                  <CardDetailsId classId={class_taught} />;
+                </div>
+              );
+            })}
+      </div>
+      {classIds.length > 6 && (
+        <div className=" flex flex-row items-center justify-center pt-4 mt-4	">
+          <button
+            className=" bg-[#080E26] text-white rounded-full p-4 text-dimWhite w-36 font-semibold"
+            onClick={showMoreItems}
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 };
