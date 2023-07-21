@@ -20,12 +20,15 @@ import { ChildAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import { FacoryAddr } from "../../../utils/contractAddress";
 import FACABI from "../../../utils/factoryABI.json";
+import main from "../../../components/upload.mjs";
 
 const Programmes = () => {
   const [modal, setModal] = useState(false);
   const { address } = useAccount();
   const [schoolName, setSchoolName] = useState();
   const [cohortName, setCohortName] = useState();
+  const [image, setImage] = useState();
+  const [uri, setUri] = useState();
   const [OrganisationName, setOrganisationName] = useState();
   const [programName, setProgramName] = useState();
   const [programAddress, setprogramAddress] = useState(["0x00"]);

@@ -63,7 +63,6 @@ const Attendance = () => {
     },
   });
 
-
   const handleClose = () => {
     //alert('closing');
     setModal(false);
@@ -99,13 +98,11 @@ const Attendance = () => {
   };
 
   useEffect(() => {
-
-    if (typeof window !== 'undefined') {
-        let res = localStorage.getItem('programAddress');
-        setProgramAddress(res);
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
     }
-
-  }, [programAddress])
+  }, [programAddress]);
 
   return (
     <div>
@@ -152,6 +149,7 @@ const Attendance = () => {
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
                 type="number"
                 placeholder="Enter today's NFT ID"
+                required
                 onChange={(e) => setId(e.target.value)}
               />
             </label>
@@ -162,6 +160,7 @@ const Attendance = () => {
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
                 type="text"
                 placeholder="Enter topic taught today"
+                required
                 onChange={(e) => setTopic(e.target.value)}
               />
             </label>

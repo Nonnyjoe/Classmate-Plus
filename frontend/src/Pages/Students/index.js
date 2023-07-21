@@ -7,10 +7,13 @@ import HeaderSection from "../../ui-components/HeaderSection";
 import { MdDelete } from "react-icons/md";
 // import { useRecoilValue } from "recoil";
 // import { addressState } from "../../../atoms/addressAtom";
-import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+  useContractRead,
+  useContractWrite,
+  usePrepareContractWrite,
+} from "wagmi";
 import ChildAbi from "../../../utils/childABI.json";
 import TableRow from "../../ui-components/TableRow";
-
 
 const Students = () => {
   const [query, setQuery] = useState("");
@@ -18,38 +21,37 @@ const Students = () => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [programAddress, setProgramAddress] = useState("") ;
-  
+  const [programAddress, setProgramAddress] = useState("");
 
-  const { data: listStudentsData, isLoading: listStudentIsLoading } = useContractRead({
-    address: programAddress ?? '0x00',
-    abi: ChildAbi,
-    functionName: "liststudents",
-  })
+  const { data: listStudentsData, isLoading: listStudentIsLoading } =
+    useContractRead({
+      address: programAddress ?? "0x00",
+      abi: ChildAbi,
+      functionName: "liststudents",
+    });
 
   const { config: deleteStudentsConfig } = usePrepareContractWrite({
-    address: programAddress ?? '0x00',
+    address: programAddress ?? "0x00",
     abi: ChildAbi,
     functionName: "EvictStudents",
-    args: [selectedStudents]
-  })
+    args: [selectedStudents],
+  });
 
-
-  const {data: deleteStudentsData, isLoading: deleteStudentsIsLoading, write: deleteStudentsWrite} = useContractWrite(deleteStudentsConfig)
-
+  const {
+    data: deleteStudentsData,
+    isLoading: deleteStudentsIsLoading,
+    write: deleteStudentsWrite,
+  } = useContractWrite(deleteStudentsConfig);
 
   useEffect(() => {
-
-    if (typeof window !== 'undefined') {
-        let res = localStorage.getItem('programAddress');
-        setProgramAddress(res);
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
     }
 
     setStudents(listStudentsData);
     console.log(students);
-
   }, [students, listStudentsData, programAddress]);
-  
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -58,8 +60,6 @@ const Students = () => {
   // const handleDelete = (post) => {
   //   setPosts(posts.filter((p) => p.id !== post.id));
   // };
-
-  
 
   const handleDeleteSelected = () => {
     // const remainingStudents = students.filter(
@@ -99,7 +99,7 @@ const Students = () => {
           />
           <form onSubmit={handleSubmit}>
             <label
-              for="default-search"
+              htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
               Search
@@ -159,16 +159,22 @@ const Students = () => {
             </tr>
           </thead>
           <tbody>
-            {paginateStudents && (paginateStudents
-              .filter((student) => {
-                return query.toLowerCase() === ""
-                  ? student
-                  : student.toLowerCase().includes(query);
-              })
-              .map((student, ind) => (
-                <TableRow address={student} ind={ind} selectedAddresses={selectedStudents} setSelectedAddresses={setSelectedStudents} mentor={false}/>
-              )))}
-
+            {paginateStudents &&
+              paginateStudents
+                .filter((student) => {
+                  return query.toLowerCase() === ""
+                    ? student
+                    : student.toLowerCase().includes(query);
+                })
+                .map((student, ind) => (
+                  <TableRow
+                    address={student}
+                    ind={ind}
+                    selectedAddresses={selectedStudents}
+                    setSelectedAddresses={setSelectedStudents}
+                    mentor={false}
+                  />
+                ))}
           </tbody>
         </table>
 
