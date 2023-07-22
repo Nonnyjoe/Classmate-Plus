@@ -28,10 +28,20 @@ const TableRow = ({
 
   const handleCheckboxChange = (event, address) => {
     const { checked } = event.target;
-    if (checked) {
-      setSelectedAddresses([...selectedAddresses, address]);
+
+    if (mentor) {
+      if (checked) {
+        setSelectedAddresses(address);
+      } 
+      // else {
+      //   setSelectedAddresses(selectedAddresses.filter((s) => s !== address));
+      // }
     } else {
-      setSelectedAddresses(selectedAddresses.filter((s) => s !== address));
+      if (checked) {
+        setSelectedAddresses([...selectedAddresses, address]);
+      } else {
+        setSelectedAddresses(selectedAddresses.filter((s) => s !== address));
+      }
     }
   };
 
@@ -66,7 +76,7 @@ const TableRow = ({
               id="default-checkbox"
               type="checkbox"
               value=""
-              checked={selectedAddresses.some(
+              checked={mentor ? selectedAddresses === address : selectedAddresses.some(
                 (s) => s === address
               )}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"

@@ -24,13 +24,14 @@ import { MdDelete } from "react-icons/md";
 // import { useRecoilValue } from "recoil";
 // import { addressState } from "../../../atoms/addressAtom";
 import TableRow from "../../ui-components/TableRow";
+import { toast } from "react-toastify";
 
 
 
 const Mentors = () => {
   const [query, setQuery] = useState("");
   const [mentorsList, setMentorsList] = useState([]);
-  const [selectedMentors, setSelectedMentors] = useState([]);
+  const [selectedMentor, setSelectedMentor] = useState();
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolName, setSchoolName] = useState();
@@ -50,12 +51,23 @@ const Mentors = () => {
   });
 
 
-  // const {config: deleteMentorsConfig } = usePrepareContractWrite({
-  //   address: programAddress,
-  //   abi: CHILDABI,
-  //   functionName: "",
-  //   args: [selectedMentors]
-  // })
+  const {config: handOverConfig } = usePrepareContractWrite({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "mentorHandover",
+    args: [selectedMentor]
+  })
+
+  const { data: handOverData, isError: handOverIsError, error: handOverError, write: handOverWrite } = useContractWrite(handOverConfig)
+
+  useWaitForTransaction({
+    hash: handOverData?.hash,
+
+    onSuccess(data) {
+      toast.success(`Hand over successful`);
+    }
+    
+  })
 
   useEffect(() => {
 
@@ -63,6 +75,10 @@ const Mentors = () => {
         let res = localStorage.getItem('programAddress');
         setProgramAddress(res);
     }
+
+    // if (handOverIsError) {
+    //   toast.error(`Error encountered: ${handOverError}`)
+    // }
 
     setMentorsList(mentorsListData);
     console.log(mentorsList);
@@ -80,10 +96,11 @@ const Mentors = () => {
   const handleCheckboxChange = (event, mentor) => {
     const { checked } = event.target;
     if (checked) {
-      setSelectedMentors([...selectedMentors, mentor]);
-    } else {
-      setSelectedMentors(selectedMentors.filter((s) => s !== mentor));
-    }
+      setSelectedMentor(mentor);
+    } 
+    // else {
+    //   setSelectedMentor(selectedMentor.filter((s) => s !== mentor));
+    // }
   };
 
   const handleDeleteSelected = () => {
@@ -92,7 +109,7 @@ const Mentors = () => {
     // );
     // deleteMentorsWrite?.();
     setMentorsList(mentorsListData);
-    setSelectedMentors([]);
+    setSelectedMentor("");
   };
 
   const handleSubmit = (e) => {
@@ -119,7 +136,7 @@ const Mentors = () => {
             fontSize={20}
             color="#1E429F"
             onClick={handleDeleteSelected}
-            disabled={selectedMentors.length === 0}
+            disabled={selectedMentor === ""}
           />
           <form onSubmit={handleSubmit}>
             <label
@@ -178,7 +195,7 @@ const Mentors = () => {
                 Address
               </th>
               <th scope="col" className="px-6 py-3">
-                Delete
+                Hand over
               </th>
             </tr>
           </thead>
@@ -191,7 +208,7 @@ const Mentors = () => {
                   : mentor.toLowerCase().includes(query);
               })
               ?.map((mentor, ind) => (
-                <TableRow address={mentor} ind={ind} selectedAddresses={selectedMentors} setSelectedAddresses={setSelectedMentors} mentor={true}/>
+                <TableRow address={mentor} ind={ind} selectedAddresses={selectedMentor} setSelectedAddresses={setSelectedMentor} mentor={true}/>
               )))
             }
           </tbody>

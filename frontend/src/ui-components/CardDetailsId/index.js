@@ -63,8 +63,6 @@ const CardDetailsId = ({ classId }) => {
     args: [mentorAddress],
   });
 
-  console.log("mentor", mentorAddress);
-
   useEffect(() => {
     const handleCardNFT = (showUri) => {
       const mainNFT =
@@ -101,10 +99,6 @@ const CardDetailsId = ({ classId }) => {
     setSubHeading(lectureData?.topic);
     handleCardNFT(showUri);
   }, [lectureData, userName, showUri, detail]);
-
-  console.log("detail", detail);
-  console.log("status", trueStatus);
-  console.log("students", students);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 

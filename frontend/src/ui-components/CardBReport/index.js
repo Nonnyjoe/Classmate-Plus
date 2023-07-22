@@ -47,7 +47,7 @@ const CardBReport = () => {
               );
             })}
       </div>
-      {classIds.length > 6 && (
+      {classIds?.length > 6 && (
         <div className=" flex flex-row items-center justify-center pt-4 mt-4	">
           <button
             className=" bg-[#080E26] text-white rounded-full p-4 text-dimWhite w-36 font-semibold"
