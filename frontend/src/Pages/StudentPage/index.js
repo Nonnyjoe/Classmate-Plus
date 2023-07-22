@@ -1,24 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsFillDropletFill } from "react-icons/bs";
 import HeaderSection from "../../ui-components/HeaderSection";
 import ActionButton from "../../ui-components/ActionButton";
 import Section from "../../ui-components/Section";
-import Card from "../../ui-components/Card";
 import Modal from "../../ui-components/Modal";
-import { SlCalender } from "react-icons/sl";
+
 import styles from "./styles.module.css";
-import ABI from '../../../utils/childABI.json';
-import contractAddress from "../../../utils/contractAddress";
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction, useContractRead } from "wagmi";
+// import { useRecoilState, useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import { toast } from "react-toastify";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+import ChildABI from "../../../utils/childABI.json";
+
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+  useAccount,
+  useContractRead,
+} from "wagmi";
+import StudCard from "../../ui-components/StudCard";
 
 const StudentPage = () => {
   const [id, setId] = useState();
-  const [proAddress, setProAddress] = useRecoilState(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  const [visible, setVisible] = useState(6);
+  const [classIds, setClassIds] = useState();
+
+  const { address } = useAccount();
 
   const [modal, setModal] = useState(false);
+
+  const { config: config1 } = usePrepareContractWrite({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "signAttendance",
+    args: [id],
+  });
+
+  const {
+    data: signAttendanceData,
+    isLoading: signAttendanceIsLoading,
+    write: sign,
+  } = useContractWrite(config1);
+
+  const {
+    data: signwaitData,
+    isLoading: signwaitIsLoading,
+    isError,
+    isSuccess,
+  } = useWaitForTransaction({
+    hash: signAttendanceData?.hash,
+
+    onSuccess: () => {
+      toast.success("ID Submitted Successfully");
+    },
+
+    onError(error) {
+      toast.error("ID Submission Error: ", error);
+    },
+  });
+
+  const { data: classIdsData } = useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "listClassesAttended",
+    args: [address],
+  });
 
   const handleClose = () => {
     //alert('closing');
@@ -29,48 +76,24 @@ const StudentPage = () => {
     setModal(false);
   };
 
-  const { config: config1 } = usePrepareContractWrite({
-    address: contractAddress,
-    abi: ABI,
-    functionName: 'signAttendance',
-    args: [
-      id
-    ],
-  });
-
-  const {
-    data: signAttendanceData,
-    isLoading: signAttendanceIsLoading,
-    write: sign,
-  } = useContractWrite(config1);
-
-  const {
-    data: signAttendanceWaitData,
-    isLoading: signAttendanceWaitDataIsLoading,
-    isError,
-    isSuccess,
-  } = useWaitForTransaction({
-    hash: signAttendanceData?.hash,
-
-    onSuccess: () => {
-      toast.success('Attendance signed successfully');
-    },
-
-    onError(error) {
-      toast.error('Sign attendance error: ', error);
-    },
-  })
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    sign?.();
+  const handleSubmit = () => {
+    sign();
+    toast.success("Submitted");
     handleClose();
   };
 
-  const addressValue = useRecoilValue(addressState);
-  // console.log(addressValue);
-  console.log(proAddress);
-  console.log("addressValue", addressValue);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
+    }
+
+    setClassIds(classIdsData);
+  }, [classIdsData]);
+
+  const showMoreItems = () => {
+    setVisible((prevValue) => prevValue + 6);
+  };
 
   return (
     <div>
@@ -87,40 +110,31 @@ const StudentPage = () => {
       />
 
       <Section>
-        <Card
-          heading="Topic: Topic for today"
-          subHeading="Description: description of what was taught"
-          rightItem={() => {
-            return <h2>Mentor's Name</h2>;
-          }}
-          footerLeft={() => {
-            return (
-              <div className={styles["date-placeholder"]}>
-                <SlCalender />
-                <p className="ml-5">5th Sep 2023</p>
-                <p className=" ml-7">NFT ID: 1</p>
-              </div>
-            );
-          }}
-        >
-          <div
-            style={{
-              margin: "10px",
-            }}
-          >
-            <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
-              <div className=" rounded-lg ">
-                <img
-                  src="https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=620&quality=85&dpr=1&s=none"
-                  width={500}
-                  height={500}
-                  className="rounded-lg object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </Card>
+        <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8 ml-12">
+          {classIds &&
+            classIds
+              .reverse()
+              .slice(0, visible)
+              .map((class_attended, i) => {
+                return (
+                  <div key={i}>
+                    <StudCard classId={class_attended} />
+                  </div>
+                );
+              })}
+        </div>
       </Section>
+
+      {classIds?.length > 6 && (
+        <div className=" flex flex-row items-center justify-center pt-4 mt-4	">
+          <button
+            className=" bg-[#080E26] text-white rounded-full p-4 text-dimWhite w-36 font-semibold"
+            onClick={showMoreItems}
+          >
+            Load More
+          </button>
+        </div>
+      )}
 
       <Modal
         isOpen={modal}

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { SlCalender } from "react-icons/sl";
 import ActionButton from "../ActionButton";
 import { useContractRead } from "wagmi";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ChildAbi from "../../../utils/childABI.json";
 import Modal from "../Modal";
 import Toggle from "../Toggle";
@@ -23,7 +23,8 @@ const ClassDetailsCard = ({
     const [width, setWidth] = useState(null)
     const [modal, setModal] = useState(false)
     const [classid, setClassId] = useState()
-    const programAddress = useRecoilValue(addressState)
+    const [programAddress, setProgramAddress] = useState();
+    // const programAddress = useRecoilValue(addressState)
 
     const rightItem = () => {
         return <h2>Mentor on Duty: {lectureData?.mentorOnDuty}</h2>;
@@ -75,6 +76,12 @@ const ClassDetailsCard = ({
 
 
     useEffect(() => {
+
+        if (typeof window !== 'undefined') {
+            let res = localStorage.getItem('programAddress');
+            setProgramAddress(res);
+        }
+
         setHeading(lectureData?.topic);
         setClassId(classId);
         setSubHeading("Description of what was taught");

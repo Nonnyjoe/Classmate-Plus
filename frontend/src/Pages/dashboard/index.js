@@ -21,18 +21,19 @@ import Paragraph from "../../components/Paragraph";
 import BarChartExample from "../../components/BarChartExample";
 import CardReport from "../../ui-components/CardReport";
 import { toast } from "react-toastify";
-import { useRecoilValue } from "recoil";
-
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ChildABI from "../../../utils/childABI.json";
+import BarChart from "../../components/BarChart";
 
 export default function Dashboard() {
   const [modal, setModal] = useState(false);
   const [classes, setClasses] = useState();
   const [mentors, setMentors] = useState();
   const [students, setStudents] = useState();
-  const programAddress = useRecoilValue(addressState);
-  console.log("Program address", programAddress);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
+
 
   useContractRead({
     address: programAddress,
@@ -79,6 +80,15 @@ export default function Dashboard() {
     handleClose();
   };
 
+  useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
+  }, [programAddress])
+
   return (
     <>
       <HeaderSection
@@ -103,10 +113,11 @@ export default function Dashboard() {
       </Section>
 
       <Section>
-        <Card heading="Bar Chart Example" subHeading="Data of students">
+        <Card heading="Class Summary Bar Chart" subHeading="Data of students">
           <BarChartExample />
+          {/*<BarChart />*/}
         </Card>
-        <Card heading="Doughnut Chart Example" subHeading="Data of students">
+        <Card heading="Class Summary Doughnut" subHeading="Data of students">
           <div
             style={{
               display: "flex",

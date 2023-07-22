@@ -5,10 +5,15 @@ import Pagination from "../../components/Pagination";
 import { paginate } from "../../../utils/paginate";
 import HeaderSection from "../../ui-components/HeaderSection";
 import { MdDelete } from "react-icons/md";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
-import { useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
+import {
+  useContractRead,
+  useContractWrite,
+  usePrepareContractWrite,
+} from "wagmi";
 import ChildAbi from "../../../utils/childABI.json";
+import TableRow from "../../ui-components/TableRow";
 
 const Students = () => {
   const [query, setQuery] = useState("");
@@ -16,51 +21,37 @@ const Students = () => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [programAddress, setProgramAddress] = useState("") ;
-  
-  const PROGRAM_ADDR = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState("");
 
-  const { data: listStudentsData, isLoading: listStudentIsLoading } = useContractRead({
-    address: programAddress ?? '0x00',
-    abi: ChildAbi,
-    functionName: "liststudents",
-  })
+  const { data: listStudentsData, isLoading: listStudentIsLoading } =
+    useContractRead({
+      address: programAddress ?? "0x00",
+      abi: ChildAbi,
+      functionName: "liststudents",
+    });
 
   const { config: deleteStudentsConfig } = usePrepareContractWrite({
-    address: programAddress ?? '0x00',
+    address: programAddress ?? "0x00",
     abi: ChildAbi,
     functionName: "EvictStudents",
-    args: [selectedStudents]
-  })
+    args: [selectedStudents],
+  });
 
-
-  const {data: deleteStudentsData, isLoading: deleteStudentsIsLoading, write: deleteStudentsWrite} = useContractWrite(deleteStudentsConfig)
-
-
-
-
-  // Fetches the name of the address passed
-  // const get_name = (addr) => {
-  //   const { data } = useContractRead({
-  //     address: programAddress,
-  //     abi: ChildAbi,
-  //     functionName: "getStudentName",
-  //     args: [addr ?? '0x00']
-  //   })
-
-  //   const contract = 
-  //   return data
-  // }
-
+  const {
+    data: deleteStudentsData,
+    isLoading: deleteStudentsIsLoading,
+    write: deleteStudentsWrite,
+  } = useContractWrite(deleteStudentsConfig);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
+    }
 
-    setProgramAddress(PROGRAM_ADDR ?? '0x00')
     setStudents(listStudentsData);
     console.log(students);
-
   }, [students, listStudentsData, programAddress]);
-  
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -69,15 +60,6 @@ const Students = () => {
   // const handleDelete = (post) => {
   //   setPosts(posts.filter((p) => p.id !== post.id));
   // };
-
-  const handleCheckboxChange = (event, student) => {
-    const { checked } = event.target;
-    if (checked) {
-      setSelectedStudents([...selectedStudents, student]);
-    } else {
-      setSelectedStudents(selectedStudents.filter((s) => s !== student));
-    }
-  };
 
   const handleDeleteSelected = () => {
     // const remainingStudents = students.filter(
@@ -117,7 +99,7 @@ const Students = () => {
           />
           <form onSubmit={handleSubmit}>
             <label
-              for="default-search"
+              htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
               Search
@@ -177,44 +159,25 @@ const Students = () => {
             </tr>
           </thead>
           <tbody>
-            {paginateStudents && (paginateStudents
-              .filter((student) => {
-                return query.toLowerCase() === ""
-                  ? student
-                  : student.toLowerCase().includes(query);
-              })
-              .map((student, ind) => (
-                <tr
-                  className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
-                  key={student}
-                >
-                  <td className="px-6 py-4"> {ind + 1} </td>
-                  <td className="px-6 py-4"> {"User name"} </td>
-                  <td className="px-6 py-4"> {student} </td>
-                  <td className="px-6 py-4">
-                    <button
-                    //onClick={() => handleDelete(post)}
-                    //className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      {" "}
-                      <div className="flex items-center">
-                        <input
-                          id="default-checkbox"
-                          type="checkbox"
-                          value=""
-                          checked={selectedStudents.some(
-                            (s) => s === student
-                          )}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          onChange={(e) => handleCheckboxChange(e, student)}
-                        />
-                      </div>{" "}
-                    </button>
-                  </td>
-                </tr>
-              )))}
+            {paginateStudents &&
+              paginateStudents
+                .filter((student) => {
+                  return query.toLowerCase() === ""
+                    ? student
+                    : student.toLowerCase().includes(query);
+                })
+                .map((student, ind) => (
+                  <TableRow
+                    address={student}
+                    ind={ind}
+                    selectedAddresses={selectedStudents}
+                    setSelectedAddresses={setSelectedStudents}
+                    mentor={false}
+                  />
+                ))}
           </tbody>
         </table>
+
         <Pagination
           items={students?.length}
           pageSize={pageSize}
