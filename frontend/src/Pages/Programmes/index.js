@@ -37,13 +37,13 @@ const Programmes = () => {
 
   /// FETCH THE LIST OF ALL STAFFS
   useContractRead({
-    address: FacoryAddr,
+    address: "0x548100374A4306CbE355542AB122d6C4C3c9a030",
     abi: FACABI,
     functionName: "getUserOrganisatons",
     watch: true,
     args: [address],
     onSuccess(data) {
-      console.log(data);
+      console.log('Program address', data);
       // console.log("data");
       setprogramAddress(data);
     },
@@ -55,7 +55,7 @@ const Programmes = () => {
     isSuccess,
     write: createOrganisation,
   } = useContractWrite({
-    address: FacoryAddr,
+    address: "0x548100374A4306CbE355542AB122d6C4C3c9a030",
     abi: FACABI,
     functionName: "createorganisation",
     args: [schoolName, programName, "gsjdhsuua"],

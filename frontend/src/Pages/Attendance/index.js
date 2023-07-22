@@ -13,7 +13,7 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
-  useContractReads
+  useContractRead
 } from "wagmi";
 import ChildABI from "../../../utils/childABI.json";
 // import FactoryABI from "../../../utils/factoryABI.json";
@@ -37,7 +37,7 @@ const Attendance = () => {
     args: [id, uri, topic],
   });
 
-  console.log(programAddress);
+  console.log("program addr: ", programAddress);
 
   const {
     data: createAttendanceData,
@@ -96,19 +96,23 @@ const Attendance = () => {
         toast.error("Failed to create attendance");
       }
     }
-    console.log("address-", proAddress);
   };
+  console.log("address-", proAddress);
 
-  // useEffect(() => {
-  //   if(isError) {
-  //     toast.error('Tx error');
-  //   }
+  useEffect(() => {
+    if(isError) {
+      toast.error('Tx error');
+    }
 
-  //   if(isSuccess) {
-  //     setId[0];
+    if(isSuccess) {
+      setId[0];
+      setUri("");
+      setTopic("");
 
-  //   }
-  // })
+    }
+  }, [isError, isSuccess]);
+
+
 
   return (
     <div>
