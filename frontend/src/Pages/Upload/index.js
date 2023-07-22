@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
-import ChildABI from '../../../utils/childABI.json';
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
+import ChildABI from "../../../utils/childABI.json";
 import { toast } from "react-toastify";
-import {FacoryAddr} from '../../../utils/contractAddress';
+import { FacoryAddr } from "../../../utils/contractAddress";
 // import { useRecoilValue } from "recoil";
 // import { addressState } from "../../../atoms/addressAtom";
-
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -16,93 +19,83 @@ const UploadForm = () => {
   const [programAddress, setProgramAddress] = useState();
   // const programmeAddress = useRecoilValue(addressState);
 
-
-  const {config: UploadStudentsConfig} = usePrepareContractWrite({
+  const { config: UploadStudentsConfig } = usePrepareContractWrite({
     address: programAddress,
     abi: ChildABI,
     functionName: "registerStudents",
-    args: [dataArray]
-  })
+    args: [dataArray],
+  });
 
-  const {data: UploadStudentsData, isLoading: UploadStudentsIsLoading, write: UploadStudents} = useContractWrite(UploadStudentsConfig);
+  const {
+    data: UploadStudentsData,
+    isLoading: UploadStudentsIsLoading,
+    write: UploadStudents,
+  } = useContractWrite(UploadStudentsConfig);
 
   const { data: uploadStudentsDataHash } = useWaitForTransaction({
     hash: UploadStudentsData?.hash,
     onSuccess(data) {
       toast.success("Student List updated");
-    }
-    
-  })
+    },
+  });
 
-
-  const {config: UploadMentorsConfig} = usePrepareContractWrite({
+  const { config: UploadMentorsConfig } = usePrepareContractWrite({
     address: programAddress,
     abi: ChildABI,
-    functionName: 'registerStaffs',
+    functionName: "registerStaffs",
     args: [dataArray],
-  })
+  });
 
-  const {data: UploadMentorsData, write: UploadMentors} = useContractWrite(UploadMentorsConfig);
+  const { data: UploadMentorsData, write: UploadMentors } =
+    useContractWrite(UploadMentorsConfig);
 
   const { data: UploadMentorsDataHash } = useWaitForTransaction({
     hash: UploadMentorsData?.hash,
 
     onSuccess(data) {
       toast.success("Mentors List updated");
-    }
+    },
+  });
 
-  })
-  
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
     const reader = new FileReader();
     reader.onload = (event) => {
       let content = event.target.result;
-      const lines = content.replace(/[\r\n]+/g, '\n').split('\n');
+      const lines = content.replace(/[\r\n]+/g, "\n").split("\n");
       let students_array = [];
 
       for (let i = 0; i < lines.length - 1; i++) {
         const line = lines[i];
-        let tokens = line.split(', ');
+        let tokens = line.split(", ");
 
         let student_instance = {
           _name: tokens[0],
-          _address: tokens[1]
-        }
+          _address: tokens[1],
+        };
         students_array.push(student_instance);
       }
 
-      setDataArray(students_array)
+      setDataArray(students_array);
       toast.success("File selected");
-    }
+    };
 
     reader.readAsText(file);
-
   };
 
-
-
-
   const handleFileUpload = () => {
-
     if (selectedFile == null) return;
-    
+
     try {
-
       if (studentUpload) {
-
         UploadStudents?.();
-
       } else {
-
-        UploadMentors?.()
-
+        UploadMentors?.();
       }
 
       // Reset the selected file
       setSelectedFile(null);
-
     } catch (error) {
       console.error("Error uploading file");
       toast.error("Error uploading file");
@@ -110,13 +103,11 @@ const UploadForm = () => {
   };
 
   useEffect(() => {
-    
-    if (typeof window !== 'undefined') {
-        let res = localStorage.getItem('programAddress');
-        setProgramAddress(res);
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
     }
-
-  }, [programAddress])
+  }, [programAddress]);
 
   return (
     <div>
@@ -164,7 +155,9 @@ const UploadForm = () => {
           </label>
           <div className="relative flex flex-col items-center justify-center overflow-hidden">
             <div className="flex">
-              <span className="ml-2 text-sm font-medium text-gray-900">Mentors Upload</span>
+              <span className="ml-2 text-sm font-medium text-gray-900">
+                Mentors Upload
+              </span>
               <label className="inline-flex relative items-center mr-5 cursor-pointer">
                 <input
                   type="checkbox"
@@ -178,17 +171,18 @@ const UploadForm = () => {
                   }}
                   className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-blue-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
                 ></div>
-                <span className="ml-2 text-sm font-medium text-gray-900">Student Upload</span>
+                <span className="ml-2 text-sm font-medium text-gray-900">
+                  Student Upload
+                </span>
               </label>
             </div>
           </div>
           <button
             className="bg-blue-500 mt-6 hover:bg-blue-</Section> text-white px-4 py-2 rounded-lg ml-4"
-            onClick={(e) => handleFileUpload(e)}
+            onClick={() => handleFileUpload()}
           >
             Upload List
           </button>
-
         </div>
       </Section>
     </div>
