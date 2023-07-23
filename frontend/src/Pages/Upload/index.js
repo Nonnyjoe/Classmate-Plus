@@ -102,6 +102,8 @@ const UploadForm = () => {
     }
   };
 
+  console.log(programAddress);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       let res = localStorage.getItem("programAddress");

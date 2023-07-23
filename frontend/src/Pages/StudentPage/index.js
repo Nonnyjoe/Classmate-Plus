@@ -77,8 +77,8 @@ const StudentPage = () => {
   };
 
   const handleSubmit = () => {
-    sign();
-    toast.success("Submitted");
+    sign?.();
+    //toast.success("Submitted");
     handleClose();
   };
 
