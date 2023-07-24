@@ -21,12 +21,11 @@ import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
 import { MdDelete } from "react-icons/md";
+import { TbExchange } from "react-icons/tb";
 // import { useRecoilValue } from "recoil";
 // import { addressState } from "../../../atoms/addressAtom";
 import TableRow from "../../ui-components/TableRow";
 import { toast } from "react-toastify";
-
-
 
 const Mentors = () => {
   const [query, setQuery] = useState("");
@@ -36,54 +35,76 @@ const Mentors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolName, setSchoolName] = useState();
   const [programName, setProgramName] = useState();
+  const [mentorAddress, setMentorAddress] = useState();
+  const [mentorName, setMentorName] = useState();
   const [programAddress, setProgramAddress] = useState();
   // const programAddress = useRecoilValue(addressState);
 
-
   /// FETCH THE LIST OF ALL STAFFS
-  const { data: mentorsListData, isLoading: mentorsListIsLLoading } = useContractRead({
-    address: programAddress,
-    abi: CHILDABI,
-    functionName: "listMentors",
-    onSuccess(data) {
-      console.log(data);
-    },
-  });
+  const { data: mentorsListData, isLoading: mentorsListIsLLoading } =
+    useContractRead({
+      address: programAddress,
+      abi: CHILDABI,
+      functionName: "listMentors",
+      onSuccess(data) {
+        console.log(data);
+      },
+    });
 
-
-  const {config: handOverConfig } = usePrepareContractWrite({
+  const { config: handOverConfig } = usePrepareContractWrite({
     address: programAddress,
     abi: CHILDABI,
     functionName: "mentorHandover",
-    args: [selectedMentor]
-  })
+    args: [selectedMentor],
+  });
 
-  const { data: handOverData, isError: handOverIsError, error: handOverError, write: handOverWrite } = useContractWrite(handOverConfig)
+  const {
+    data: handOverData,
+    isError: handOverIsError,
+    error: handOverError,
+    write: handOverWrite,
+  } = useContractWrite(handOverConfig);
 
   useWaitForTransaction({
     hash: handOverData?.hash,
 
     onSuccess(data) {
       toast.success(`Hand over successful`);
-    }
-    
-  })
+    },
+  });
+
+  //Mentor on duty
+  const { data: mentor, isLoading: lectureDataIsLoading } = useContractRead({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "getMentorOnDuty",
+  });
+
+  const { data: userName } = useContractRead({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "getMentorsName",
+    args: [mentorAddress],
+  });
+
+  console.log("mentor", mentorAddress);
 
   useEffect(() => {
-
-    if (typeof window !== 'undefined') {
-        let res = localStorage.getItem('programAddress');
-        setProgramAddress(res);
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
     }
 
     // if (handOverIsError) {
     //   toast.error(`Error encountered: ${handOverError}`)
     // }
 
+    setMentorAddress(mentor);
+    setMentorName(userName);
+
     setMentorsList(mentorsListData);
     console.log(mentorsList);
-
-  }, [mentorsList, mentorsListData]);
+  }, [mentorsList, mentorsListData, mentorName]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -97,7 +118,7 @@ const Mentors = () => {
     const { checked } = event.target;
     if (checked) {
       setSelectedMentor(mentor);
-    } 
+    }
     // else {
     //   setSelectedMentor(selectedMentor.filter((s) => s !== mentor));
     // }
@@ -132,12 +153,13 @@ const Mentors = () => {
       />
       <div className="relative scrollbar-hide overflow-x-auto shadow-md sm:rounded-lg">
         <div className="flex justify-between items-center p-4">
-          <MdDelete
+          <TbExchange
             fontSize={20}
             color="#1E429F"
             onClick={handleDeleteSelected}
             disabled={selectedMentor === ""}
           />
+          <p className="ml-2 font-medium">Current Mentor: {mentorName}</p>
           <form onSubmit={handleSubmit}>
             <label
               for="default-search"
@@ -200,17 +222,22 @@ const Mentors = () => {
             </tr>
           </thead>
           <tbody>
-            {
-              paginateMentors && (paginateMentors
-              ?.filter((mentor) => {
-                return query.toLowerCase() === ""
-                  ? mentor
-                  : mentor.toLowerCase().includes(query);
-              })
-              ?.map((mentor, ind) => (
-                <TableRow address={mentor} ind={ind} selectedAddresses={selectedMentor} setSelectedAddresses={setSelectedMentor} mentor={true}/>
-              )))
-            }
+            {paginateMentors &&
+              paginateMentors
+                ?.filter((mentor) => {
+                  return query.toLowerCase() === ""
+                    ? mentor
+                    : mentor.toLowerCase().includes(query);
+                })
+                ?.map((mentor, ind) => (
+                  <TableRow
+                    address={mentor}
+                    ind={ind}
+                    selectedAddresses={selectedMentor}
+                    setSelectedAddresses={setSelectedMentor}
+                    mentor={true}
+                  />
+                ))}
           </tbody>
         </table>
         <Pagination

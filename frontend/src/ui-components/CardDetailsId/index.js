@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./styles.module.css";
 
 import ActionButton from "../ActionButton";
@@ -63,6 +63,11 @@ const CardDetailsId = ({ classId }) => {
     args: [mentorAddress],
   });
 
+  const person = useMemo(
+    () => detail,
+    [] //no dependencies so the value doesn't change
+  );
+
   useEffect(() => {
     const handleCardNFT = (showUri) => {
       const mainNFT =
@@ -82,8 +87,8 @@ const CardDetailsId = ({ classId }) => {
       await axios.get(data, config).then((res) => setDetail(res.data));
     }
 
-    if (typeof window !== 'undefined') {
-      let res = localStorage.getItem('programAddress');
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
 
@@ -98,7 +103,7 @@ const CardDetailsId = ({ classId }) => {
     setMentorName(userName);
     setSubHeading(lectureData?.topic);
     handleCardNFT(showUri);
-  }, [lectureData, userName, showUri, detail]);
+  }, [lectureData, userName, showUri, person]);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 

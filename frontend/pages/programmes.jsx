@@ -6,12 +6,12 @@ import Footer from "../components/Footer";
 const programmes = () => {
   return (
     <div>
-      <div>
+      <div className="w-screen">
         <Navbar />
       </div>
 
       <Programmes />
-      <div>
+      <div className=" w-screen">
         <Footer />
       </div>
     </div>
