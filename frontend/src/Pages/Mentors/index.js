@@ -14,6 +14,7 @@ import {
   useWaitForTransaction,
   wagmi,
   usePrepareContractWrite,
+  useContractInfiniteReads,
 } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ChildAddr } from "../../../utils/contractAddress";
@@ -36,6 +37,8 @@ const Mentors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolName, setSchoolName] = useState();
   const [programName, setProgramName] = useState();
+  const [mentorOnDuty, setMentorOnDuty] = useState();
+  const [mentorOnDutyName, setMentorOnDutyName] = useState();
   const [programAddress, setProgramAddress] = useState();
   // const programAddress = useRecoilValue(addressState);
 
@@ -50,6 +53,28 @@ const Mentors = () => {
     },
   });
 
+
+  useContractRead({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "getMentorOnDuty",
+    onSuccess(data) {
+      setMentorOnDuty(data);
+    }
+  })
+
+
+  useContractRead({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "getMentorsName",
+    args: [mentorOnDuty],
+    onSuccess(data) {
+      setMentorOnDutyName(data);
+    }
+  })
+
+  
 
   const {config: handOverConfig } = usePrepareContractWrite({
     address: programAddress,
@@ -103,11 +128,11 @@ const Mentors = () => {
     // }
   };
 
-  const handleDeleteSelected = () => {
+  const handleHandOver = () => {
     // const remainingMentors = mentorsList.filter(
     //   (mentor) => !selectedMentors.some((s) => s === mentor)
     // );
-    // deleteMentorsWrite?.();
+    handOverWrite?.();
     setMentorsList(mentorsListData);
     setSelectedMentor("");
   };
@@ -135,9 +160,12 @@ const Mentors = () => {
           <MdDelete
             fontSize={20}
             color="#1E429F"
-            onClick={handleDeleteSelected}
+            onClick={handleHandOver}
             disabled={selectedMentor === ""}
           />
+          <div>
+            <p>Mentor on duty: {mentorOnDuty == "" ? "No Mentor on Duty" : mentorOnDutyName}</p>
+          </div>
           <form onSubmit={handleSubmit}>
             <label
               for="default-search"

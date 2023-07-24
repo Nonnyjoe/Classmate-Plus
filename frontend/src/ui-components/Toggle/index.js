@@ -77,16 +77,17 @@ export default function Toggle({ classId }) {
   });
 
   const handleClick = () => {
-    setCurrentStatus(lectureData?.status);
-    currentStatus === false ? open() : close?.();
+    currentStatus ? close?.() : open?.();
   };
-
+  
   useEffect(() => {
     
     if (typeof window !== 'undefined') {
-        let res = localStorage.getItem('programAddress');
-        setProgramAddress(res);
+      let res = localStorage.getItem('programAddress');
+      setProgramAddress(res);
     }
+
+    setCurrentStatus(lectureData?.status);
 
   }, [programAddress])
 

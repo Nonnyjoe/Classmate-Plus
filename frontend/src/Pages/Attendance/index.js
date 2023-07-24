@@ -38,7 +38,6 @@ const Attendance = () => {
     args: [id, uri, topic],
   });
 
-  console.log(programAddress);
 
   const {
     data: createAttendanceData,
@@ -77,7 +76,6 @@ const Attendance = () => {
     e.preventDefault();
     const result = await main(image, id, topic, desc);
 
-    console.log(result);
     setId(result.data.id);
     setUri(result.ipnft);
     setTopic(result.data.name);
