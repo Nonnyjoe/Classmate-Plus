@@ -22,6 +22,7 @@ import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
 import { MdDelete } from "react-icons/md";
+import { TbExchange } from "react-icons/tb";
 // import { useRecoilValue } from "recoil";
 // import { addressState } from "../../../atoms/addressAtom";
 import TableRow from "../../ui-components/TableRow";
@@ -153,7 +154,7 @@ const Mentors = () => {
       />
       <div className="relative scrollbar-hide overflow-x-auto shadow-md sm:rounded-lg">
         <div className="flex justify-between items-center p-4">
-          <MdDelete
+          <TbExchange
             fontSize={20}
             color="#1E429F"
             onClick={handleHandOver}
