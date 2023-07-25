@@ -77,7 +77,7 @@ export default function Toggle({ classId }) {
   });
 
   const handleClick = () => {
-    currentStatus === false ? open() : close();
+    currentStatus ? close?.() : open?.();
   };
 
   useEffect(() => {
@@ -85,9 +85,7 @@ export default function Toggle({ classId }) {
       let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
-
-    setCurrentStatus(lectureData?.status);
-  }, [programAddress, currentStatus]);
+  }, [programAddress]);
 
   return (
     <div className="relative flex flex-col items-center justify-center overflow-hidden">
