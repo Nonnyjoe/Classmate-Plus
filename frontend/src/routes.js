@@ -5,7 +5,7 @@ import { AiOutlineBarChart } from "react-icons/ai";
 import { PiStudentFill, PiChalkboardTeacher } from "react-icons/pi";
 import { SiGoogleclassroom } from "react-icons/si";
 
-export default [
+export default routes = [
   {
     to: "/",
     name: "Home",

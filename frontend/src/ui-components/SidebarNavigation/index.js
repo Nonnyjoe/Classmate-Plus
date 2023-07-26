@@ -8,8 +8,6 @@ import { BiChevronLeft } from "react-icons/bi";
 const SidebarNavigation = ({ sidebarMenuActive, toggleSidebarMenu }) => {
   const router = useRouter();
 
-  console.log({ router });
-
   return (
     <section
       className={`${styles.container} ${

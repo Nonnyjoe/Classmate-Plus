@@ -28,22 +28,22 @@ const BarChart = () => {
 
   console.log("classId", classIds);
 
-  useEffect(() => {
-    classIds.map((klass) => {
-      useContractRead({
-        address: programAddress,
-        abi: ChildABI,
-        functionName: "getLectureData",
-        watch: true,
-        args: [klass],
-        onSuccess(data) {
-          setClassData(data);
-        },
-      });
-    });
+  // classIds.map((klass) => {
+  //   useContractRead({
+  //     address: programAddress,
+  //     abi: ChildABI,
+  //     functionName: "getLectureData",
+  //     watch: true,
+  //     args: [klass],
+  //     onSuccess(data) {
+  //       setClassData(data);
+  //     },
+  //   });
+  // });
 
-    if (typeof window !== 'undefined') {
-      let res = localStorage.getItem('programAddress');
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
 

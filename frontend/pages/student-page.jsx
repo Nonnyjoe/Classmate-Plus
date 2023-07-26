@@ -11,7 +11,7 @@ import {
 import { toast } from "react-toastify";
 import StudentPage from "../src/Pages/StudentPage";
 
-const studentPage = () => {
+const StudentsPage = () => {
   const [id, setId] = useState(0);
 
   const { config: config1 } = usePrepareContractWrite({
@@ -58,4 +58,4 @@ const studentPage = () => {
   );
 };
 
-export default studentPage;
+export default StudentsPage;
