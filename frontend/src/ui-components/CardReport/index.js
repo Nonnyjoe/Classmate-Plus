@@ -50,46 +50,41 @@ const CardReport = ({ image }) => {
   // });
 
   useEffect(() => {
-
-    if (typeof window !== 'undefined') {
-      let res = localStorage.getItem('programAddress');
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
-
 
     setClassIds(classIdsData);
   }, [classIdsData]);
 
   return (
     <div>
-      {
-        classIds &&
-        classIds.map((class_taught) => {
+      {classIds &&
+        classIds.map((class_taught, index) => {
           return (
-            <ClassDetailsCard
-              classId={class_taught}
-              image = {image}
-            >
-              <div
-                style={{
-                  margin: "10px",
-                }}
-              >
-                <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
-                  <div className=" rounded-lg ">
-                    <img
-                      src={image}
-                      width={500}
-                      height={500}
-                      className="rounded-lg object-cover"
-                    />
+            <div key={index}>
+              <ClassDetailsCard classId={class_taught} image={image}>
+                <div
+                  style={{
+                    margin: "10px",
+                  }}
+                >
+                  <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
+                    <div className=" rounded-lg ">
+                      <img
+                        src={image}
+                        width={500}
+                        height={500}
+                        className="rounded-lg object-cover"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </ClassDetailsCard>
-          )
-        })
-      }
+              </ClassDetailsCard>
+            </div>
+          );
+        })}
     </div>
   );
 };

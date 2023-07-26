@@ -4,7 +4,7 @@ import styles from "./UserIcon.module.css";
 const UserIcon = ({ onClick = () => {} }) => {
   return (
     <div onClick={onClick} className={styles.container}>
-      <Image src={`/user-pic.jpeg`} width={"40"} height={"40"} />
+      <Image alt="user" src={`/user-pic.jpeg`} width={"40"} height={"40"} />
     </div>
   );
 };

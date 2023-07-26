@@ -16,8 +16,6 @@ import {
   useWaitForTransaction,
   useContractRead,
 } from "wagmi";
-import BillingHistory from "../../components/BillingHistory";
-import Paragraph from "../../components/Paragraph";
 import BarChartExample from "../../components/BarChartExample";
 import CardReport from "../../ui-components/CardReport";
 import { toast } from "react-toastify";
@@ -33,7 +31,6 @@ export default function Dashboard() {
   const [students, setStudents] = useState();
   const [programAddress, setProgramAddress] = useState();
   // const programAddress = useRecoilValue(addressState);
-
 
   useContractRead({
     address: programAddress,
@@ -81,13 +78,11 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-
-    if (typeof window !== 'undefined') {
-        let res = localStorage.getItem('programAddress');
-        setProgramAddress(res);
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
+      setProgramAddress(res);
     }
-
-  }, [programAddress])
+  }, [programAddress]);
 
   return (
     <>

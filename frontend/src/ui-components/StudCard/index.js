@@ -65,7 +65,7 @@ const StudCard = ({ classId }) => {
     setMentorName(userName);
     setSubHeading(lectureData?.topic);
     handleCardNFT(showUri);
-  }, [lectureData, userName, showUri, detail]);
+  }, [lectureData, userName, showUri, detail, classId]);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 
@@ -98,6 +98,7 @@ const StudCard = ({ classId }) => {
             <div className=" rounded-lg ">
               <img
                 src={imageUrl}
+                alt="class nft"
                 className="rounded-lg object-cover w-screen h-60"
               />
             </div>

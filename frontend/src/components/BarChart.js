@@ -48,7 +48,7 @@ const BarChart = () => {
     }
 
     console.log("classData", classData);
-  }, []);
+  }, [classData]);
 
   const list = [65, 59, 80, 81, 56];
 

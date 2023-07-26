@@ -15,6 +15,7 @@ import ChildAbi from "../../../utils/childABI.json";
 import DateMint from "../DateMint";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Image } from "next/image";
 
 const CardDetailsId = ({ classId }) => {
   const [heading, setHeading] = useState("");
@@ -65,7 +66,7 @@ const CardDetailsId = ({ classId }) => {
 
   const person = useMemo(
     () => detail,
-    [] //no dependencies so the value doesn't change
+    [detail] //no dependencies so the value doesn't change
   );
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const CardDetailsId = ({ classId }) => {
     setMentorName(userName);
     setSubHeading(lectureData?.topic);
     handleCardNFT(showUri);
-  }, [lectureData, userName, showUri, person]);
+  }, [lectureData, userName, showUri, classId, person]);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 
