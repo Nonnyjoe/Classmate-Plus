@@ -236,15 +236,14 @@ const Mentors = () => {
                     : mentor.toLowerCase().includes(query);
                 })
                 ?.map((mentor, ind) => (
-                  <div key={ind}>
-                    <TableRow
-                      address={mentor}
-                      ind={ind}
-                      selectedAddresses={selectedMentor}
-                      setSelectedAddresses={setSelectedMentor}
-                      mentor={true}
-                    />
-                  </div>
+                  <TableRow
+                    key={ind}
+                    address={mentor}
+                    ind={ind}
+                    selectedAddresses={selectedMentor}
+                    setSelectedAddresses={setSelectedMentor}
+                    mentor={true}
+                  />
                 ))}
           </tbody>
         </table>

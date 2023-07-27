@@ -167,15 +167,14 @@ const Students = () => {
                     : student.toLowerCase().includes(query);
                 })
                 .map((student, ind) => (
-                  <div key={ind}>
-                    <TableRow
-                      address={student}
-                      ind={ind}
-                      selectedAddresses={selectedStudents}
-                      setSelectedAddresses={setSelectedStudents}
-                      mentor={false}
-                    />
-                  </div>
+                  <TableRow
+                    key={ind}
+                    address={student}
+                    ind={ind}
+                    selectedAddresses={selectedStudents}
+                    setSelectedAddresses={setSelectedStudents}
+                    mentor={false}
+                  />
                 ))}
           </tbody>
         </table>
