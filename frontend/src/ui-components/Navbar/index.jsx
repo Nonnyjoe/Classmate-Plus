@@ -6,23 +6,13 @@ import Button from "../Button";
 const links = [
   {
     id: 1,
-    title: "Home",
-    url: "/",
-  },
-  {
-    id: 2,
     title: "About",
     url: "/about",
   },
   {
-    id: 3,
+    id: 2,
     title: "Contact",
     url: "/contact",
-  },
-  {
-    id: 4,
-    title: "Dashboard",
-    url: "/dashboard",
   },
 ];
 

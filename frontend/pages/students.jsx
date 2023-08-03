@@ -1,5 +1,4 @@
-import React from "react";
-import Layout from "../src/ui-components/layout";
+import Layout from "../src/ui-components/Layout";
 import Students from "../src/Pages/Students";
 
 const students = () => {

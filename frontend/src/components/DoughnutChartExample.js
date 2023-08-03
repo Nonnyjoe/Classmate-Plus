@@ -1,20 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { useContractRead } from "wagmi";
-import { useRecoilValue } from "recoil";
-// import { addressState } from "../../atoms/addressAtom";
 import ChildABI from "../../utils/childABI.json";
-
 
 const DoughnutChartExample = (props) => {
   const [classIds, setClassIds] = useState([]);
   const chartRef = useRef();
   const chartObjRef = useRef();
-  // const programAddress = useRecoilValue(addressState);
   const [programAddress, setProgramAddress] = useState();
 
-
-  const {data: class_ids} = useContractRead({
+  const { data: class_ids } = useContractRead({
     address: programAddress,
     abi: ChildABI,
     functionName: "getLectureIds",
@@ -56,15 +51,13 @@ const DoughnutChartExample = (props) => {
   };
 
   useEffect(() => {
-
-    if (typeof window !== 'undefined') {
-      let res = localStorage.getItem('programAddress');
+    if (typeof window !== "undefined") {
+      let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
 
     setClassIds(class_ids);
     console.log(classIds);
-
 
     const el = chartRef.current;
     if (chartObjRef.current) chartObjRef.current.destroy();

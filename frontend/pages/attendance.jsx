@@ -1,5 +1,4 @@
-import React from "react";
-import Layout from "../src/ui-components/layout";
+import Layout from "../src/ui-components/Layout";
 import Attendance from "../src/Pages/Attendance";
 
 const attendance = () => {

@@ -1,17 +1,16 @@
-import React from "react";
-import Programmes from "../src/Pages/Programmes";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import Programmes from "@/src/Pages/Programmes";
 
 const programmes = () => {
   return (
     <div>
-      <div>
+      <div className="w-screen">
         <Navbar />
       </div>
 
       <Programmes />
-      <div>
+      <div className=" w-screen">
         <Footer />
       </div>
     </div>

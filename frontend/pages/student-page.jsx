@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ChildABI from "../utils/childABI.json";
-//import contractAddress from '../utils/contractAddr';
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -11,7 +10,7 @@ import {
 import { toast } from "react-toastify";
 import StudentPage from "../src/Pages/StudentPage";
 
-const studentPage = () => {
+const StudentsPage = () => {
   const [id, setId] = useState(0);
 
   const { config: config1 } = usePrepareContractWrite({
@@ -58,4 +57,4 @@ const studentPage = () => {
   );
 };
 
-export default studentPage;
+export default StudentsPage;
