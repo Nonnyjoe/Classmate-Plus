@@ -9,20 +9,20 @@ import {
   useWaitForTransaction,
   wagmi,
 } from "wagmi";
-import { useRecoilState } from "recoil";
+// import { useRecoilState } from "recoil";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ChildAddr } from "../../../utils/contractAddress";
 import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
-import { addressState } from "../../../atoms/addressAtom";
+// import { addressState } from "../../../atoms/addressAtom";
 
 const ProgramContainer = ({ image, programAddress }) => {
   const router = useRouter();
   const [cohortName, setCohortName] = useState();
   const [OrganisationName, setOrganisationName] = useState();
   const [adminStatus, setAdminStatus] = useState();
-  const [proAddress, setProAddress] = useRecoilState(addressState);
+  const [proAddress, setProAddress] = useState();
   const { address } = useAccount();
 
   /// FETCH THE CONPANY NAME
@@ -60,7 +60,12 @@ const ProgramContainer = ({ image, programAddress }) => {
   });
 
   const route = () => {
-    setProAddress(programAddress);
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('programAddress', programAddress);
+      setProAddress(programAddress);
+    }
+
     adminStatus ? router.push("/dashboard") : router.push("/student-page");
   };
   // const onNFTCardContainerClick = useCallback(() => {
@@ -71,8 +76,8 @@ const ProgramContainer = ({ image, programAddress }) => {
 
   return (
     <div onClick={route}>
-      <div className="items-start justify-start w-[400px] m-auto gap-3 text-left text-3xl">
-        <div className="flex-1 rounded-xl text-white bg-[#000] min-h-[300x] flex flex-col items-center justify-start cursor-pointer">
+      <div className="items-start justify-start w-[375px] m-auto gap-3 text-left text-3xl">
+        <div className="flex-1 rounded-xl text-white bg-[#000] min-h-[200px] flex flex-col items-center justify-start cursor-pointer">
           <div className="self-stretch rounded-t-xl rounded-b-none flex flex-col items-start justify-start">
             <img
               className="self-stretch relative rounded-t-xl rounded-b-none max-w-full overflow-hidden h-[295px] shrink-0 object-cover"

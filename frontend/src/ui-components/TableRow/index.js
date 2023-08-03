@@ -1,8 +1,8 @@
 import { useContractRead } from "wagmi";
 import styles from "./TableRow.module.css";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ChildAbi from "../../../utils/childABI.json";
 
 const TableRow = ({
@@ -14,14 +14,13 @@ const TableRow = ({
 }) => {
 
   const [userName, setUserName] = useState("");
-  const [programAddr, setProgramAddr] = useState("");
   const [funcName, setFuncName] = useState("");
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
 
 
   // Fetches the name of the address passed
   const { data: userNameData } = useContractRead({
-    address: programAddr,
+    address: programAddress,
     abi: ChildAbi,
     functionName: funcName,
     args: [address ?? '0x00']
@@ -29,18 +28,33 @@ const TableRow = ({
 
   const handleCheckboxChange = (event, address) => {
     const { checked } = event.target;
-    if (checked) {
-      setSelectedAddresses([...selectedAddresses, address]);
+
+    if (mentor) {
+      if (checked) {
+        setSelectedAddresses(address);
+      } 
+      // else {
+      //   setSelectedAddresses(selectedAddresses.filter((s) => s !== address));
+      // }
     } else {
-      setSelectedAddresses(selectedAddresses.filter((s) => s !== address));
+      if (checked) {
+        setSelectedAddresses([...selectedAddresses, address]);
+      } else {
+        setSelectedAddresses(selectedAddresses.filter((s) => s !== address));
+      }
     }
   };
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
     setUserName(userNameData);
-    setProgramAddr(programAddress);
     mentor ? setFuncName("getMentorsName") : setFuncName("getStudentName") ;
-  }, [userNameData])
+  }, [userNameData, programAddress])
 
 
   return (
@@ -62,7 +76,7 @@ const TableRow = ({
               id="default-checkbox"
               type="checkbox"
               value=""
-              checked={selectedAddresses.some(
+              checked={mentor ? selectedAddresses === address : selectedAddresses.some(
                 (s) => s === address
               )}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"

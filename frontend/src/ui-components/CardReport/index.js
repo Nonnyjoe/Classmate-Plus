@@ -9,15 +9,16 @@ import { toast } from "react-toastify";
 import { useAccount, useContractRead, useContractReads } from "wagmi";
 import { FacoryAddr } from "../../../utils/contractAddress.js";
 import ChildABI from "../../../utils/childABI.json";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import ClassDetailsCard from "../ClassDetailsCard";
 
 const CardReport = ({ image }) => {
   const [modal, setModal] = useState(false);
   const [classIds, setClassIds] = useState([]);
   const [lectureId, setLectureId] = useState();
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
   const handleClose = () => {
     //alert('closing');
@@ -49,6 +50,13 @@ const CardReport = ({ image }) => {
   // });
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+      let res = localStorage.getItem('programAddress');
+      setProgramAddress(res);
+    }
+
+
     setClassIds(classIdsData);
   }, [classIdsData]);
 

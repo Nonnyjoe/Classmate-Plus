@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import Chart from "chart.js/auto";
 import { useRecoilValue } from "recoil";
-import { addressState } from "../../atoms/addressAtom";
+// import { addressState } from "../../atoms/addressAtom";
 import ChildABI from "../../utils/childABI.json";
 import { useContractRead } from "wagmi";
 
@@ -9,9 +9,10 @@ import { useContractRead } from "wagmi";
 const BarChartExample = (props) => {
   const [classIds, setClassIds] = useState();
   const [classData, setClassData] = useState();
-  const programAddress = useRecoilValue(addressState);
   const chartRef = useRef();
   const chartObj = useRef();
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
 
   useContractRead({
@@ -66,6 +67,11 @@ const BarChartExample = (props) => {
 
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
 
 
     const data = [];

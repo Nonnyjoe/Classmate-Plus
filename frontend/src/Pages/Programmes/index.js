@@ -29,6 +29,7 @@ const Programmes = () => {
   const [OrganisationName, setOrganisationName] = useState();
   const [programName, setProgramName] = useState();
   const [programAddress, setprogramAddress] = useState(["0x00"]);
+  const [programImage, setProgramImage] = useState("");
 
   const handleClose = () => {
     //alert('closing');
@@ -103,12 +104,14 @@ const Programmes = () => {
       <div className="flex justify-start items-center flex-wrap">
         {programAddress.map((pro, i) => {
           return (
-            <Section>
-              <ProgramContainer
-                image="https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=620&quality=85&dpr=1&s=none"
-                programAddress={pro}
-              />
-            </Section>
+            <div key={i}>
+              <Section>
+                <ProgramContainer
+                  image="https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=620&quality=85&dpr=1&s=none"
+                  programAddress={pro}
+                />
+              </Section>
+            </div>
           );
         })}
       </div>
@@ -144,6 +147,22 @@ const Programmes = () => {
                 placeholder="Programme Name"
                 required
                 onChange={(e) => setProgramName(e.target.value)}
+              />
+            </label>
+            <label>
+              Programme NFT Image:
+              <br />
+              <input
+                type="file"
+                className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
+                onChange={(e) => setProgramImage(e.target.files[0])}
+              />
+            </label>
+            <label>
+              NFT ID:
+              <input
+                type="number"
+                className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
               />
             </label>
           </form>

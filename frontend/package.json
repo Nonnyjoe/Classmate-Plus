@@ -21,6 +21,7 @@
     "next": "^13.4.3",
     "nft.storage": "^7.1.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.10.1",

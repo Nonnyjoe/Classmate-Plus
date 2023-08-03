@@ -14,6 +14,7 @@ import {
   useWaitForTransaction,
   wagmi,
   usePrepareContractWrite,
+  useContractInfiniteReads,
 } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ChildAddr } from "../../../utils/contractAddress";
@@ -21,21 +22,25 @@ import { FacoryAddr } from "../../../utils/contractAddress";
 import CHILDABI from "../../../utils/childABI.json";
 import FACABI from "../../../utils/factoryABI.json";
 import { MdDelete } from "react-icons/md";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import TableRow from "../../ui-components/TableRow";
+import { toast } from "react-toastify";
 
 
 
 const Mentors = () => {
   const [query, setQuery] = useState("");
   const [mentorsList, setMentorsList] = useState([]);
-  const [selectedMentors, setSelectedMentors] = useState([]);
+  const [selectedMentor, setSelectedMentor] = useState();
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolName, setSchoolName] = useState();
   const [programName, setProgramName] = useState();
-  const programAddress = useRecoilValue(addressState);
+  const [mentorOnDuty, setMentorOnDuty] = useState();
+  const [mentorOnDutyName, setMentorOnDutyName] = useState();
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
 
   /// FETCH THE LIST OF ALL STAFFS
@@ -49,14 +54,56 @@ const Mentors = () => {
   });
 
 
-  // const {config: deleteMentorsConfig } = usePrepareContractWrite({
-  //   address: programAddress,
-  //   abi: CHILDABI,
-  //   functionName: "",
-  //   args: [selectedMentors]
-  // })
+  useContractRead({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "getMentorOnDuty",
+    onSuccess(data) {
+      setMentorOnDuty(data);
+    }
+  })
+
+
+  useContractRead({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "getMentorsName",
+    args: [mentorOnDuty],
+    onSuccess(data) {
+      setMentorOnDutyName(data);
+    }
+  })
+
+  
+
+  const {config: handOverConfig } = usePrepareContractWrite({
+    address: programAddress,
+    abi: CHILDABI,
+    functionName: "mentorHandover",
+    args: [selectedMentor]
+  })
+
+  const { data: handOverData, isError: handOverIsError, error: handOverError, write: handOverWrite } = useContractWrite(handOverConfig)
+
+  useWaitForTransaction({
+    hash: handOverData?.hash,
+
+    onSuccess(data) {
+      toast.success(`Hand over successful`);
+    }
+    
+  })
 
   useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
+
+    // if (handOverIsError) {
+    //   toast.error(`Error encountered: ${handOverError}`)
+    // }
 
     setMentorsList(mentorsListData);
     console.log(mentorsList);
@@ -74,19 +121,20 @@ const Mentors = () => {
   const handleCheckboxChange = (event, mentor) => {
     const { checked } = event.target;
     if (checked) {
-      setSelectedMentors([...selectedMentors, mentor]);
-    } else {
-      setSelectedMentors(selectedMentors.filter((s) => s !== mentor));
-    }
+      setSelectedMentor(mentor);
+    } 
+    // else {
+    //   setSelectedMentor(selectedMentor.filter((s) => s !== mentor));
+    // }
   };
 
-  const handleDeleteSelected = () => {
+  const handleHandOver = () => {
     // const remainingMentors = mentorsList.filter(
     //   (mentor) => !selectedMentors.some((s) => s === mentor)
     // );
-    // deleteMentorsWrite?.();
+    handOverWrite?.();
     setMentorsList(mentorsListData);
-    setSelectedMentors([]);
+    setSelectedMentor("");
   };
 
   const handleSubmit = (e) => {
@@ -112,9 +160,12 @@ const Mentors = () => {
           <MdDelete
             fontSize={20}
             color="#1E429F"
-            onClick={handleDeleteSelected}
-            disabled={selectedMentors.length === 0}
+            onClick={handleHandOver}
+            disabled={selectedMentor === ""}
           />
+          <div>
+            <p>Mentor on duty: {mentorOnDuty == "" ? "No Mentor on Duty" : mentorOnDutyName}</p>
+          </div>
           <form onSubmit={handleSubmit}>
             <label
               for="default-search"
@@ -172,7 +223,7 @@ const Mentors = () => {
                 Address
               </th>
               <th scope="col" className="px-6 py-3">
-                Delete
+                Hand over
               </th>
             </tr>
           </thead>
@@ -185,7 +236,7 @@ const Mentors = () => {
                   : mentor.toLowerCase().includes(query);
               })
               ?.map((mentor, ind) => (
-                <TableRow address={mentor} ind={ind} selectedAddresses={selectedMentors} setSelectedAddresses={setSelectedMentors} mentor={true}/>
+                <TableRow address={mentor} ind={ind} selectedAddresses={selectedMentor} setSelectedAddresses={setSelectedMentor} mentor={true}/>
               )))
             }
           </tbody>

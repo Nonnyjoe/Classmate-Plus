@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderSection from "../../ui-components/HeaderSection";
 import Section from "../../ui-components/Section";
-import CardReport from "../../ui-components/CardReport";
+
 import ActionButton from "../../ui-components/ActionButton";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Modal from "../../ui-components/Modal";
@@ -16,9 +16,10 @@ import {
 } from "wagmi";
 import ChildABI from "../../../utils/childABI.json";
 import FactoryABI from "../../../utils/factoryABI.json";
-import { useRecoilValue } from "recoil";
-import { addressState } from "../../../atoms/addressAtom";
+// import { useRecoilValue } from "recoil";
+// import { addressState } from "../../../atoms/addressAtom";
 import { FacoryAddr } from "../../../utils/contractAddress";
+import CardBReport from "../../ui-components/CardBReport";
 
 const Attendance = () => {
   const [modal, setModal] = useState(false);
@@ -27,7 +28,8 @@ const Attendance = () => {
   const [uri, setUri] = useState("");
   const [topic, setTopic] = useState("");
   const [desc, setDesc] = useState("");
-  const programAddress = useRecoilValue(addressState);
+  const [programAddress, setProgramAddress] = useState();
+  // const programAddress = useRecoilValue(addressState);
 
   const { config: config1 } = usePrepareContractWrite({
     address: programAddress,
@@ -36,7 +38,6 @@ const Attendance = () => {
     args: [id, uri, topic],
   });
 
-  console.log(programAddress);
 
   const {
     data: createAttendanceData,
@@ -61,7 +62,6 @@ const Attendance = () => {
     },
   });
 
-  const proAddress = useRecoilValue(addressState);
 
   const handleClose = () => {
     //alert('closing');
@@ -76,7 +76,6 @@ const Attendance = () => {
     e.preventDefault();
     const result = await main(image, id, topic, desc);
 
-    console.log(result);
     setId(result.data.id);
     setUri(result.ipnft);
     setTopic(result.data.name);
@@ -95,19 +94,16 @@ const Attendance = () => {
         toast.error("Failed to create attendance");
       }
     }
-    console.log("address-", proAddress);
   };
 
-  // useEffect(() => {
-  //   if(isError) {
-  //     toast.error('Tx error');
-  //   }
+  useEffect(() => {
 
-  //   if(isSuccess) {
-  //     setId[0];
+    if (typeof window !== 'undefined') {
+        let res = localStorage.getItem('programAddress');
+        setProgramAddress(res);
+    }
 
-  //   }
-  // })
+  }, [programAddress])
 
   return (
     <div>
@@ -124,7 +120,7 @@ const Attendance = () => {
       />
 
       <Section>
-        <CardReport image="https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=620&quality=85&dpr=1&s=none" />
+        <CardBReport />
       </Section>
 
       <Modal
