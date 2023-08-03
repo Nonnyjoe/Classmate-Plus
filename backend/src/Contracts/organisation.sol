@@ -118,7 +118,8 @@ contract organisation {
     constructor(
         string memory _organization,
         string memory _cohort,
-        address _moderator
+        address _moderator,
+        string memory _adminName
     ) {
         moderator = _moderator;
         organization = _organization;
@@ -128,6 +129,8 @@ contract organisation {
         indexInMentorsArray[_moderator] = mentors.length;
         mentors.push(_moderator);
         isStaff[_moderator] = true;
+        mentorsData[_moderator]._address = _moderator;
+        mentorsData[_moderator]._name = _adminName;
     }
 
     function initialize(address _NftContract) external {
@@ -142,7 +145,7 @@ contract organisation {
     ) external onlyModerator {
         uint staffLength = staffList.length;
         for (uint i; i < staffLength; i++) {
-            if (isStaff[staffList[i]._address] == false) {
+            if (isStaff[staffList[i]._address] == false && isStudent[staffList[i]._address] == false) {
                 mentorsData[staffList[i]._address] = staffList[i];
                 isStaff[staffList[i]._address] = true;
                 indexInMentorsArray[staffList[i]._address] = mentors.length;
@@ -181,10 +184,13 @@ contract organisation {
     ) external onlyModerator {
         uint studentLength = _studentList.length;
         for (uint i; i < studentLength; i++) {
-            studentsData[_studentList[i]._address] = _studentList[i];
-            indexInStudentsArray[_studentList[i]._address] = students.length;
-            students.push(_studentList[i]._address);
-            isStudent[_studentList[i]._address] = true;
+            if (isStudent[_studentList[i]._address] == false && isStaff[_studentList[i]._address] == false ) {
+                studentsData[_studentList[i]._address] = _studentList[i];
+                indexInStudentsArray[_studentList[i]._address] = students.length;
+                students.push(_studentList[i]._address);
+                isStudent[_studentList[i]._address] = true;
+            }
+
         }
         // UCHE
         IFACTORY(organisationFactory).register(_studentList);
@@ -320,6 +326,20 @@ contract organisation {
         // UCHE
         IFACTORY(organisationFactory).revoke(studentsToRevoke);
         emit studentsEvicted(studentsToRevoke.length);
+    }
+
+    function LayOffStaffs(address[] calldata staffsToLayoff) external onlyModerator {
+        uint staffsToLayoffList = staffsToLayoff.length;
+        for (uint i; i < staffsToLayoffList; i++) {
+            if (mentorOnDuty == staffsToLayoff[i]) {
+                mentorOnDuty = moderator;
+            }
+            mentors[indexInMentorsArray[staffsToLayoff[i]]] = mentors[
+                mentors.length - 1
+            ];
+            mentors.pop();
+            isStaff[staffsToLayoff[i]] = false;
+        }
     }
 
     //VIEW FUNCTION
