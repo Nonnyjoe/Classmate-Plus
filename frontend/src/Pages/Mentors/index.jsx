@@ -41,6 +41,7 @@ const Mentors = () => {
   useContractRead({
     address: programAddress,
     abi: CHILDABI,
+    watch: true,
     functionName: "getMentorOnDuty",
     onSuccess(data) {
       setMentorOnDuty(data);
@@ -51,6 +52,7 @@ const Mentors = () => {
     address: programAddress,
     abi: CHILDABI,
     functionName: "getMentorsName",
+    watch: true,
     args: [mentorOnDuty],
     onSuccess(data) {
       setMentorOnDutyName(data);
