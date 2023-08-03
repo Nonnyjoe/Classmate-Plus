@@ -1,74 +1,42 @@
 [
   {
     "inputs": [
-      {
-        "internalType": "string",
-        "name": "_organization",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_cohort",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_moderator",
-        "type": "address"
-      }
+      { "internalType": "string", "name": "_organization", "type": "string" },
+      { "internalType": "string", "name": "_cohort", "type": "string" },
+      { "internalType": "address", "name": "_moderator", "type": "address" },
+      { "internalType": "string", "name": "_adminName", "type": "string" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
+  { "inputs": [], "name": "Already_Signed_Attendance_For_Id", "type": "error" },
+  { "inputs": [], "name": "Attendance_compilation_started", "type": "error" },
+  { "inputs": [], "name": "Invalid_Lecture_Id", "type": "error" },
+  { "inputs": [], "name": "Lecture_id_closed", "type": "error" },
+  { "inputs": [], "name": "already_requested", "type": "error" },
+  { "inputs": [], "name": "lecture_id_already_used", "type": "error" },
+  { "inputs": [], "name": "not_Autorized_Caller", "type": "error" },
+  { "inputs": [], "name": "not_valid_Moderator", "type": "error" },
+  { "inputs": [], "name": "not_valid_lecture_id", "type": "error" },
+  { "inputs": [], "name": "not_valid_student", "type": "error" },
   {
-    "inputs": [],
-    "name": "Already_Signed_Attendance_For_Id",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Attendance_compilation_started",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Invalid_Lecture_Id",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "Lecture_id_closed",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "already_requested",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "lecture_id_already_used",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "not_Autorized_Caller",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "not_valid_Moderator",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "not_valid_lecture_id",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "not_valid_student",
-    "type": "error"
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "Id",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "signer",
+        "type": "address"
+      }
+    ],
+    "name": "AttendanceSigned",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -90,6 +58,178 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noOfStaffs",
+        "type": "uint256"
+      }
+    ],
+    "name": "StaffNamesChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "Id",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "mentor",
+        "type": "address"
+      }
+    ],
+    "name": "attendanceClosed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes",
+        "name": "lectureId",
+        "type": "bytes"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "topic",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "staff",
+        "type": "address"
+      }
+    ],
+    "name": "attendanceCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "Id",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "mentor",
+        "type": "address"
+      }
+    ],
+    "name": "attendanceOpened",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "changer",
+        "type": "address"
+      }
+    ],
+    "name": "nameChangeRequested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noOfStaffs",
+        "type": "uint256"
+      }
+    ],
+    "name": "staffsRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noOfStudents",
+        "type": "uint256"
+      }
+    ],
+    "name": "studentNamesChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noOfStudents",
+        "type": "uint256"
+      }
+    ],
+    "name": "studentsEvicted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noOfStudents",
+        "type": "uint256"
+      }
+    ],
+    "name": "studentsRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "Id",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "oldTopic",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newTopic",
+        "type": "string"
+      }
+    ],
+    "name": "topicEditted",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "address[]",
@@ -105,17 +245,22 @@
   {
     "inputs": [
       {
+        "internalType": "address[]",
+        "name": "staffsToLayoff",
+        "type": "address[]"
+      }
+    ],
+    "name": "LayOffStaffs",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "components": [
-          {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
+          { "internalType": "address", "name": "_address", "type": "address" },
+          { "internalType": "string", "name": "_name", "type": "string" }
         ],
         "internalType": "struct individual[]",
         "name": "_staffList",
@@ -143,49 +288,25 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_mentor",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_mentor", "type": "address" }
     ],
     "name": "VerifyMentor",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_student",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_student", "type": "address" }
     ],
     "name": "VerifyStudent",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lectureId",
-        "type": "uint256"
-      }
+      { "internalType": "bytes", "name": "_lectureId", "type": "bytes" }
     ],
     "name": "closeAttendance",
     "outputs": [],
@@ -194,21 +315,9 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lectureId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_uri",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_topic",
-        "type": "string"
-      }
+      { "internalType": "bytes", "name": "_lectureId", "type": "bytes" },
+      { "internalType": "string", "name": "_uri", "type": "string" },
+      { "internalType": "string", "name": "_topic", "type": "string" }
     ],
     "name": "createAttendance",
     "outputs": [],
@@ -217,86 +326,23 @@
   },
   {
     "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct individual[]",
-        "name": "_studentList",
-        "type": "tuple[]"
-      }
-    ],
-    "name": "editStudentName",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lectureId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_topic",
-        "type": "string"
-      }
-    ],
-    "name": "editTopic",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_Mentor",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_Mentor", "type": "address" }
     ],
     "name": "getClassesTaugth",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
+    "outputs": [{ "internalType": "bytes[]", "name": "", "type": "bytes[]" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getCohortName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lectureId",
-        "type": "uint256"
-      }
+      { "internalType": "bytes", "name": "_lectureId", "type": "bytes" }
     ],
     "name": "getLectureData",
     "outputs": [
@@ -307,16 +353,8 @@
             "name": "mentorOnDuty",
             "type": "address"
           },
-          {
-            "internalType": "string",
-            "name": "topic",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "uri",
-            "type": "string"
-          },
+          { "internalType": "string", "name": "topic", "type": "string" },
+          { "internalType": "string", "name": "uri", "type": "string" },
           {
             "internalType": "uint256",
             "name": "attendanceStartTime",
@@ -327,11 +365,7 @@
             "name": "studentsPresent",
             "type": "uint256"
           },
-          {
-            "internalType": "bool",
-            "name": "status",
-            "type": "bool"
-          }
+          { "internalType": "bool", "name": "status", "type": "bool" }
         ],
         "internalType": "struct organisation.lectureData",
         "name": "",
@@ -344,124 +378,64 @@
   {
     "inputs": [],
     "name": "getLectureIds",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
+    "outputs": [{ "internalType": "bytes[]", "name": "", "type": "bytes[]" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getMentorOnDuty",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_Mentor",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_Mentor", "type": "address" }
     ],
     "name": "getMentorsName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
+    "outputs": [{ "internalType": "string", "name": "name", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getModerator",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getOrganizationName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_student",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_student", "type": "address" }
     ],
     "name": "getStudentAttendanceRatio",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "attendace",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "TotalClasses",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "attendace", "type": "uint256" },
+      { "internalType": "uint256", "name": "TotalClasses", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_student",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_student", "type": "address" }
     ],
     "name": "getStudentName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
+    "outputs": [{ "internalType": "string", "name": "name", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_NftContract",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_NftContract", "type": "address" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -470,20 +444,10 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_student",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_student", "type": "address" }
     ],
     "name": "listClassesAttended",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
+    "outputs": [{ "internalType": "bytes[]", "name": "", "type": "bytes[]" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -491,11 +455,7 @@
     "inputs": [],
     "name": "listMentors",
     "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      }
+      { "internalType": "address[]", "name": "", "type": "address[]" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -504,22 +464,14 @@
     "inputs": [],
     "name": "liststudents",
     "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      }
+      { "internalType": "address[]", "name": "", "type": "address[]" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "newMentor",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "newMentor", "type": "address" }
     ],
     "name": "mentorHandover",
     "outputs": [],
@@ -528,11 +480,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lectureId",
-        "type": "uint256"
-      }
+      { "internalType": "bytes", "name": "_lectureId", "type": "bytes" }
     ],
     "name": "openAttendance",
     "outputs": [],
@@ -543,16 +491,8 @@
     "inputs": [
       {
         "components": [
-          {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
+          { "internalType": "address", "name": "_address", "type": "address" },
+          { "internalType": "string", "name": "_name", "type": "string" }
         ],
         "internalType": "struct individual[]",
         "name": "staffList",
@@ -568,16 +508,8 @@
     "inputs": [
       {
         "components": [
-          {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
+          { "internalType": "address", "name": "_address", "type": "address" },
+          { "internalType": "string", "name": "_name", "type": "string" }
         ],
         "internalType": "struct individual[]",
         "name": "_studentList",
@@ -591,11 +523,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_lectureId",
-        "type": "uint256"
-      }
+      { "internalType": "bytes", "name": "_lectureId", "type": "bytes" }
     ],
     "name": "signAttendance",
     "outputs": [],
