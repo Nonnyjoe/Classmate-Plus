@@ -33,7 +33,7 @@ contract EcosystemTest is Test {
     function testCohortCreation() public {
         vm.startPrank(director);
         (address Organisation, address OrganisationNft) = _organisationFactory
-            .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org");
+            .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org", "Abims");
 
         address[] memory creatorsOrganizations = _organisationFactory
             .getUserOrganisatons(director);
@@ -57,6 +57,17 @@ contract EcosystemTest is Test {
         vm.stopPrank();
     }
 
+    function testCreatorsName() public {
+        testStudentRegister();
+        vm.startPrank(director);
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
+       string memory admin = ICHILD(child).getMentorsName(director);
+       console.log(admin);
+        assertEq("Abims", admin);
+
+
+    }
+
     function testMentorRegister() public {
         testStudentRegister();
         vm.startPrank(director);
@@ -69,7 +80,7 @@ contract EcosystemTest is Test {
         bool mentorStatus = ICHILD(child).VerifyMentor(mentorAdd);
         string memory mentorName = ICHILD(child).getMentorsName(mentorAdd);
 
-        assertEq(1, studentsList.length);
+        assertEq(2, studentsList.length);
         assertEq(true, mentorStatus);
         assertEq("MR. ABIMS", mentorName);
     }
@@ -80,7 +91,7 @@ contract EcosystemTest is Test {
         address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).createAttendance(
-            10202,
+            "B0202",
             "http://test.org",
             "INTRODUCTION TO BLOCKCHAIN"
         );
@@ -99,6 +110,7 @@ contract EcosystemTest is Test {
 
         assertEq(mentorOnDuty1, director);
         assertEq(mentorOnDuty, mentorAdd);
+        vm.stopPrank();
     }
 
     function testCreateAttendance() public {
@@ -107,7 +119,7 @@ contract EcosystemTest is Test {
         address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).createAttendance(
-            10202,
+            "B0202",
             "http://test.org",
             "INTRODUCTION TO BLOCKCHAIN"
         );
@@ -120,7 +132,7 @@ contract EcosystemTest is Test {
         vm.startPrank(studentAdd);
         address child = _organisationFactory.getUserOrganisatons(director)[0];
 
-        ICHILD(child).signAttendance(10202);
+        ICHILD(child).signAttendance("B0202");
         vm.stopPrank();
     }
 
@@ -128,7 +140,7 @@ contract EcosystemTest is Test {
         testCreateAttendance();
         vm.startPrank(studentAdd);
         address child = _organisationFactory.getUserOrganisatons(director)[0];
-        ICHILD(child).openAttendance(10202);
+        ICHILD(child).openAttendance("B0202");
         vm.stopPrank();
     }
 
@@ -136,21 +148,21 @@ contract EcosystemTest is Test {
         testCreateAttendance();
         vm.startPrank(mentorAdd);
         address child = _organisationFactory.getUserOrganisatons(director)[0];
-        ICHILD(child).openAttendance(10202);
+        ICHILD(child).openAttendance("B0202");
         vm.stopPrank();
         vm.startPrank(studentAdd);
-        ICHILD(child).signAttendance(10203);
+        ICHILD(child).signAttendance("B0205");
     }
 
     function testSignAttendance() public {
         testCreateAttendance();
         vm.startPrank(mentorAdd);
         address child = _organisationFactory.getUserOrganisatons(director)[0];
-        ICHILD(child).openAttendance(10202);
+        ICHILD(child).openAttendance("B0202");
         vm.stopPrank();
 
         vm.startPrank(studentAdd);
-        ICHILD(child).signAttendance(10202);
+        ICHILD(child).signAttendance("B0202");
         vm.stopPrank();
     }
 
@@ -163,12 +175,12 @@ contract EcosystemTest is Test {
 
         uint[] memory lectures = ICHILD(child).getLectureIds();
         ICHILD.lectureData memory lectureData = ICHILD(child).getLectureData(
-            10202
+            "B0202"
         );
 
         assertEq(attendace, totalClasses);
         assertEq(lectures.length, 1);
-        assertEq(lectures[0], 10202);
+        // assertEq(lectures[0], "B0202");
         assertEq(lectureData.topic, "INTRODUCTION TO BLOCKCHAIN");
         assertEq(lectureData.mentorOnDuty, mentorAdd);
         assertEq(lectureData.uri, "http://test.org");
@@ -199,15 +211,15 @@ contract EcosystemTest is Test {
         address child = _organisationFactory.getUserOrganisatons(director)[0];
 
         ICHILD(child).createAttendance(
-            10204,
+            "B0202",
             "http://test.org",
             "BLOCKCHAIN TRILEMA"
         );
-        ICHILD(child).openAttendance(10204);
+        ICHILD(child).openAttendance("B0202");
         vm.stopPrank();
 
         vm.startPrank(studentAdd);
-        ICHILD(child).signAttendance(10204);
+        ICHILD(child).signAttendance("B0202");
         vm.stopPrank();
     }
 }

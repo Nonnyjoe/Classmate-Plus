@@ -118,7 +118,8 @@ contract organisation {
     constructor(
         string memory _organization,
         string memory _cohort,
-        address _moderator
+        address _moderator,
+        string memory _adminName
     ) {
         moderator = _moderator;
         organization = _organization;
@@ -128,6 +129,8 @@ contract organisation {
         indexInMentorsArray[_moderator] = mentors.length;
         mentors.push(_moderator);
         isStaff[_moderator] = true;
+        mentorsData[_moderator]._address = _moderator;
+        mentorsData[_moderator]._name = _adminName;
     }
 
     function initialize(address _NftContract) external {

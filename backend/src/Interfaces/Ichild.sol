@@ -35,7 +35,7 @@ interface ICHILD {
     ) external view returns (string memory name);
 
     function createAttendance(
-        uint _lectureId,
+        bytes calldata _lectureId,
         string calldata _uri,
         string calldata _topic
     ) external;
@@ -44,9 +44,9 @@ interface ICHILD {
 
     function getMentorOnDuty() external view returns (address);
 
-    function signAttendance(uint _lectureId) external;
+    function signAttendance(bytes calldata _lectureId) external;
 
-    function openAttendance(uint _lectureId) external;
+    function openAttendance(bytes calldata  _lectureId) external;
 
     function getStudentAttendanceRatio(
         address _student
@@ -59,7 +59,7 @@ interface ICHILD {
     function getLectureIds() external view returns (uint[] memory);
 
     function getLectureData(
-        uint _lectureId
+        bytes calldata _lectureId
     ) external view returns (lectureData memory);
 
     function EvictStudents(address[] calldata studentsToRevoke) external;
