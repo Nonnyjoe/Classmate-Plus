@@ -158,7 +158,7 @@ const StudentPage = () => {
       </div>
 
       <Section>
-        <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8 ml-12">
+        <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 ml-12">
           {classIds &&
             classIds
               .reverse()
@@ -200,7 +200,7 @@ const StudentPage = () => {
               <br />
               <input
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
-                type="number"
+                type="text"
                 placeholder="Enter today's ID"
                 onChange={(e) => setId(e.target.value)}
               />
