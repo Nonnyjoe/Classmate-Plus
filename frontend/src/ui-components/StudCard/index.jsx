@@ -39,7 +39,7 @@ const StudCard = ({ classId }) => {
       const mainNFT =
         showUri?.length == 59
           ? `${showUri}`
-          : `bafyreib2rkokdxhwczaz7gepaczq4y7znkxrddeqhvdevoxkilwszajjiy`;
+          : `bafybeiddyye4i4cpur3omforka2z3iexu2mbmkxnnjvwjtt7zbtrzwzeii`;
 
       fetchDetail(`https://ipfs.io/ipfs/${mainNFT}/metadata.json`);
     };
@@ -70,7 +70,8 @@ const StudCard = ({ classId }) => {
     handleCardNFT(showUri);
   }, [lectureData, userName, showUri, detail, classId]);
 
-  let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
+  //let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
+  //console.log("image", imageUrl);
 
   return (
     <div>
@@ -100,7 +101,7 @@ const StudCard = ({ classId }) => {
           <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
             <div className=" rounded-lg ">
               <img
-                src={imageUrl}
+                src={detail.image}
                 alt="class nft"
                 className="rounded-lg object-cover w-screen h-60"
               />

@@ -16,12 +16,15 @@ import {
   useContractRead,
 } from "wagmi";
 import StudCard from "../../ui-components/StudCard";
+import DataCard from "@/src/ui-components/DataCard";
 
 const StudentPage = () => {
   const [id, setId] = useState();
   const [programAddress, setProgramAddress] = useState();
   const [visible, setVisible] = useState(6);
   const [classIds, setClassIds] = useState();
+  const [studentClass, setStudentClass] = useState();
+  const [name, setName] = useState("");
 
   const { address } = useAccount();
 
@@ -64,6 +67,22 @@ const StudentPage = () => {
     args: [address],
   });
 
+  const { data: studentData } = useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    watch: true,
+    functionName: "getStudentAttendanceRatio",
+    args: [address],
+  });
+
+  const { data: studentName } = useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    watch: true,
+    functionName: "getStudentName",
+    args: [address],
+  });
+
   const handleClose = () => {
     //alert('closing');
     setModal(false);
@@ -79,14 +98,18 @@ const StudentPage = () => {
     handleClose();
   };
 
+  console.log(studentData);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
 
+    setName(studentName);
+    setStudentClass(studentData);
     setClassIds(classIdsData);
-  }, [classIdsData]);
+  }, [classIdsData, studentData, studentName]);
 
   const showMoreItems = () => {
     setVisible((prevValue) => prevValue + 6);
@@ -95,7 +118,7 @@ const StudentPage = () => {
   return (
     <div>
       <HeaderSection
-        heading={"Your page"}
+        heading={`Welcome ${name}`}
         subHeading={""}
         rightItem={() => (
           <ActionButton
@@ -105,6 +128,34 @@ const StudentPage = () => {
           />
         )}
       />
+      <div className=" flex items-center justify-start ml-12">
+        <Section>
+          <DataCard
+            label={"Total Classes"}
+            value={studentData ? studentData[1].toString() : `00`}
+            inverse={true}
+          />
+
+          <div className="ml-12">
+            <DataCard
+              label={"Your Attended Classes"}
+              value={studentData ? studentData[0].toString() : `00`}
+            />
+          </div>
+
+          <div className="ml-12">
+            <DataCard
+              label={"Class Percentage"}
+              value={
+                (
+                  (Number(studentData?.[0]) / Number(studentData?.[1])) *
+                  100
+                ).toFixed(2) + "%"
+              }
+            />
+          </div>
+        </Section>
+      </div>
 
       <Section>
         <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8 ml-12">

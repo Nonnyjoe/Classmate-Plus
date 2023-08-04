@@ -70,7 +70,7 @@ const CardDetailsId = ({ classId }) => {
       const mainNFT =
         showUri?.length == 59
           ? `${showUri}`
-          : `bafyreib2rkokdxhwczaz7gepaczq4y7znkxrddeqhvdevoxkilwszajjiy`;
+          : `bafybeiddyye4i4cpur3omforka2z3iexu2mbmkxnnjvwjtt7zbtrzwzeii`;
 
       fetchDetail(`https://ipfs.io/ipfs/${mainNFT}/metadata.json`);
     };
@@ -102,7 +102,7 @@ const CardDetailsId = ({ classId }) => {
     handleCardNFT(showUri);
   }, [lectureData, userName, showUri, classId]);
 
-  let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
+  //let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 
   return (
     <div>
@@ -142,7 +142,7 @@ const CardDetailsId = ({ classId }) => {
           <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
             <div className=" rounded-lg ">
               <img
-                src={imageUrl}
+                src={detail.image}
                 className="rounded-lg object-cover w-screen h-60"
               />
             </div>
@@ -162,7 +162,7 @@ const CardDetailsId = ({ classId }) => {
         <div className=" bg-inherit p-4 rounded-lg w-full h-full flex flex-col items-center justify-center">
           <div className=" rounded-lg ">
             <img
-              src={imageUrl}
+              src={detail.image}
               width={500}
               height={500}
               className="rounded-lg object-cover w-screen h-60"

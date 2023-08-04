@@ -68,13 +68,6 @@ const Attendance = () => {
 
     onSuccess: async () => {
       toast.success("Attendance created successfully");
-      // const { data: lectureData, isLoading: lectureDataIsLoading } =
-      //   useContractRead({
-      //     address: programAddress,
-      //     abi: ChildABI,
-      //     functionName: "getLectureData",
-      //     args: [id],
-      //   });
 
       getAttendance();
     },
