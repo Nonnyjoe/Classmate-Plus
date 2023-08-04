@@ -18,6 +18,7 @@ export default function Toggle({ classId }) {
   const { data: lectureData } = useContractRead({
     address: programAddress,
     abi: ChildABI,
+    watch: true,
     functionName: "getLectureData",
     args: [classId],
   });
