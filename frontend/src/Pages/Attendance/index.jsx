@@ -161,7 +161,7 @@ const Attendance = () => {
               <br />
               <input
                 className="py-2 px-2 border border-blue-950 rounded-lg w-full mb-2"
-                type="text"
+                type="number"
                 placeholder="Enter today's NFT ID"
                 required
                 onChange={(e) => setId(e.target.value)}
