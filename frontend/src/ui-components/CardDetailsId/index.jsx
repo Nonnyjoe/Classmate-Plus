@@ -117,7 +117,11 @@ const CardDetailsId = ({ classId }) => {
             <div className={styles["date-placeholder"]}>
               <SlCalender />
               <p className="ml-5">
-                <DateMint cardDate={cardDate} />
+                {Number(cardDate) === 0 ? (
+                  <p>00-00-00</p>
+                ) : (
+                  <DateMint cardDate={cardDate} />
+                )}
               </p>
               <p className=" ml-7">NFT ID: {showId.toString()}</p>
             </div>
@@ -173,7 +177,11 @@ const CardDetailsId = ({ classId }) => {
               <div className="flex items-center -ml-24 justify-center my-1 py-1 text-lg ">
                 <SlCalender />
                 <p className="ml-3">
-                  <DateMint cardDate={cardDate} />
+                  {Number(cardDate) === 0 ? (
+                    <p>00-00-00</p>
+                  ) : (
+                    <DateMint cardDate={cardDate} />
+                  )}
                 </p>
               </div>
               <p className=" my-1 py-1 text-lg ">Topic: {heading}</p>
