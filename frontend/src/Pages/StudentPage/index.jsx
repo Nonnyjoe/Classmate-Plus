@@ -17,18 +17,38 @@ import {
 } from "wagmi";
 import StudCard from "../../ui-components/StudCard";
 import DataCard from "@/src/ui-components/DataCard";
+import { JsonRpcProvider, ethers } from "ethers";
 
 const StudentPage = () => {
   const [id, setId] = useState();
   const [programAddress, setProgramAddress] = useState();
   const [visible, setVisible] = useState(6);
   const [classIds, setClassIds] = useState();
+  const [classesMarked, setClassesMarked] = useState([]);
   const [studentClass, setStudentClass] = useState();
   const [name, setName] = useState("");
 
   const { address } = useAccount();
 
   const [modal, setModal] = useState(false);
+
+  const showAttendance = async () => {
+    try {
+      const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_KEY);
+      const attendanceContract = new ethers.Contract(
+        programAddress,
+        ChildABI,
+        provider
+      );
+      const attendedClasses = await attendanceContract.listClassesAttended(
+        address
+      );
+      console.log("classes", attendedClasses);
+      setClassesMarked(attendedClasses);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const { config: config1 } = usePrepareContractWrite({
     address: programAddress,
@@ -51,8 +71,9 @@ const StudentPage = () => {
   } = useWaitForTransaction({
     hash: signAttendanceData?.hash,
 
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("ID Submitted Successfully");
+      showAttendance();
     },
 
     onError(error) {
@@ -98,14 +119,13 @@ const StudentPage = () => {
     handleClose();
   };
 
-  console.log(studentData);
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
 
+    showAttendance();
     setName(studentName);
     setStudentClass(studentData);
     setClassIds(classIdsData);
@@ -114,6 +134,8 @@ const StudentPage = () => {
   const showMoreItems = () => {
     setVisible((prevValue) => prevValue + 6);
   };
+
+  //const reversedClasses = classesMarked?.reverse();
 
   return (
     <div>
@@ -159,17 +181,14 @@ const StudentPage = () => {
 
       <Section>
         <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 ml-12">
-          {classIds &&
-            classIds
-              .reverse()
-              .slice(0, visible)
-              .map((class_attended, i) => {
-                return (
-                  <div key={i}>
-                    <StudCard classId={class_attended} />
-                  </div>
-                );
-              })}
+          {classesMarked &&
+            classesMarked.slice(0, visible).map((class_attended, i) => {
+              return (
+                <div key={i}>
+                  <StudCard classId={class_attended} />
+                </div>
+              );
+            })}
         </div>
       </Section>
 
