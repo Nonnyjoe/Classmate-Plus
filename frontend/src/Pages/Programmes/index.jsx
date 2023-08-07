@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ import ActionButton from "@/src/ui-components/ActionButton";
 import Section from "@/src/ui-components/Section";
 import ProgramContainer from "@/src/ui-components/ProgramContainer";
 import Modal from "@/src/ui-components/Modal";
+import { JsonRpcProvider, ethers } from "ethers";
 
 const Programmes = () => {
   const [modal, setModal] = useState(false);
@@ -34,19 +35,38 @@ const Programmes = () => {
     setModal(false);
   };
 
+  const showOrganization = async () => {
+    try {
+      const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_KEY);
+      const programsContract = new ethers.Contract(
+        FacoryAddr(),
+        FACABI,
+        provider
+      );
+      const listOfPrograms = await programsContract.getUserOrganisatons(
+        address
+      );
+      console.log("list", listOfPrograms);
+      //console.log("classes", attendedClasses);
+      setprogramAddress(listOfPrograms);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   /// FETCH THE LIST OF ALL STAFFS
-  useContractRead({
-    address: FacoryAddr(),
-    abi: FACABI,
-    functionName: "getUserOrganisatons",
-    watch: true,
-    args: [address],
-    onSuccess(data) {
-      console.log(data);
-      // console.log("data");
-      setprogramAddress(data);
-    },
-  });
+  // useContractRead({
+  //   address: FacoryAddr(),
+  //   abi: FACABI,
+  //   functionName: "getUserOrganisatons",
+  //   watch: true,
+  //   args: [address],
+  //   onSuccess(data) {
+  //     console.log(data);
+  //     // console.log("data");
+  //     setprogramAddress(data);
+  //   },
+  // });
 
   const {
     data: output,
@@ -66,7 +86,9 @@ const Programmes = () => {
   const { data: alaweeWaitData, isLoading: loadingAlaweeWaitData } =
     useWaitForTransaction({
       hash: output?.hash,
-      onSuccess(result) {},
+      onSuccess: async () => {
+        showOrganization();
+      },
       onError(error) {
         console.log("Error: ", error);
       },
@@ -81,6 +103,10 @@ const Programmes = () => {
     createOrganisation();
     setModal(false);
   };
+
+  useEffect(() => {
+    showOrganization();
+  }, []);
 
   const handleRoute = (pro) => {
     console.log(pro);
@@ -100,18 +126,19 @@ const Programmes = () => {
         )}
       />
       <div className="flex justify-start items-center flex-wrap">
-        {programAddress.map((pro, i) => {
-          return (
-            <div key={i}>
-              <Section>
-                <ProgramContainer
-                  image="/web3banner.jpeg"
-                  programAddress={pro}
-                />
-              </Section>
-            </div>
-          );
-        })}
+        {programAddress &&
+          programAddress.map((pro, i) => {
+            return (
+              <div key={i}>
+                <Section>
+                  <ProgramContainer
+                    image="/web3banner.jpeg"
+                    programAddress={pro}
+                  />
+                </Section>
+              </div>
+            );
+          })}
       </div>
 
       <Modal
