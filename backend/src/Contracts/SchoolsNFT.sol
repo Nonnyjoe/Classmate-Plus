@@ -2,7 +2,8 @@
 pragma solidity ^0.8.13;
 
 // import "openzeppelin/token/ERC1155/ERC1155.sol";
-import "openzeppelin-contracts.git/contracts/token/ERC1155/ERC1155.sol";
+// import "openzeppelin-contracts.git/contracts/token/ERC1155/ERC1155.sol";
+import "lib/openzeppelin-contracts.git/contracts/token/ERC1155/ERC1155.sol";
 
 contract SchoolsNFT is ERC1155 {
     string public name;

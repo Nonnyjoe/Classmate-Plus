@@ -101,10 +101,6 @@ contract organisationFactory {
         }
     }
 
-    function getUsersStudents() public view returns (uint) {
-        return totalUsers;
-    }
-
     function getOrganizations() public view returns (address[] memory) {
         return Organisations;
     }
