@@ -2,11 +2,12 @@
 pragma solidity ^0.8.9;
 
 import "./organisation.sol";
-import "./SchoolsNFT.sol";
+import "../../Interfaces/ICERTFACTORY.sol";
 
 contract organisationFactory {
     address public Admin;
     address organisationAdmin;
+    address certificateFactory;
     address[] public Organisations;
     mapping(address => bool) public validOrganisation;
 
@@ -16,8 +17,9 @@ contract organisationFactory {
     mapping(address => bool) public uniqueStudent;
     uint public totalUsers;
 
-    constructor() {
+    constructor(address certFactory) {
         Admin = msg.sender;
+        certificateFactory = certFactory;
     }
 
     function createorganisation(
@@ -25,7 +27,7 @@ contract organisationFactory {
         string memory _cohort,
         string memory _uri,
         string memory _adminName
-    ) external returns (address Organisation, address Nft) {
+    ) external returns (address Organisation, address Nft, address certificate) {
         organisationAdmin = msg.sender;
         organisation OrganisationAddress = new organisation(
             _organisation,
@@ -35,22 +37,17 @@ contract organisationFactory {
         );
         Organisations.push(address(OrganisationAddress));
         validOrganisation[address(OrganisationAddress)] = true;
+        (address CertificateAddr, address AttendanceAddr) = ICERTFACTORY(certificateFactory).completePackage(_organisation, _cohort, _uri, address(OrganisationAddress));
 
-        SchoolsNFT OrganisationNFT = new SchoolsNFT(
-            _organisation,
-            _cohort,
-            _uri,
-            address(OrganisationAddress)
-        );
-
-        OrganisationAddress.initialize(address(OrganisationNFT));
+        OrganisationAddress.initialize(address(AttendanceAddr), address(CertificateAddr));
         uint orgLength = memberOrganisations[msg.sender].length;
         studentOrganisationIndex[msg.sender][
             address(OrganisationAddress)
         ] = orgLength;
         memberOrganisations[msg.sender].push(address(OrganisationAddress));
 
-        Nft = address(OrganisationNFT);
+        Nft = address(AttendanceAddr);
+        certificate = address(CertificateAddr);
         Organisation = address(OrganisationAddress);
     }
 

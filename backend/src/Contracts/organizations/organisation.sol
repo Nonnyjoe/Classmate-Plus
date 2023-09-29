@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "../Interfaces/INFT.sol";
-import "../Interfaces/IFactory.sol";
+import "../../Interfaces/INFT.sol";
+import "../../Interfaces/IFactory.sol";
 
 contract organisation {
     /**
@@ -14,6 +14,8 @@ contract organisation {
     string cohort;
     address organisationFactory;
     address NftContract;
+    address certificateContract;
+    bool public certificateIssued;
     mapping(address => bool) requestNameCorrection;
 
     /**
@@ -133,9 +135,10 @@ contract organisation {
         mentorsData[_moderator]._name = _adminName;
     }
 
-    function initialize(address _NftContract) external {
+    function initialize(address _NftContract, address _certificateContract) external {
         if (msg.sender != organisationFactory) revert not_Autorized_Caller();
         NftContract = _NftContract;
+        certificateContract = _certificateContract;
     }
 
     // @dev: Function to register staffs to be called only by the moderator
@@ -162,6 +165,11 @@ contract organisation {
             revert already_requested();
         requestNameCorrection[msg.sender] == true;
         emit nameChangeRequested(msg.sender);
+    }
+    
+    function TransferOwnership(address newModerator) external onlyModerator {
+        assert(newModerator != address(0));
+        moderator = newModerator;
     }
 
     function StaffNameCorrection(
@@ -340,6 +348,12 @@ contract organisation {
             mentors.pop();
             isStaff[staffsToLayoff[i]] = false;
         }
+    }
+
+    function MintCertificate(string memory Uri) external onlyModerator {
+            require(certificateIssued == false, "certificate already issued");
+            INFT(certificateContract).batchMintTokens(students, Uri);
+            certificateIssued = true;
     }
 
     //VIEW FUNCTION

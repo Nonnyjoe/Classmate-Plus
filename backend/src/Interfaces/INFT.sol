@@ -9,4 +9,5 @@ interface INFT {
     ) external;
 
     function setDayUri(bytes calldata id, string memory _uri) external;
+    function batchMintTokens(address[] memory users, string memory uri) external;
 }

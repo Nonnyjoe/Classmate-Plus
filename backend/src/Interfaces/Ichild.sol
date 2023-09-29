@@ -63,4 +63,5 @@ interface ICHILD {
     ) external view returns (lectureData memory);
 
     function EvictStudents(address[] calldata studentsToRevoke) external;
+    function MintCertificate(string memory Uri) external;
 }

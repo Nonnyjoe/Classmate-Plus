@@ -4,11 +4,14 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/Interfaces/Ichild.sol";
 import "../src/Interfaces/IFactory.sol";
-import "../src/Contracts/SchoolsNFT.sol";
-import "../src/Contracts/organisationFactory.sol";
+import "../src/Contracts/organizations/organisationFactory.sol";
+import "../src/Contracts/certificates/certificateFactory.sol";
+// import "../src/Contracts/SchoolsNFT.sol";
 
 contract EcosystemTest is Test {
     organisationFactory _organisationFactory;
+    certificateFactory _certificateFactory;
+
     individual student1;
     individual[] students;
     individual mentor;
@@ -20,7 +23,8 @@ contract EcosystemTest is Test {
 
     function setUp() public {
         vm.prank(director);
-        _organisationFactory = new organisationFactory();
+        _certificateFactory = new certificateFactory();
+        _organisationFactory = new organisationFactory(address(_certificateFactory));
         student1._address = address(studentAdd);
         student1._name = "JOHN DOE";
         students.push(student1);
@@ -32,7 +36,7 @@ contract EcosystemTest is Test {
 
     function testCohortCreation() public {
         vm.startPrank(director);
-        (address Organisation, address OrganisationNft) = _organisationFactory
+        (address Organisation, address OrganisationNft, address OrganizationCert) = _organisationFactory
             .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org", "Abims");
 
         address[] memory creatorsOrganizations = _organisationFactory
@@ -221,5 +225,12 @@ contract EcosystemTest is Test {
         vm.startPrank(studentAdd);
         ICHILD(child).signAttendance("B0202");
         vm.stopPrank();
+    }
+
+    function testzCertificateIssuance() public {
+        testSignAttendance();
+        vm.startPrank(director);
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
+        ICHILD(child).MintCertificate("http://test.org");
     }
 }

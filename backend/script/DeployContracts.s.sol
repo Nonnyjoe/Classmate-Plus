@@ -2,10 +2,12 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
-import "../src/Contracts/organisationFactory.sol";
+import "../src/Contracts/organizations/organisationFactory.sol";
+import "../src/Contracts/certificates/certificateFactory.sol";
 
 contract DeployContracts is Script {
     organisationFactory _organisationFactory;
+    certificateFactory _certificateFactory;
 
     function setUp() public {}
 
@@ -13,8 +15,9 @@ contract DeployContracts is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         // uint256 deployerPrivateKey2 = vm.envUint("PRIVATE_KEY2");
         vm.startBroadcast(deployerPrivateKey);
-        _organisationFactory = new organisationFactory();
-        (address Organisation, address OrganisationNft) = _organisationFactory
+        _certificateFactory = new certificateFactory();
+        _organisationFactory = new organisationFactory(address(_certificateFactory));
+        (address Organisation, address OrganisationNft, address OrganizationCertNft) = _organisationFactory
             .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org", 'Abims');
         vm.stopBroadcast();
         writeAddressesToFile(

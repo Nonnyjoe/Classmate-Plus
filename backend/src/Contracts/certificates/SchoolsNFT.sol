@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // import "openzeppelin/token/ERC1155/ERC1155.sol";
 // import "openzeppelin-contracts.git/contracts/token/ERC1155/ERC1155.sol";
-import "lib/openzeppelin-contracts.git/contracts/token/ERC1155/ERC1155.sol";
+import "../../../lib/openzeppelin-contracts.git/contracts/token/ERC1155/ERC1155.sol";
 
 contract SchoolsNFT is ERC1155 {
     string public name;
@@ -38,18 +38,18 @@ contract SchoolsNFT is ERC1155 {
         _mint(_to, tokenId, _amount, "");
     }
 
-    // function batchMintForDay(
-    //     bytes memory _dayId,
-    //     address[] memory _students,
-    //     uint256[] memory _amount
-    // ) public onlyOwner {
-    //     require(_students.length == _amount.length, "Length mismatch");
+    function batchMintForDay(
+        bytes memory _dayId,
+        address[] memory _students,
+        uint256[] memory _amount
+    ) public onlyOwner {
+        require(_students.length == _amount.length, "Length mismatch");
 
-    //     for (uint256 i = 0; i < _students.length; i++) {
-    //         uint256 tokenId = daysIdToTokenId[_dayId];
-    //         _mint(_students[i], tokenId, _amount[i], "");
-    //     }
-    // }
+        for (uint256 i = 0; i < _students.length; i++) {
+            uint256 tokenId = daysIdToTokenId[_dayId];
+            _mint(_students[i], tokenId, _amount[i], "");
+        }
+    }
 
     function setDayUri(bytes memory id, string memory _uri) public onlyOwner {
         daysIdToTokenId[id] = totalTokenId;
@@ -57,9 +57,24 @@ contract SchoolsNFT is ERC1155 {
         totalTokenId++;
     }
 
-    // function getDayUri(bytes memory id) public view returns (string memory _dayUri) {
-    //     _dayUri = daysIdToUri[id];
-    // }
+    function getDayUri(bytes memory id) public view returns (string memory _dayUri) {
+        _dayUri = daysIdToUri[id];
+    }
+
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory values,
+        bytes memory data
+    ) public override {
+        revert("TOKEN IS SOUL BUND");
+
+    }
+
+    function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes memory data) public override {
+        revert("TOKEN IS SOUL BUND");
+    }
 }
 
 
