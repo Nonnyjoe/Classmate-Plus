@@ -12,9 +12,10 @@ contract organisation {
      */
     string organization;
     string cohort;
+    string public certiificateURI;
     address organisationFactory;
-    address NftContract;
-    address certificateContract;
+    address public NftContract;
+    address public certificateContract;
     bool public certificateIssued;
     mapping(address => bool) requestNameCorrection;
 
@@ -353,6 +354,7 @@ contract organisation {
     function MintCertificate(string memory Uri) external onlyModerator {
             require(certificateIssued == false, "certificate already issued");
             INFT(certificateContract).batchMintTokens(students, Uri);
+            certiificateURI = Uri;
             certificateIssued = true;
     }
 
