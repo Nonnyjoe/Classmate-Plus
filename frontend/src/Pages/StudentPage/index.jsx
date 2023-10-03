@@ -18,6 +18,7 @@ import {
 import StudCard from "../../ui-components/StudCard";
 import DataCard from "@/src/ui-components/DataCard";
 import { JsonRpcProvider, ethers } from "ethers";
+import Link from "next/link";
 
 const StudentPage = () => {
   const [id, setId] = useState();
@@ -143,11 +144,23 @@ const StudentPage = () => {
         heading={`Welcome ${name}`}
         subHeading={""}
         rightItem={() => (
-          <ActionButton
-            onClick={() => setModal(true)}
-            Icon={BsFillDropletFill}
-            label="Submit ID"
-          />
+          <div className=" flex items-center justify-between">
+            <div>
+              <ActionButton
+                onClick={() => setModal(true)}
+                Icon={BsFillDropletFill}
+                label="Submit ID"
+              />
+            </div>
+
+            <div className=" ml-6 md:ml-10">
+              <Link href="/view-certificate">
+                <button className=" bg-black text-white p-[2px] md:px-4 md:py-2 rounded-lg ">
+                  View Certificate
+                </button>
+              </Link>
+            </div>
+          </div>
         )}
       />
       <div className=" flex items-center justify-start ml-12">
@@ -171,10 +184,12 @@ const StudentPage = () => {
             <DataCard
               label={"Class Percentage"}
               value={
-                (
-                  (Number(studentData?.[0]) / Number(studentData?.[1])) *
-                  100
-                ).toFixed(2) + "%"
+                studentData
+                  ? (
+                      (Number(studentData?.[0]) / Number(studentData?.[1])) *
+                      100
+                    ).toFixed(2) + "%"
+                  : "00%"
               }
             />
           </div>
