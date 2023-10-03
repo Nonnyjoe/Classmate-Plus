@@ -1,5 +1,11 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "certFactory", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "inputs": [],
     "name": "Admin",
@@ -24,7 +30,8 @@
     "name": "createorganisation",
     "outputs": [
       { "internalType": "address", "name": "Organisation", "type": "address" },
-      { "internalType": "address", "name": "Nft", "type": "address" }
+      { "internalType": "address", "name": "Nft", "type": "address" },
+      { "internalType": "address", "name": "certificate", "type": "address" }
     ],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -46,13 +53,6 @@
     "outputs": [
       { "internalType": "address[]", "name": "", "type": "address[]" }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getUsersStudents",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
