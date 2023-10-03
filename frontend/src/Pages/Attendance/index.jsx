@@ -87,6 +87,19 @@ const Attendance = () => {
   };
 
   const handleSubmit = async (e) => {
+    // if (create && typeof create === "function") {
+    //   try {
+    //     await create();
+    //   } catch (error) {
+    //     console.error("Create function error ", error);
+    //     toast.error("Failed to create attendance");
+    //   }
+    // }
+    create();
+    handleClose();
+  };
+
+  const uploadImage = async (e) => {
     e.preventDefault();
     const result = await main(image, id, topic, desc);
 
@@ -97,16 +110,6 @@ const Attendance = () => {
 
     if (result) {
       toast.success("Submitted on-chain");
-      handleClose();
-    }
-
-    if (create && typeof create === "function") {
-      try {
-        await create();
-      } catch (error) {
-        console.error("Create function error ", error);
-        toast.error("Failed to create attendance");
-      }
     }
   };
 
@@ -178,6 +181,13 @@ const Attendance = () => {
                 onChange={(e) => setTopic(e.target.value)}
               />
             </label>
+            <button
+              type="submit"
+              className=" bg-black text-white font-semibold px-4 py-3 rounded-lg"
+              onClick={uploadImage}
+            >
+              Upload Image
+            </button>
           </form>
         </div>
       </Modal>

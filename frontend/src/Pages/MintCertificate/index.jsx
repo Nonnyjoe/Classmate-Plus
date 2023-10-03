@@ -11,6 +11,7 @@ import main from "@/components/upload.mjs";
 
 import ChildABI from "../../../utils/childABI.json";
 import {
+  useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
@@ -27,6 +28,7 @@ const MintCertificate = () => {
   const [id, setId] = useState(10);
   const [programAddress, setProgramAddress] = useState();
   const [detail, setDetail] = useState({});
+  const [contractUri, setContractUri] = useState("");
 
   const { config: config1 } = usePrepareContractWrite({
     address: programAddress,
@@ -68,26 +70,30 @@ const MintCertificate = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const result = await main(image, id, program, year);
+    // e.preventDefault();
+    // const result = await main(image, id, program, year);
 
-    setUri(result.ipnft);
-    setPath(result.url);
-    fetchDetail(`https://ipfs.io/ipfs/${result.ipnft}/metadata.json`);
+    // setUri(result.ipnft);
+    // setPath(result.url);
+    // fetchDetail(`https://ipfs.io/ipfs/${result.ipnft}/metadata.json`);
 
-    if (result) {
-      toast.success("submitted on-chain");
-      handleClose();
-    }
+    // if (result) {
+    //   toast.success("submitted on-chain");
+    //   handleClose();
+    // }
 
-    if (create && typeof create === "function") {
-      try {
-        await create();
-      } catch (error) {
-        console.error("Create function error", error);
-        toast.error("Failed to mint certificate");
-      }
-    }
+    // if (create && typeof create === "function") {
+    //   try {
+    //     await create();
+    //   } catch (error) {
+    //     console.error("Create function error", error);
+    //     toast.error("Failed to mint certificate");
+    //   }
+    // }
+
+    //console.log("uri1", uri);
+    create();
+    handleClose();
   };
 
   async function fetchDetail(data) {
@@ -99,16 +105,45 @@ const MintCertificate = () => {
     await axios.get(data, config).then((res) => setDetail(res.data));
   }
 
-  console.log("uri", uri);
-  console.log("path", path);
-  console.log("detail", detail);
+  const uploadCertificate = async (e) => {
+    e.preventDefault();
+    const result = await main(image, id, program, year);
+
+    setUri(result.ipnft);
+    setPath(result.url);
+    //fetchDetail(`https://ipfs.io/ipfs/${result.ipnft}/metadata.json`);
+
+    if (result) {
+      toast.success("submitted on-chain");
+      //handleClose();
+    }
+  };
+
+  useContractRead({
+    address: programAddress,
+    abi: ChildABI,
+    functionName: "certiificateURI",
+    onSuccess(data) {
+      console.log("Success", data);
+      setContractUri(data);
+    },
+  });
+
+  // console.log("uri", uri);
+  // console.log("path", path);
+  // console.log("detail", detail);
 
   useEffect(() => {
     if (typeof window != "undefined") {
       let res = localStorage.getItem("programAddress");
       setProgramAddress(res);
     }
-  }, [programAddress]);
+
+    contractUri.length > 0 &&
+      fetchDetail(`https://ipfs.io/ipfs/${contractUri}/metadata.json`);
+  }, [programAddress, contractUri]);
+
+  console.log("program", programAddress);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail?.image?.slice(7)}`;
 
@@ -194,6 +229,13 @@ const MintCertificate = () => {
                 onChange={(e) => setYear(e.target.value)}
               />
             </label>
+            <button
+              type="submit"
+              className=" bg-black text-white font-semibold px-4 py-3 rounded-lg"
+              onClick={uploadCertificate}
+            >
+              Upload file
+            </button>
           </form>
         </div>
       </Modal>

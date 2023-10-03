@@ -46,7 +46,7 @@ const Programmes = () => {
       const listOfPrograms = await programsContract.getUserOrganisatons(
         address
       );
-      console.log("list", listOfPrograms);
+      //console.log("list", listOfPrograms);
       //console.log("classes", attendedClasses);
       setprogramAddress(listOfPrograms);
     } catch (error) {
