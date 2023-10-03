@@ -4,15 +4,15 @@ import Programmes from "@/src/Pages/Programmes";
 
 const programmes = () => {
   return (
-    <div className="w-full flex flex-col">
-      <div>
+    <div className="min-h-screen flex flex-col ">
+      <div className=" h-[20vh]">
         <Navbar />
       </div>
-      <div>
+      <div className=" flex-grow">
         <Programmes />
       </div>
 
-      <div>
+      <div className=" mt-auto ">
         <Footer />
       </div>
     </div>

@@ -9,9 +9,9 @@ const ActionButton = ({
 }) => {
   return (
     <button
-      className={
-        inverse ? `${styles["btn"]} ${styles["inverse"]}` : `${styles["btn"]}`
-      }
+      className={` flex bg-[#000] text-white box-border p-[5px] md:p-[10px] border-none rounded-md text-sm items-center cursor-pointer 
+      ${inverse ? " text-black border-[1px] border-black" : ""}
+      `}
       style={style}
       onClick={onClick}
     >

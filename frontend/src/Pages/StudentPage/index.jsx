@@ -138,7 +138,7 @@ const StudentPage = () => {
   //const reversedClasses = classesMarked?.reverse();
 
   return (
-    <div>
+    <div className=" px-5">
       <HeaderSection
         heading={`Welcome ${name}`}
         subHeading={""}
@@ -152,20 +152,22 @@ const StudentPage = () => {
       />
       <div className=" flex items-center justify-start ml-12">
         <Section>
-          <DataCard
-            label={"Total Classes"}
-            value={studentData ? studentData[1].toString() : `00`}
-            inverse={true}
-          />
+          <div>
+            <DataCard
+              label={"Total Classes"}
+              value={studentData ? studentData[1].toString() : `00`}
+              inverse={true}
+            />
+          </div>
 
-          <div className="ml-12">
+          <div className=" md:ml-12">
             <DataCard
               label={"Your Attended Classes"}
               value={studentData ? studentData[0].toString() : `00`}
             />
           </div>
 
-          <div className="ml-12">
+          <div className=" md:ml-12">
             <DataCard
               label={"Class Percentage"}
               value={
@@ -206,7 +208,7 @@ const StudentPage = () => {
       <Modal
         isOpen={modal}
         onClose={handleClose}
-        heading={"Classmate+ Dashboard"}
+        heading={"Classmate+ Student Form"}
         positiveText={"Submit"}
         type={"submit"}
         onCancel={handleCancel}

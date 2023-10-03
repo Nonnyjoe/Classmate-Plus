@@ -9,7 +9,7 @@ const HeaderSection = ({ heading, subHeading, rightItem = () => {} }) => {
       }}
     >
       <div>
-        <h1 style={{ fontSize: "30px" }}>{heading}</h1>
+        <h1 className=" text-[24px] md:text-[30px] font-semibold">{heading}</h1>
         <p>{subHeading}</p>
       </div>
       {rightItem()}

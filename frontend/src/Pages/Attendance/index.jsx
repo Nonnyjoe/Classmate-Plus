@@ -139,7 +139,7 @@ const Attendance = () => {
       <Modal
         isOpen={modal}
         onClose={handleClose}
-        heading={"Classmate+ Dashboard"}
+        heading={"Classmate+ Attendance"}
         positiveText={"Submit"}
         type={"submit"}
         onCancel={handleCancel}

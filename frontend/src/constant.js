@@ -3,6 +3,7 @@ import { BsSpeedometer2, BsCloudUploadFill } from "react-icons/bs";
 import { AiOutlineBarChart } from "react-icons/ai";
 import { PiStudentFill, PiChalkboardTeacher } from "react-icons/pi";
 import { SiGoogleclassroom } from "react-icons/si";
+import { LiaCertificateSolid } from "react-icons/lia";
 
 export const constant = [
   {
@@ -39,5 +40,10 @@ export const constant = [
     to: "/statistics",
     name: "Statistics",
     Icon: AiOutlineBarChart,
+  },
+  {
+    to: "/mint-certificate",
+    name: "Certificate",
+    Icon: LiaCertificateSolid,
   },
 ];

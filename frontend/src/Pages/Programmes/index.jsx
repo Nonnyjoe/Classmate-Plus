@@ -113,7 +113,7 @@ const Programmes = () => {
   };
 
   return (
-    <div>
+    <div className=" px-7">
       <HeaderSection
         heading={"Programmes"}
         subHeading={"Welcome to Classmate+ Programmes"}

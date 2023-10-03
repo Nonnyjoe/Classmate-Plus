@@ -44,16 +44,16 @@ const StudentsPage = () => {
   });
 
   return (
-    <div className=" h-screen w-screen flex flex-col">
-      <div className=" h-[10%]">
+    <div className=" min-h-screen flex flex-col">
+      <div className=" h-[20vh]">
         <Navbar />
       </div>
 
-      <div className=" h-[80%]">
+      <div className=" flex-grow">
         <StudentPage />
       </div>
 
-      <div className=" h-[10%]">
+      <div className=" mt-auto">
         <Footer />
       </div>
     </div>
