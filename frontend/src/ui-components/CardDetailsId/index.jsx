@@ -52,12 +52,9 @@ const CardDetailsId = ({ classId }) => {
       functionName: "getLectureData",
       args: [classId],
       onSuccess(data) {
-        console.log("success", data);
-        console.log("dataaaaa", data.uri);
         if (data) {
           fetchDetail(data.uri);
         }
-        // data && fetchDetail(`https://ipfs.io/ipfs/${data.uri}/metadata.json`);
       },
     });
 
@@ -69,8 +66,6 @@ const CardDetailsId = ({ classId }) => {
   });
 
   async function fetchDetail(data) {
-    // console.log("RECEIVED", data);
-    // console.log("RECEIVED OOOOOO", showUri);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -79,15 +74,13 @@ const CardDetailsId = ({ classId }) => {
     let defaultUri = `bafybeiddyye4i4cpur3omforka2z3iexu2mbmkxnnjvwjtt7zbtrzwzeii`;
     let uriLink = `https://ipfs.io/ipfs/${data}/metadata.json`;
     let fallBackLink = `https://ipfs.io/ipfs/${defaultUri}/metadata.json`;
-    console.log(`omohhh`, defaultUri.length);
+
     if (data.length > 5) {
       await axios.get(uriLink, config).then((res) => setDetail(res.data));
     } else {
       await axios.get(fallBackLink, config).then((res) => setDetail(res.data));
     }
   }
-
-  console.log("detail", detail);
 
   const person = useMemo(
     () => detail,
@@ -119,12 +112,7 @@ const CardDetailsId = ({ classId }) => {
     setShowId(classId);
     setMentorName(userName);
     setSubHeading(lectureData?.topic);
-    //handleCardNFT(showUri);
-    //fetchDetail(`https://ipfs.io/ipfs/${lectureData?.uri}/metadata.json`);
-    //fetchDetail(`https://ipfs.io/ipfs/${showUri}/metadata.json`);
   }, [lectureData, userName, showUri, classId]);
-
-  //console.log(detail);
 
   let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 
