@@ -98,7 +98,7 @@ const UploadForm = () => {
     }
   };
 
-  console.log(programAddress);
+  //console.log(programAddress);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

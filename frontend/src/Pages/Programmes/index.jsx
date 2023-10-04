@@ -19,7 +19,7 @@ import { JsonRpcProvider, ethers } from "ethers";
 
 const Programmes = () => {
   const [modal, setModal] = useState(false);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const [schoolName, setSchoolName] = useState();
   const [cohortName, setCohortName] = useState();
   const [adminName, setAdminName] = useState("");
@@ -46,7 +46,7 @@ const Programmes = () => {
       const listOfPrograms = await programsContract.getUserOrganisatons(
         address
       );
-      console.log("list", listOfPrograms);
+      //console.log("list", listOfPrograms);
       //console.log("classes", attendedClasses);
       setprogramAddress(listOfPrograms);
     } catch (error) {
@@ -105,15 +105,15 @@ const Programmes = () => {
   };
 
   useEffect(() => {
-    showOrganization();
-  }, []);
+    isConnected ? showOrganization() : "";
+  }, [isConnected]);
 
   const handleRoute = (pro) => {
     console.log(pro);
   };
 
   return (
-    <div>
+    <div className=" px-7">
       <HeaderSection
         heading={"Programmes"}
         subHeading={"Welcome to Classmate+ Programmes"}
@@ -126,7 +126,8 @@ const Programmes = () => {
         )}
       />
       <div className="flex justify-start items-center flex-wrap">
-        {programAddress &&
+        {isConnected &&
+          programAddress &&
           programAddress.map((pro, i) => {
             return (
               <div key={i}>

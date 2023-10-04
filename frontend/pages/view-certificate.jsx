@@ -1,22 +1,24 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import Programmes from "@/src/Pages/Programmes";
+import OpenCertificate from "@/src/Pages/OpenCertificate";
+import React from "react";
 
-const programmes = () => {
+const viewCertificate = () => {
   return (
-    <div className="min-h-screen flex flex-col ">
+    <div className=" min-h-screen flex flex-col">
       <div className=" h-[20vh]">
         <Navbar />
       </div>
+
       <div className=" flex-grow">
-        <Programmes />
+        <OpenCertificate />
       </div>
 
-      <div className=" mt-auto ">
+      <div className=" mt-auto">
         <Footer />
       </div>
     </div>
   );
 };
 
-export default programmes;
+export default viewCertificate;

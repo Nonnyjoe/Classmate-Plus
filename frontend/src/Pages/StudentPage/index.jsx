@@ -18,6 +18,7 @@ import {
 import StudCard from "../../ui-components/StudCard";
 import DataCard from "@/src/ui-components/DataCard";
 import { JsonRpcProvider, ethers } from "ethers";
+import Link from "next/link";
 
 const StudentPage = () => {
   const [id, setId] = useState();
@@ -138,41 +139,57 @@ const StudentPage = () => {
   //const reversedClasses = classesMarked?.reverse();
 
   return (
-    <div>
+    <div className=" px-5">
       <HeaderSection
         heading={`Welcome ${name}`}
         subHeading={""}
         rightItem={() => (
-          <ActionButton
-            onClick={() => setModal(true)}
-            Icon={BsFillDropletFill}
-            label="Submit ID"
-          />
+          <div className=" flex items-center justify-between">
+            <div>
+              <ActionButton
+                onClick={() => setModal(true)}
+                Icon={BsFillDropletFill}
+                label="Submit ID"
+              />
+            </div>
+
+            <div className=" ml-6 md:ml-10">
+              <Link href="/view-certificate">
+                <button className=" bg-black text-white p-[2px] md:px-4 md:py-2 rounded-lg ">
+                  View Certificate
+                </button>
+              </Link>
+            </div>
+          </div>
         )}
       />
       <div className=" flex items-center justify-start ml-12">
         <Section>
-          <DataCard
-            label={"Total Classes"}
-            value={studentData ? studentData[1].toString() : `00`}
-            inverse={true}
-          />
+          <div>
+            <DataCard
+              label={"Total Classes"}
+              value={studentData ? studentData[1].toString() : `00`}
+              inverse={true}
+            />
+          </div>
 
-          <div className="ml-12">
+          <div className=" md:ml-12">
             <DataCard
               label={"Your Attended Classes"}
               value={studentData ? studentData[0].toString() : `00`}
             />
           </div>
 
-          <div className="ml-12">
+          <div className=" md:ml-12">
             <DataCard
               label={"Class Percentage"}
               value={
-                (
-                  (Number(studentData?.[0]) / Number(studentData?.[1])) *
-                  100
-                ).toFixed(2) + "%"
+                studentData
+                  ? (
+                      (Number(studentData?.[0]) / Number(studentData?.[1])) *
+                      100
+                    ).toFixed(2) + "%"
+                  : "00%"
               }
             />
           </div>
@@ -206,7 +223,7 @@ const StudentPage = () => {
       <Modal
         isOpen={modal}
         onClose={handleClose}
-        heading={"Classmate+ Dashboard"}
+        heading={"Classmate+ Student Form"}
         positiveText={"Submit"}
         type={"submit"}
         onCancel={handleCancel}

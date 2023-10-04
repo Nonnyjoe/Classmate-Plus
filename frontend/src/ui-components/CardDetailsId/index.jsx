@@ -51,6 +51,11 @@ const CardDetailsId = ({ classId }) => {
       abi: ChildAbi,
       functionName: "getLectureData",
       args: [classId],
+      onSuccess(data) {
+        if (data) {
+          fetchDetail(data.uri);
+        }
+      },
     });
 
   const { data: userName } = useContractRead({
@@ -60,29 +65,37 @@ const CardDetailsId = ({ classId }) => {
     args: [mentorAddress],
   });
 
+  async function fetchDetail(data) {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    let defaultUri = `bafybeiddyye4i4cpur3omforka2z3iexu2mbmkxnnjvwjtt7zbtrzwzeii`;
+    let uriLink = `https://ipfs.io/ipfs/${data}/metadata.json`;
+    let fallBackLink = `https://ipfs.io/ipfs/${defaultUri}/metadata.json`;
+
+    if (data.length > 5) {
+      await axios.get(uriLink, config).then((res) => setDetail(res.data));
+    } else {
+      await axios.get(fallBackLink, config).then((res) => setDetail(res.data));
+    }
+  }
+
   const person = useMemo(
     () => detail,
     [detail] //no dependencies so the value doesn't change
   );
 
   useEffect(() => {
-    const handleCardNFT = (showUri) => {
-      const mainNFT =
-        showUri?.length == 59
-          ? `${showUri}`
-          : `bafybeiddyye4i4cpur3omforka2z3iexu2mbmkxnnjvwjtt7zbtrzwzeii`;
+    // const handleCardNFT = (showUri) => {
+    //   const mainNFT =
+    //     showUri?.length == 59
+    //       ? `${showUri}`
+    //       : `bafybeiddyye4i4cpur3omforka2z3iexu2mbmkxnnjvwjtt7zbtrzwzeii`;
 
-      fetchDetail(`https://ipfs.io/ipfs/${mainNFT}/metadata.json`);
-    };
-
-    async function fetchDetail(data) {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      await axios.get(data, config).then((res) => setDetail(res.data));
-    }
+    //   fetchDetail(`https://ipfs.io/ipfs/${mainNFT}/metadata.json`);
+    // };
 
     if (typeof window !== "undefined") {
       let res = localStorage.getItem("programAddress");
@@ -99,10 +112,9 @@ const CardDetailsId = ({ classId }) => {
     setShowId(classId);
     setMentorName(userName);
     setSubHeading(lectureData?.topic);
-    handleCardNFT(showUri);
   }, [lectureData, userName, showUri, classId]);
 
-  //let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
+  let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
 
   return (
     <div>
@@ -146,7 +158,7 @@ const CardDetailsId = ({ classId }) => {
           <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
             <div className=" rounded-lg ">
               <img
-                src={detail.image}
+                src={imageUrl}
                 className="rounded-lg object-cover w-screen h-60"
               />
             </div>
@@ -166,7 +178,7 @@ const CardDetailsId = ({ classId }) => {
         <div className=" bg-inherit p-4 rounded-lg w-full h-full flex flex-col items-center justify-center">
           <div className=" rounded-lg ">
             <img
-              src={detail.image}
+              src={imageUrl}
               width={500}
               height={500}
               className="rounded-lg object-cover w-screen h-60"
