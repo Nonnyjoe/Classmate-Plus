@@ -5,7 +5,7 @@ import Image from "next/image";
 const Footer = () => {
   return (
     <div className={styles.container}>
-      <div>©2023 Web3bridge x Base. All rights reserved.</div>
+      <div>©2023 Web3bridge built on Base. All rights reserved.</div>
       <div className={styles.social}>
         <Link href="https://www.instagram.com/web3bridge/">
           <Image

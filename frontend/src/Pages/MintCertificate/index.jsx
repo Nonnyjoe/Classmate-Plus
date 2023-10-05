@@ -156,7 +156,7 @@ const MintCertificate = () => {
           <ActionButton
             onClick={() => setModal(true)}
             Icon={LiaCertificateSolid}
-            label="Create New Attendance"
+            label="Issue Certificate"
           />
         )}
       />
@@ -190,7 +190,7 @@ const MintCertificate = () => {
       <Modal
         isOpen={modal}
         onClose={handleClose}
-        heading={"Classmate+ Attendance"}
+        heading={"Classmate+ Cerificate"}
         positiveText={"Submit"}
         type={"submit"}
         onCancel={handleCancel}
