@@ -70,7 +70,7 @@ const StudCard = ({ classId }) => {
     handleCardNFT(showUri);
   }, [lectureData, userName, showUri, detail, classId]);
 
-  //let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
+  let imageUrl = `https://ipfs.io/ipfs/${detail.image?.slice(7)}`;
   //console.log("image", imageUrl);
 
   return (
@@ -101,7 +101,7 @@ const StudCard = ({ classId }) => {
           <div className=" bg-[#FFFFFF] p-4 rounded-lg w-full h-full items-center justify-center">
             <div className=" rounded-lg ">
               <img
-                src={detail.image}
+                src={imageUrl}
                 alt="class nft"
                 className="rounded-lg object-cover w-screen h-60"
               />
