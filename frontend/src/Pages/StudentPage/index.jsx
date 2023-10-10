@@ -184,7 +184,7 @@ const StudentPage = () => {
             <DataCard
               label={"Class Percentage"}
               value={
-                studentData
+                studentData && studentData[1]
                   ? (
                       (Number(studentData?.[0]) / Number(studentData?.[1])) *
                       100
