@@ -175,7 +175,7 @@ const MintCertificate = () => {
 
             <div className=" flex justify-between items-center">
               <div className=" mt-4 ml-[25px] md:ml-0">
-                <p className=" text-base font-light ">Issues By</p>
+                <p className=" text-base font-light ">Issued By</p>
                 <p className=" text-lg font-medium">Ayodeji Awosika</p>
               </div>
               <div className=" mt-4 mr-[25px] md:mr-0">
