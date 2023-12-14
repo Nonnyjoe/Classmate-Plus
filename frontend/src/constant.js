@@ -32,6 +32,11 @@ export const constant = [
     Icon: SiGoogleclassroom,
   },
   {
+    to: "/scores",
+    name: "Scores",
+    Icon: AiOutlineBarChart,
+  },
+  {
     to: "/upload-file",
     name: "Upload File",
     Icon: BsCloudUploadFill,
