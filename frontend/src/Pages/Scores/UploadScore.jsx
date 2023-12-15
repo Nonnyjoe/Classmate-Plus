@@ -1,16 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Modal from "@/src/ui-components/Modal";
 import storeScore from "@/components/uploadScore.mjs";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
+
 import ChildABI from "@/utils/childABI.json";
 
-const UploadScore = ({ programAddress }) => {
+const UploadScore = ({ programAddress, getStudentName }) => {
   const [data, setData] = useState({});
   const [id, setId] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [week, setWeek] = useState("");
-  const toastID = useRef(null);
+  const [reformattedData, setReformattedData] = useState([]);
+
+  useEffect(() => {
+    if (Object.keys(data).length === 0) return;
+
+    const runFunc = async () => {
+      const _data = {};
+      Object.keys(data).map(async (key) => {
+        _data[await getStudentName(key)] = data[key];
+      });
+      setReformattedData(_data);
+    };
+
+    runFunc();
+
+    // setReformattedData(_data);
+  }, [data]);
+
+  console.log(reformattedData);
 
   const {
     data: UploadScoreData,
@@ -25,18 +44,20 @@ const UploadScore = ({ programAddress }) => {
   const { data: uploadStudentsDataHash } = useWaitForTransaction({
     hash: UploadScoreData?.hash,
     onSuccess(data) {
-      toastID.current = null;
-      toast.update(toastID.current, {
-        render: "Score List updated",
-        type: toast.TYPE.SUCCESS,
-        autoClose: 5000,
-      });
+      toast.dismiss();
+      toast.success("Score List Updated");
+      setData({});
+      setId("");
+      setWeek("");
       setOpenModal(false);
     },
   });
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
+    setData({});
+    setId("");
+    setWeek("");
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -67,7 +88,13 @@ const UploadScore = ({ programAddress }) => {
         const line = lines[i];
         let tokens = line.split(",");
 
+        tokens[0] = tokens[0].replace(" ", "");
+        if (tokens[0].match(/^\s*$/)) {
+          continue;
+        }
+
         if (!tokens[0].startsWith("0x")) {
+          console.log(tokens[0]);
           toast.error(`wrong address format on line ${i + 1}: ${tokens[0]}`);
           return;
         }
@@ -100,15 +127,12 @@ const UploadScore = ({ programAddress }) => {
     const blob = new Blob([dataJson], { type: "application/json" });
     const file = new File([blob], "file.json");
 
-    toastID.current = toast.loading("Uploading to IPFS...");
+    toast.loading("Uploading to IPFS...");
 
     const result = await storeScore(week, id, file);
-
+    toast.dismiss();
     if (result) {
-      toast.update(toastID.current, {
-        render: "Adding to Contract...",
-        type: "loading",
-      });
+      toast.loading("Uploading on-chain...");
 
       UploadScores?.({
         args: [id, result.ipnft],
@@ -151,6 +175,7 @@ const UploadScore = ({ programAddress }) => {
           type="file"
           className="hidden"
           onChange={handleFileInputChange}
+          value={""}
           accept="text/csv"
         />
       </label>
@@ -179,7 +204,7 @@ const UploadScore = ({ programAddress }) => {
           <span className="border px-4">Scores</span>
         </div>
         <div className="max-h-32 overflow-auto">
-          {Object.entries(data).map(([key, value]) => (
+          {Object.entries(reformattedData).map(([key, value]) => (
             <div className="grid grid-cols-2" key={key}>
               <span className="border px-4">{key}</span>
               <span className="border px-4">{value}</span>
