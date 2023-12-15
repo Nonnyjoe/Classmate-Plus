@@ -3,11 +3,13 @@ import UploadScore from "@/src/Pages/Scores/UploadScore";
 import { useEffect, useMemo, useState } from "react";
 import ChildABI from "@/utils/childABI.json";
 import { useContractRead } from "wagmi";
+import { readContract } from "@wagmi/core";
 import axios from "axios";
 
 const Scores = () => {
   const [programAddress, setProgramAddress] = useState();
   const [scoreData, setScoreData] = useState([]);
+  const [reformattedData, setReformattedData] = useState([]);
 
   const { data: scoreCIDs } = useContractRead({
     address: programAddress,
@@ -15,6 +17,20 @@ const Scores = () => {
     functionName: "getResultCid",
     watch: true,
   });
+
+  const getStudentName = (address) => {
+    let result = address;
+    readContract({
+      address: programAddress,
+      abi: ChildABI,
+      functionName: "getStudentName",
+      args: [address],
+    })
+      .then((name) => (result = name))
+      .catch((err) => (result = address));
+
+    return result;
+  };
 
   useEffect(() => {
     if (!scoreCIDs) return;
@@ -83,13 +99,32 @@ const Scores = () => {
     return merged;
   }, [scoreData]);
 
+  useEffect(() => {
+    if (mergedScores.length === 0) return;
+
+    const runFunc = async () => {
+      const _data = [];
+      mergedScores.map(async (ht) => {
+        _data.push([await getStudentName(ht[0]), ht[1]]);
+      });
+      setReformattedData(_data);
+    };
+
+    runFunc();
+
+    // setReformattedData(_data);
+  }, [mergedScores]);
+
   return (
     <div>
       <HeaderSection
         heading="Scores"
         subHeading="Welcome to Classmate+ Scores List"
       />
-      <UploadScore programAddress={programAddress} />
+      <UploadScore
+        programAddress={programAddress}
+        getStudentName={getStudentName}
+      />
       <div className="p-6">
         <div className="flex font-bold">
           <span className="border px-4 w-[350px]">Student</span>
