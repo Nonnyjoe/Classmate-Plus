@@ -126,40 +126,42 @@ const Scores = () => {
         programAddress={programAddress}
         getStudentName={getStudentName}
       />
-      <div className="p-6 w-max">
-        <div className="flex font-bold">
-          <span className="border px-4 w-[400px]">Name</span>
-          <div className="flex flex-1">
-            <span className="border px-4 w-[400px]">Address</span>
-            {scoreData?.map((data) => (
-              <span className="border text-center w-20" key={data.id}>
-                {data.name}
-              </span>
-            ))}
-            <span className="border text-center w-20">Total</span>
-            <span className="border text-center w-20">Avg. Score</span>
-          </div>
-        </div>
-        {reformattedData?.map((data, index, arr) => (
-          <div className={`flex`} key={index}>
-            <span className="border px-4 w-[400px]">{data[0]}</span>
-            <span className="border px-4 w-[400px]">{data[1]}</span>
+      <div className="w-full overflow-auto">
+        <div className="p-6 w-max">
+          <div className="flex font-bold">
+            <span className="border px-4 w-[230px]">Name</span>
             <div className="flex flex-1">
-              {data[2].map((score, index) => (
-                <span key={index} className="border text-center w-20">
-                  {score}
+              <span className="border px-4 w-[400px]">Address</span>
+              {scoreData?.map((data) => (
+                <span className="border text-center w-20" key={data.id}>
+                  {data.name}
                 </span>
               ))}
-              <span className="border text-center w-20">
-                {data[2].reduce((a, b) => Number(a) + Number(b), 0)}
-              </span>
-              <span className="border text-center w-20">
-                {data[2].reduce((a, b) => Number(a) + Number(b), 0) /
-                  data[2].length}
-              </span>
+              <span className="border text-center w-20">Total</span>
+              <span className="border text-center w-20">Avg. Score</span>
             </div>
           </div>
-        ))}
+          {reformattedData?.map((data, index, arr) => (
+            <div className={`flex`} key={index}>
+              <span className="border px-4 w-[230px]">{data[0]}</span>
+              <span className="border px-4 w-[400px]">{data[1]}</span>
+              <div className="flex flex-1">
+                {data[2].map((score, index) => (
+                  <span key={index} className="border text-center w-20">
+                    {score}
+                  </span>
+                ))}
+                <span className="border text-center w-20">
+                  {data[2].reduce((a, b) => Number(a) + Number(b), 0)}
+                </span>
+                <span className="border text-center w-20">
+                  {data[2].reduce((a, b) => Number(a) + Number(b), 0) /
+                    data[2].length}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* <ScoreTable /> */}
