@@ -18,15 +18,15 @@ const Scores = () => {
     watch: true,
   });
 
-  const getStudentName = async (address) => {
+  const getStudentName = async (addresses) => {
     if (!programAddress) return "No name";
 
     try {
       const result = await readContract({
         address: programAddress,
         abi: ChildABI,
-        functionName: "getStudentName",
-        args: [address],
+        functionName: "getNameArray",
+        args: [addresses],
       });
 
       return result;
@@ -102,14 +102,11 @@ const Scores = () => {
     if (mergedScores.length === 0) return;
 
     const runFunc = async () => {
-      const _data = [];
+      const addresses = mergedScores.map((data) => data[0]);
 
-      console.log(mergedScores[0]);
+      const allNames = await getStudentName(addresses);
 
-      for (const i of mergedScores) {
-        const name = await getStudentName(i[0]);
-        _data.push([name, ...i]);
-      }
+      const _data = mergedScores.map((data, i) => [allNames[i], ...data]);
 
       setReformattedData(_data);
     };
