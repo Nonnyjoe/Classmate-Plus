@@ -48,6 +48,8 @@ contract organisation {
     mapping(address => bool) isStudent;
     mapping(address => bytes[]) classesAttended;
     mapping(address => mapping(bytes => bool)) IndividualAttendanceRecord;
+    string[] resultCid;
+    mapping(uint256 => bool) testIdUsed;
 
     /**
      * ============================================================ *
@@ -80,6 +82,7 @@ contract organisation {
     event attendanceOpened(bytes Id, address mentor);
     event attendanceClosed(bytes Id, address mentor);
     event studentsEvicted(uint noOfStudents);
+    event newResultUpdated(uint256 testId, address mentor);
 
     // MODIFIERS
     modifier onlyModerator() {
@@ -161,30 +164,12 @@ contract organisation {
         emit staffsRegistered(staffList.length);
     }
 
-    function StaffRequestNameCorrection() external onlyStaff {
-        if (requestNameCorrection[msg.sender] == true)
-            revert already_requested();
-        requestNameCorrection[msg.sender] == true;
-        emit nameChangeRequested(msg.sender);
-    }
     
     function TransferOwnership(address newModerator) external onlyModerator {
         assert(newModerator != address(0));
         moderator = newModerator;
     }
 
-    function StaffNameCorrection(
-        individual[] memory _staffList
-    ) external onlyModerator {
-        uint staffLength = _staffList.length;
-        for (uint i; i < staffLength; i++) {
-            if (requestNameCorrection[_staffList[i]._address] == true) {
-                mentorsData[_staffList[i]._address] = _staffList[i];
-                requestNameCorrection[_staffList[i]._address] = false;
-            }
-        }
-        emit StaffNamesChanged(_staffList.length);
-    }
 
     // @dev: Function to register students to be called only by the moderator
     // @params: _studentList: An array of structs(individuals) consisting of name and wallet address of students.
@@ -318,6 +303,17 @@ contract organisation {
         emit attendanceClosed(_lectureId, msg.sender);
     }
 
+    function RecordResults(uint256 testId, string calldata _resultCid) external onlyMentorOnDuty {
+        require(testIdUsed[testId] == false, "TEST ID ALREADY USED");
+        testIdUsed[testId] = true;
+        resultCid.push(_resultCid);
+        emit newResultUpdated(testId, msg.sender);
+    }
+
+    function getResultCid() external view returns(string[] memory){
+        return resultCid;
+    }
+
     function EvictStudents(
         address[] calldata studentsToRevoke
     ) external onlyModerator {
@@ -337,25 +333,24 @@ contract organisation {
         emit studentsEvicted(studentsToRevoke.length);
     }
 
-    function LayOffStaffs(address[] calldata staffsToLayoff) external onlyModerator {
-        uint staffsToLayoffList = staffsToLayoff.length;
-        for (uint i; i < staffsToLayoffList; i++) {
-            if (mentorOnDuty == staffsToLayoff[i]) {
-                mentorOnDuty = moderator;
+    function getNameArray(address[] calldata _students) external view returns (string[] memory) {
+        string[] memory Names = new string[](_students.length);
+        string memory emptyName;
+        for (uint i = 0; i < _students.length; i++) {
+            if (keccak256(abi.encodePacked(studentsData[_students[i]]._name)) == keccak256(abi.encodePacked(emptyName))) {
+                Names[i] = "UNREGISTERED";
+            } else {
+                Names[i] = studentsData[_students[i]]._name;
             }
-            mentors[indexInMentorsArray[staffsToLayoff[i]]] = mentors[
-                mentors.length - 1
-            ];
-            mentors.pop();
-            isStaff[staffsToLayoff[i]] = false;
         }
+        return Names;
     }
 
     function MintCertificate(string memory Uri) external onlyModerator {
-            require(certificateIssued == false, "certificate already issued");
-            INFT(certificateContract).batchMintTokens(students, Uri);
-            certiificateURI = Uri;
-            certificateIssued = true;
+        require(certificateIssued == false, "certificate already issued");
+        INFT(certificateContract).batchMintTokens(students, Uri);
+        certiificateURI = Uri;
+        certificateIssued = true;
     }
 
     //VIEW FUNCTION
