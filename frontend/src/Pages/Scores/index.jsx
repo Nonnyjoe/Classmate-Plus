@@ -18,18 +18,21 @@ const Scores = () => {
     watch: true,
   });
 
-  const getStudentName = (address) => {
-    let result = address;
-    readContract({
-      address: programAddress,
-      abi: ChildABI,
-      functionName: "getStudentName",
-      args: [address],
-    })
-      .then((name) => (result = name))
-      .catch((err) => (result = address));
+  const getStudentName = async (address) => {
+    if (!programAddress) return "No name";
 
-    return result;
+    try {
+      const result = await readContract({
+        address: programAddress,
+        abi: ChildABI,
+        functionName: "getStudentName",
+        args: [address],
+      });
+
+      return result;
+    } catch (error) {
+      return "No name";
+    }
   };
 
   useEffect(() => {
@@ -57,10 +60,6 @@ const Scores = () => {
     Promise.all(dataFetch).then((data) => {
       setScoreData(data);
     });
-
-    // dataFetch.map((data) =>
-    //   data.then((d) => setScoreData((prev) => [...prev, d]))
-    // );
   }, [scoreCIDs]);
 
   useEffect(() => {
@@ -104,9 +103,14 @@ const Scores = () => {
 
     const runFunc = async () => {
       const _data = [];
-      mergedScores.map(async (ht) => {
-        _data.push([await getStudentName(ht[0]), ht[1]]);
-      });
+
+      console.log(mergedScores[0]);
+
+      for (const i of mergedScores) {
+        const name = await getStudentName(i[0]);
+        _data.push([name, ...i]);
+      }
+
       setReformattedData(_data);
     };
 
@@ -127,27 +131,34 @@ const Scores = () => {
       />
       <div className="p-6">
         <div className="flex font-bold">
-          <span className="border px-4 w-[350px]">Student</span>
+          <span className="border px-4 w-[400px]">Name</span>
           <div className="flex flex-1 overflow-auto">
+            <span className="border px-4 w-[400px]">Address</span>
             {scoreData?.map((data) => (
               <span className="border text-center w-20" key={data.id}>
                 {data.name}
               </span>
             ))}
             <span className="border text-center w-20">Total</span>
+            <span className="border text-center w-20">Avg. Score</span>
           </div>
         </div>
-        {mergedScores?.map((data, index, arr) => (
+        {reformattedData?.map((data, index, arr) => (
           <div className={`flex`} key={index}>
-            <span className="border px-4 w-[350px]">{data[0]}</span>
+            <span className="border px-4 w-[400px]">{data[0]}</span>
+            <span className="border px-4 w-[400px]">{data[1]}</span>
             <div className="flex flex-1 overflow-auto">
-              {data[1].map((score, index) => (
+              {data[2].map((score, index) => (
                 <span key={index} className="border text-center w-20">
                   {score}
                 </span>
               ))}
               <span className="border text-center w-20">
-                {data[1].reduce((a, b) => Number(a) + Number(b), 0)}
+                {data[2].reduce((a, b) => Number(a) + Number(b), 0)}
+              </span>
+              <span className="border text-center w-20">
+                {data[2].reduce((a, b) => Number(a) + Number(b), 0) /
+                  data[2].length}
               </span>
             </div>
           </div>
