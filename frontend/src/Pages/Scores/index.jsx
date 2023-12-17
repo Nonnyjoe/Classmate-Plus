@@ -140,6 +140,7 @@ const Scores = () => {
               </span>
             ))}
             <span className="border text-center w-20">Total</span>
+            <span className="border text-center w-20">Avg. Score</span>
           </div>
         </div>
         {reformattedData?.map((data, index, arr) => (
@@ -154,6 +155,10 @@ const Scores = () => {
               ))}
               <span className="border text-center w-20">
                 {data[2].reduce((a, b) => Number(a) + Number(b), 0)}
+              </span>
+              <span className="border text-center w-20">
+                {data[2].reduce((a, b) => Number(a) + Number(b), 0) /
+                  data[2].length}
               </span>
             </div>
           </div>
