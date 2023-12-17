@@ -262,19 +262,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "staffsToLayoff",
-        "type": "address[]"
-      }
-    ],
-    "name": "LayOffStaffs",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [{ "internalType": "string", "name": "Uri", "type": "string" }],
     "name": "MintCertificate",
     "outputs": [],
@@ -478,6 +465,15 @@
     "inputs": [],
     "name": "getModerator",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "_students", "type": "address[]" }
+    ],
+    "name": "getNameArray",
+    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
     "stateMutability": "view",
     "type": "function"
   },
