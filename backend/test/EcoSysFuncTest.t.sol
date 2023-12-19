@@ -17,6 +17,7 @@ contract EcosystemTest is Test {
     individual mentor;
     individual[] mentors;
     address[] studentsToEvict;
+    address[] nameCheck;
     address mentorAdd = 0xfd182E53C17BD167ABa87592C5ef6414D25bb9B4;
     address studentAdd = 0x13B109506Ab1b120C82D0d342c5E64401a5B6381;
     address director = 0xA771E1625DD4FAa2Ff0a41FA119Eb9644c9A46C8;
@@ -59,6 +60,18 @@ contract EcosystemTest is Test {
         assertEq(true, studentStatus);
         assertEq("JOHN DOE", studentName);
         vm.stopPrank();
+    }
+
+    function testZGetStudentsNamesArray() public {
+        testStudentRegister();
+        nameCheck.push(studentAdd);
+        nameCheck.push(mentorAdd);
+        address child = _organisationFactory.getUserOrganisatons(director)[0];
+        string[] memory studentsName = ICHILD(child).getNameArray(nameCheck);
+        assertEq(studentsName[0], "JOHN DOE");
+        assertEq(studentsName[1], "UNREGISTERED");
+        console.log(studentsName[0]);
+        console.log(studentsName[1]);
     }
 
     function testCreatorsName() public {

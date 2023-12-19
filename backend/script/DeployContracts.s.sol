@@ -18,7 +18,7 @@ contract DeployContracts is Script {
         _certificateFactory = new certificateFactory();
         _organisationFactory = new organisationFactory(address(_certificateFactory));
         (address Organisation, address OrganisationNft, address OrganizationCertNft) = _organisationFactory
-            .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org", 'Abims');
+            .createorganisation("WEB3BRIDGE", "COHORT 9", "http://test.org", 'CHINONSO');
         vm.stopBroadcast();
         writeAddressesToFile(
             address(_organisationFactory),

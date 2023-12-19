@@ -19,6 +19,7 @@ import StudCard from "../../ui-components/StudCard";
 import DataCard from "@/src/ui-components/DataCard";
 import { JsonRpcProvider, ethers } from "ethers";
 import Link from "next/link";
+import useScore from "./useScore";
 
 const StudentPage = () => {
   const [id, setId] = useState();
@@ -30,6 +31,7 @@ const StudentPage = () => {
   const [name, setName] = useState("");
 
   const { address } = useAccount();
+  const studentScore = useScore(address);
 
   const [modal, setModal] = useState(false);
 
@@ -196,18 +198,19 @@ const StudentPage = () => {
         </Section>
       </div>
 
-      <Section>
-        <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 ml-12">
-          {classesMarked &&
-            classesMarked.slice(0, visible).map((class_attended, i) => {
+      {classesMarked?.length > 0 && (
+        <Section>
+          <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 ml-12">
+            {classesMarked.slice(0, visible).map((class_attended, i) => {
               return (
                 <div key={i}>
                   <StudCard classId={class_attended} />
                 </div>
               );
             })}
-        </div>
-      </Section>
+          </div>
+        </Section>
+      )}
 
       {classIds?.length > 6 && (
         <div className=" flex flex-row items-center justify-center pt-4 mt-4	">
@@ -218,6 +221,40 @@ const StudentPage = () => {
             Load More
           </button>
         </div>
+      )}
+
+      {studentScore && (
+        <Section>
+          <div className="">
+            <h1 className=" text-[20px] font-semibold mb-4">Your Scores</h1>
+            <div className=" grid sm:grid-rows-6 md:grid-rows-4 sm:grid-flow-col">
+              {studentScore?.map(({ name, score, id }) => (
+                <div key={id} className="grid grid-cols-2">
+                  <div className=" py-1 px-4 border border-black/10">
+                    {name}
+                  </div>
+                  <div className="py-1 px-4 text-center  border border-black/10">
+                    {score}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2">
+              <p className="font-semibold">
+                Total:{" "}
+                {studentScore?.reduce((a, b) => Number(a) + Number(b.score), 0)}
+              </p>
+
+              <p className="font-semibold">
+                Average:{" "}
+                {studentScore?.reduce(
+                  (a, b) => Number(a) + Number(b.score),
+                  0
+                ) / studentScore?.length}
+              </p>
+            </div>
+          </div>
+        </Section>
       )}
 
       <Modal

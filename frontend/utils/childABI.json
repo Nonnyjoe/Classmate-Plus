@@ -158,6 +158,25 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "testId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "mentor",
+        "type": "address"
+      }
+    ],
+    "name": "newResultUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "noOfStaffs",
         "type": "uint256"
       }
@@ -243,19 +262,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "staffsToLayoff",
-        "type": "address[]"
-      }
-    ],
-    "name": "LayOffStaffs",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [{ "internalType": "string", "name": "Uri", "type": "string" }],
     "name": "MintCertificate",
     "outputs": [],
@@ -271,24 +277,10 @@
   },
   {
     "inputs": [
-      {
-        "components": [
-          { "internalType": "address", "name": "_address", "type": "address" },
-          { "internalType": "string", "name": "_name", "type": "string" }
-        ],
-        "internalType": "struct individual[]",
-        "name": "_staffList",
-        "type": "tuple[]"
-      }
+      { "internalType": "uint256", "name": "testId", "type": "uint256" },
+      { "internalType": "string", "name": "_resultCid", "type": "string" }
     ],
-    "name": "StaffNameCorrection",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "StaffRequestNameCorrection",
+    "name": "RecordResults",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -477,9 +469,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      { "internalType": "address[]", "name": "_students", "type": "address[]" }
+    ],
+    "name": "getNameArray",
+    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getOrganizationName",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getResultCid",
+    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
     "stateMutability": "view",
     "type": "function"
   },

@@ -48,6 +48,8 @@ interface ICHILD {
 
     function openAttendance(bytes calldata  _lectureId) external;
 
+    function getNameArray(address[] calldata _students) external view returns (string[] memory);
+
     function getStudentAttendanceRatio(
         address _student
     ) external view returns (uint attendace, uint TotalClasses);
