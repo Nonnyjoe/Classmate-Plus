@@ -175,24 +175,46 @@ const StudentPage = () => {
             />
           </div>
 
-          <div className=" md:ml-12">
+          <div className=" md:ml-3">
             <DataCard
               label={"Your Attended Classes"}
               value={studentData ? studentData[0].toString() : `00`}
             />
           </div>
 
-          <div className=" md:ml-12">
+          <div className=" md:ml-3">
             <DataCard
               label={"Class Percentage"}
               value={
-                studentData
+                studentData && studentData[1]
                   ? (
                       (Number(studentData?.[0]) / Number(studentData?.[1])) *
                       100
                     ).toFixed(2) + "%"
                   : "00%"
               }
+            />
+          </div>
+
+          <div className=" md:ml-3">
+            <DataCard
+              label={"Total Score"}
+              value={studentScore?.reduce(
+                (a, b) => Number(a) + Number(b.score),
+                0
+              )}
+              inverse={true}
+            />
+          </div>
+
+          <div className=" md:ml-3">
+            <DataCard
+              label={"Average Score"}
+              value={
+                studentScore?.reduce((a, b) => Number(a) + Number(b.score), 0) /
+                studentScore?.length
+              }
+              inverse={true}
             />
           </div>
         </Section>
@@ -223,7 +245,7 @@ const StudentPage = () => {
         </div>
       )}
 
-      {studentScore && (
+      {/* {studentScore && (
         <Section>
           <div className="">
             <h1 className=" text-[20px] font-semibold mb-4">Your Scores</h1>
@@ -252,6 +274,40 @@ const StudentPage = () => {
                   0
                 ) / studentScore?.length}
               </p>
+            </div>
+          </div>
+        </Section>
+      )} */}
+
+      {studentScore && (
+        <Section>
+          <div className=" w-[95%] mx-auto">
+            <div class="relative overflow-x-auto shadow-md rounded-xl">
+              <table class="w-full text-base font-medium text-left rtl:text-right text-gray-500">
+                <thead class=" text-lg font-bold text-gray-700 uppercase bg-gray-100 border-b">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Weekly Assessment
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Score
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentScore?.map(({ name, score, id }) => (
+                    <tr key={id} class="bg-white border-b ">
+                      <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
+                      >
+                        {name}
+                      </th>
+                      <td class="px-6 py-4 font-medium">{score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </Section>
